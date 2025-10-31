@@ -1,13 +1,6 @@
 name: Backend Vitest
 
 on:
-  push:
-    paths:
-      - "apps/backend/**"
-      - "packages/**"
-      - ".github/workflows/backend-tests.yml"
-      - "package.json"
-      - "package-lock.json"
   pull_request:
     types:
       - opened
