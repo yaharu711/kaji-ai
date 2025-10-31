@@ -1,1 +1,1 @@
-export { default } from '../src/routing';
+export { default, config } from '../src/entry.vercel';
