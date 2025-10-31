@@ -8,7 +8,9 @@
     "dev": "tsx watch src/entry.local.ts",
     "build": "tsc -p tsconfig.json",
     "start": "node dist/entry.local.js",
-    "build:vercel": "tsc -p tsconfig.json && cp dist/entry.vercel.js dist/index.js"
+    "build:vercel": "tsc -p tsconfig.json && cp dist/entry.vercel.js dist/index.js",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@hono/node-server": "^1.8.1",
@@ -17,6 +19,7 @@
   "devDependencies": {
     "@types/node": "^20.11.25",
     "tsx": "^4.15.6",
-    "typescript": "^5.4.2"
+    "typescript": "^5.4.2",
+    "vitest": "^1.6.0"
   }
 }
