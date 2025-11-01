@@ -9,8 +9,6 @@
     "outDir": "dist",
     "forceConsistentCasingInFileNames": true
   },
-  "include": [
-    "src/**/*.ts",
-    "api/**/*.ts"
-  ]
+  "include": ["src/**/*.ts", "api/**/*.ts"],
+  "exclude": ["tests"]
 }
