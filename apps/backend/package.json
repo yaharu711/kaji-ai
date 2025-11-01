@@ -5,7 +5,7 @@
   "type": "module",
   "main": "dist/entry.local.js",
   "scripts": {
-    "dev": "tsx watch src/entry.local.ts",
+    "dev": "tsx watch ./src/entry.local.ts",
     "build": "tsc -p tsconfig.json",
     "start": "node dist/entry.local.js",
     "build:vercel": "tsc -p tsconfig.json && cp dist/entry.vercel.js dist/index.js",
