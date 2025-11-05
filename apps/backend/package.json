@@ -9,6 +9,7 @@
     "build": "tsc -p tsconfig.json",
     "start": "node dist/entry.local.js",
     "build:vercel": "tsc -p tsconfig.json && cp dist/entry.vercel.js dist/index.js",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
     "test": "vitest run",
     "test:watch": "vitest",
     "lint": "eslint \"src/**/*.{ts,tsx}\" \"tests/**/*.ts\"",
