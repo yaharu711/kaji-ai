@@ -58,6 +58,7 @@ kaiji-ai/
 
 - ルート直下の `.env` に `DATABASE_URL` / `POSTGRES_USER` などを定義します。Drizzle Kit もこのファイルを参照します（`apps/backend/drizzle.config.cjs`）。
 - `apps/backend/.env.test` はテスト専用です。Vitest 実行時に必ず読み込まれるため、テスト DB を指す `DATABASE_URL` を用意してください。
+  - まず `cp apps/backend/.env.test.example apps/backend/.env.test` でテンプレートをコピーしてから値を調整すると楽です。
 - `NODE_ENV=production` で起動すると、DB クライアントが自動的に SSL を必須化します（`apps/backend/src/db/client.ts:1-22`）。
 
 ---
