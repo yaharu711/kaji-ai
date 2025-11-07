@@ -1,0 +1,1 @@
+ALTER TABLE "todos" ADD COLUMN "memo" text DEFAULT '' NOT NULL;
