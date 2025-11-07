@@ -23,9 +23,12 @@ kaiji-ai/
 │     ├─ package.json
 │     ├─ api/index.ts     # Vercel から利用されるエントリ
 │     ├─ src/
-│     │  ├─ entry.local.ts  # ローカル開発エントリ
-│     │  ├─ entry.vercel.ts # Vercel 用エントリ（検証用としてEdge/Node 切替対応）
-│     │  └─ routing/        # 機能別ルーティング（Hello など）
+│     │  ├─ entry.local.ts   # ローカル開発エントリ
+│     │  ├─ entry.vercel.ts  # Vercel 用エントリ（Edge/Node 切替対応）
+│     │  ├─ db/              # schema 定義と Drizzle クライアント
+│     │  ├─ repositories/    # DB へアクセスするリポジトリ層
+│     │  └─ routing/         # Hono のルーティング定義
+│     └─ tests/              # Vitest（DB 結合テストを含む）
 ```
 
 ---
@@ -51,6 +54,37 @@ kaiji-ai/
 
 ---
 
+## 環境変数
+
+- ルート直下の `.env` に `DATABASE_URL` / `POSTGRES_USER` などを定義します。Drizzle Kit もこのファイルを参照します（`apps/backend/drizzle.config.cjs`）。
+- `apps/backend/.env.test` はテスト専用です。Vitest 実行時に必ず読み込まれるため、テスト DB を指す `DATABASE_URL` を用意してください。
+- `NODE_ENV=production` で起動すると、DB クライアントが自動的に SSL を必須化します（`apps/backend/src/db/client.ts:1-22`）。
+
+---
+
+## DB マイグレーション
+
+Drizzle Kit を利用しています。以下はバックエンドワークスペースで実行してください。
+
+```bash
+npm run migration:gen --workspace apps/backend
+npm run migrate --workspace apps/backend
+```
+
+常に `.env` の `DATABASE_URL` を参照して適用されます。テスト DB に適用したい場合は一時的に環境変数を差し替えてください。
+また、backendコンテナが立ち上がった時点で、開発環境・テスト環境のDBに対してmigrateが実行されるようになっています（`kaiji-ai/apps/backend/docker/docker-entrypoint.sh`）。
+
+---
+
+## テスト
+
+- `npm run test --workspace apps/backend`
+  - Vitest が `apps/backend/.env.test` を読み込み、テスト DB に接続します（`apps/backend/vitest.config.ts:1-20`）。
+  - `tests/todo.repository.test.ts:1-47` のように実 DB を操作する結合テストが含まれるため、事前に Postgres（`docker compose up postgres` など）を起動しておく必要があります。
+- API の疎通確認は `docker compose up backend` で `/api/hello` や `/api/todos` を叩くのが簡単です。
+
+---
+
 ## Vercel へのデプロイの考え方
 
 - `apps/backend/api/index.ts` が Vercel の「ファイルベースルーティング」で検出されるエントリポイントです。
@@ -70,10 +104,9 @@ RUNTIME=node
 
 ---
 
-## テスト・今後の予定
+## 今後の予定
 
-- 次ステップとして、`apps/backend` に Vitest・hono のテストユーティリティを導入し、`/api/hello` のレスポンス検証を行う予定です。
-- 共有スキーマ（`packages/schema`）を追加し、バックエンドとフロントエンドで zod 定義を共通化します。
-- フロントエンドは Vite + React + TanStack Query を想定し、`apps/frontend` に構築します。
+- 共有スキーマ（`packages/schema`）を追加し、バックエンドとフロントエンドで zod 定義を共通化する。
+- フロントエンドは Vite + React + TanStack Query を想定し、`apps/frontend` に構築する。
 
 ---
