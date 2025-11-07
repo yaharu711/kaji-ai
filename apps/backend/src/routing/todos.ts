@@ -1,9 +1,13 @@
 import { Hono } from "hono";
-import { TodoRepository } from "../db/repositories/todo";
+
+import { getDb } from "../db/client";
+import { TodoRepository } from "../repositories/todo.repository";
+
+const todoRepository = new TodoRepository(getDb());
 
 const app = new Hono().get("/", async (c) => {
   try {
-    const todos = await TodoRepository.findAll();
+    const todos = await todoRepository.findAll();
     return c.json({ todos });
   } catch (error) {
     console.error("Failed to fetch todos", error);
