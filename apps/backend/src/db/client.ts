@@ -11,7 +11,8 @@ const createDbClient = (): PostgresJsDatabase<typeof schema> => {
   }
 
   const client = postgres(databaseUrl, {
-    ssl: "require",
+    // 本番ではSupabaseのPostgresに接続するためSSLを有効化
+    ssl: process.env.NODE_ENV === "production" ? "require" : false,
   });
 
   return drizzle(client, { schema });
