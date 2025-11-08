@@ -10,7 +10,7 @@
     "start": "node dist/entry.local.js",
     "migration:gen": "drizzle-kit generate --config ./drizzle.config.cjs",
     "migrate": "drizzle-kit migrate --config ./drizzle.config.cjs",
-    "build:vercel": "tsc -p tsconfig.json && cp dist/entry.vercel.js dist/index.js",
+    "build:vercel": "tsc -p tsconfig.json && cp dist/src/entry.vercel.js dist/index.js",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "test": "vitest run",
     "test:watch": "vitest",
