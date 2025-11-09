@@ -1,9 +1,9 @@
 import { beforeAll, beforeEach, describe, expect, it } from "vitest";
 import { sql } from "drizzle-orm";
 import type { PostgresJsDatabase } from "drizzle-orm/postgres-js";
-import { getDb } from "../src/db/client";
-import * as schema from "../src/db/schema";
-import { TodoRepository } from "../src/repositories/todo.repository";
+import { getDb } from "../src/db/client.js";
+import * as schema from "../src/db/schema.js";
+import { TodoRepository } from "../src/repositories/todo.repository.js";
 
 type Database = PostgresJsDatabase<typeof schema>;
 

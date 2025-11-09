@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { testClient } from "hono/testing";
-import app, { RoutingApp } from "../src/routing";
+import app, { RoutingApp } from "../src/routing/index.js";
 
 describe("Hello API (typed client)", () => {
   // <RoutingApp>の部分でルーティングアプリケーションの型を指定することで、型補完が効く
@@ -18,7 +18,7 @@ describe("Hello API (typed client)", () => {
 // 以下の書き方もできるけど、パスとかリクエストメソッドなど直に書くため、リファクタリング耐性が少し落ちる
 // また、どのようなパスのテストかの型補完も効くため、上記の方が望ましいかな
 
-// import hello from "../src/routing/hello";
+// import hello from "../src/routing/hello.js";
 // describe("GET /hello", () => {
 //   it("returns hello message", async () => {
 //     const response = await hello.request("/", {

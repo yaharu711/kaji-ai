@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 
-import { getDb } from "../db/client";
-import { TodoRepository } from "../repositories/todo.repository";
+import { getDb } from "../db/client.js";
+import { TodoRepository } from "../repositories/todo.repository.js";
 
 const todoRepository = new TodoRepository(getDb());
 
