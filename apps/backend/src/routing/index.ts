@@ -1,6 +1,6 @@
 import { Hono } from "hono";
-import hello from "./hello";
-import todos from "./todos";
+import hello from "./hello.js";
+import todos from "./todos.js";
 
 const app = new Hono().route("/api", hello).route("/api/todos", todos);
 

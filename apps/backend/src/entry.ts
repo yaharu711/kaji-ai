@@ -1,6 +1,6 @@
 import { serve } from "@hono/node-server";
 import { handle } from "hono/vercel";
-import app from "./routing";
+import app from "./routing/index.js";
 
 const runtime = "nodejs" as const;
 

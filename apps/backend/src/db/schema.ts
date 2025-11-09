@@ -1,2 +1,2 @@
-export { todos } from "./schemas/todos";
-export type { TodoRecord, NewTodoRecord } from "./schemas/todos";
+export { todos } from "./schemas/todos.js";
+export type { TodoRecord, NewTodoRecord } from "./schemas/todos.js";

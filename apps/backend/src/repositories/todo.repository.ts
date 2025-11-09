@@ -1,8 +1,8 @@
 import { sql } from "drizzle-orm";
 import type { PostgresJsDatabase } from "drizzle-orm/postgres-js";
 
-import * as schema from "../db/schema";
-import type { TodoRecord } from "../db/schema";
+import * as schema from "../db/schema.js";
+import type { TodoRecord } from "../db/schema.js";
 
 type Database = PostgresJsDatabase<typeof schema>;
 
