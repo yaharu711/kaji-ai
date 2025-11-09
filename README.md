@@ -21,7 +21,7 @@ kaiji-ai/
 ├─ apps/
 │  └─ backend/            # 今回構築する Hono バックエンド
 │     ├─ package.json
-│     ├─ api/index.ts     # Vercel から利用されるエントリブリッジ（src/entry.ts を再利用）
+│     ├─ api/index.ts     # Vercel から利用されるエントリブリッジ（dist/entry.js を再利用）
 │     ├─ src/
 │     │  ├─ entry.ts          # ローカル/本番共通のエントリ（Node.js Runtime 前提）
 │     │  ├─ db/              # schema 定義と Drizzle クライアント
@@ -35,7 +35,7 @@ kaiji-ai/
 - `package.json` は `"type": "module"`、`tsconfig.json` の `module` / `moduleResolution` は `NodeNext` で統一し、Node.js v20 以降で推奨されるESM構成に合わせています。
   - (参考) https://blog.koh.dev/2024-04-23-nodejs-typescript-module/#%E6%96%B0%E8%A6%8F%E3%83%97%E3%83%AD%E3%82%B8%E3%82%A7%E3%82%AF%E3%83%88
 - すべての相対 `import` / `export` では **最終的に生成される `.js` ファイル名まで含めて記述** します（例: `import app from "./routing/index.js";`）。ES Modules では拡張子や `index` の自動解決がないため、ランタイムとビルド成果物の整合性を保証するためのルールです。
-- Vercel や Supabase などESMネイティブなサービスとの互換性を優先し、CommonJSへのダウングレードは行いません。`api/index.ts` は `src/entry.ts` を再エクスポートする薄いブリッジに留め、VercelのビルドにTypeScript→JavaScript変換を任せています。
+- Vercel や Supabase などESMネイティブなサービスとの互換性を優先し、CommonJSへのダウングレードは行いません。`api/index.ts` は `dist/entry.js`（`tsc` で生成されるビルド成果物）を再エクスポートする薄いブリッジで、ローカル/本番とも同じJSを参照します。
 
 ---
 
@@ -94,7 +94,7 @@ npm run migrate --workspace apps/backend
 
 ## Vercel へのデプロイの考え方
 
-- `apps/backend/api/index.ts` が Vercel の「ファイルベースルーティング」で検出されるエントリポイントで、`src/entry.ts` を再エクスポートするだけの薄いファイルです。
+- `apps/backend/api/index.ts` が Vercel の「ファイルベースルーティング」で検出されるエントリポイントで、`dist/entry.js` を再エクスポートするだけの薄いファイルです。
 - `src/entry.ts` がローカル/本番共通のエントリで、`process.env.VERCEL` が未定義なら `@hono/node-server` でローカルサーバーを起動し、Vercel 上では `export const config = { runtime: "nodejs" }` 付きの Serverless Function として動作します。
 - Postgres ドライバの都合で Node.js Runtime 固定です（Edge Runtime を使いたい場合は別エントリを用意してください）。
 

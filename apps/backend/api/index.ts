@@ -1,5 +1,4 @@
-// Vercel の Serverless Function が参照するエントリ。
-// Node.js Runtimeで実行するため、ソース側の entry.ts を re-export し、
-// Vercel に TypeScript → JavaScript の変換を任せる。
-export { default, config } from "../src/entry.js";
+// Vercel の Serverless Function はビルド済みの JS を読むため、dist の成果物を再エクスポートする。
+// TypeScript 変換後に生成されるファイルを指しているので、型チェックでは無視する。
+export { default, config } from "../dist/entry.js";
 console.log(`run api/index.ts`);
