@@ -1,1 +1,1 @@
-export { default, config } from "../src/entry.vercel";
+export { default, config } from "../dist/entry.js";
