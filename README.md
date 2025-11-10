@@ -21,9 +21,10 @@ kaiji-ai/
 ├─ apps/
 │  └─ backend/            # 今回構築する Hono バックエンド
 │     ├─ package.json
-│     ├─ api/index.ts     # Vercel から利用されるエントリブリッジ（dist/entry.js を再利用）
+│     ├─ api/index.ts     # Vercel から利用されるエントリブリッジ（dist/entry.edge.js を再利用）
 │     ├─ src/
-│     │  ├─ entry.ts          # ローカル/本番共通のエントリ（Node.js Runtime 前提）
+│     │  ├─ entry.edge.ts     # Vercel Edge 用のエントリ
+│     │  ├─ entry.local.ts    # ローカル Node.js サーバー起動用エントリ
 │     │  ├─ db/              # schema 定義と Drizzle クライアント
 │     │  ├─ repositories/    # DB へアクセスするリポジトリ層
 │     │  └─ routing/         # Hono のルーティング定義
@@ -35,7 +36,7 @@ kaiji-ai/
 - `package.json` は `"type": "module"`、`tsconfig.json` の `module` / `moduleResolution` は `NodeNext` で統一し、Node.js v20 以降で推奨されるESM構成に合わせています。
   - (参考) https://blog.koh.dev/2024-04-23-nodejs-typescript-module/#%E6%96%B0%E8%A6%8F%E3%83%97%E3%83%AD%E3%82%B8%E3%82%A7%E3%82%AF%E3%83%88
 - すべての相対 `import` / `export` では **最終的に生成される `.js` ファイル名まで含めて記述** します（例: `import app from "./routing/index.js";`）。ES Modules では拡張子や `index` の自動解決がないため、ランタイムとビルド成果物の整合性を保証するためのルールです。
-- Vercel や Supabase などESMネイティブなサービスとの互換性を優先し、CommonJSへのダウングレードは行いません。`api/index.ts` は `dist/entry.js`（`tsc` で生成されるビルド成果物）を再エクスポートする薄いブリッジで、ローカル/本番とも同じJSを参照します。
+- Vercel や Supabase などESMネイティブなサービスとの互換性を優先し、CommonJSへのダウングレードは行いません。`api/index.ts` は `dist/entry.edge.js`（Edge 用）を再エクスポートする薄いブリッジで、ローカルは `entry.local.ts` から Node.js サーバーを起動します。
 
 ---
 
@@ -62,8 +63,8 @@ kaiji-ai/
 
 ## 環境変数
 
-- ルート直下の `.env` に `DATABASE_URL` / `POSTGRES_USER` などを定義します。Drizzle Kit もこのファイルを参照します（`apps/backend/drizzle.config.cjs`）。
-- `apps/backend/.env.test` はテスト専用です。Vitest 実行時に必ず読み込まれるため、テスト DB を指す `DATABASE_URL` を用意してください。
+- ルート直下の `.env` には `DATABASE_URL` / `POSTGRES_USER`（ローカル Postgres 利用時のみ）に加えて **必ず `TEST_DATABASE_URL`** を定義してください。`apps/backend/docker/docker-entrypoint.sh` は開発用 DB とテスト用 DB の両方に migrate を流す設計になっており、どちらかが欠けると起動前にエラーで停止します。Drizzle Kit もこのファイルを参照します（`apps/backend/drizzle.config.cjs`）。
+- `apps/backend/.env.test` はテスト専用です。Vitest 実行時に読み込まれる `DATABASE_URL` に加え、Docker 上でも同じ値を共有したい場合は `TEST_DATABASE_URL` を必ず定義してください。
   - まず `cp apps/backend/.env.test.example apps/backend/.env.test` でテンプレートをコピーしてから値を調整すると楽です。
 - `NODE_ENV=production` で起動すると、DB クライアントが自動的に SSL を必須化します（`apps/backend/src/db/client.ts:1-22`）。
 
@@ -94,8 +95,8 @@ npm run migrate --workspace apps/backend
 
 ## Vercel へのデプロイの考え方
 
-- `apps/backend/api/index.ts` が Vercel の「ファイルベースルーティング」で検出されるエントリポイントで、`dist/entry.js` を再エクスポートするだけの薄いファイルです。
-- `src/entry.ts` がローカル/本番共通のエントリで、`process.env.VERCEL` が未定義なら `@hono/node-server` でローカルサーバーを起動し、Vercel 上では `export const config = { runtime: "nodejs" }` 付きの Serverless Function として動作します。
+- `apps/backend/api/index.ts` が Vercel の「ファイルベースルーティング」で検出されるエントリポイントで、`dist/entry.edge.js`（Edge Runtime 用）を再エクスポートするだけの薄いファイルです。
+- `src/entry.edge.ts` が Vercel Edge 上で動く Hono アプリ本体、`src/entry.local.ts` がローカル開発用に `@hono/node-server` で HTTP サーバーを立ち上げるファイルです。Edge 環境に Node 固有のモジュールが混ざらないよう完全に分離しています。
 - Postgres ドライバの都合で Node.js Runtime 固定です（Edge Runtime を使いたい場合は別エントリを用意してください）。
 
 ---
