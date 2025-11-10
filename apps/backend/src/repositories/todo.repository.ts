@@ -1,10 +1,10 @@
 import { sql } from "drizzle-orm";
-import type { PostgresJsDatabase } from "drizzle-orm/postgres-js";
+import type { NeonHttpDatabase } from "drizzle-orm/neon-http";
 
 import * as schema from "../db/schema.js";
 import type { TodoRecord } from "../db/schema.js";
 
-type Database = PostgresJsDatabase<typeof schema>;
+type Database = NeonHttpDatabase<typeof schema>;
 
 // いったんサンプルだから、ここにモデルも定義しちゃっている。
 export type TodoModel = {
@@ -22,7 +22,7 @@ export class TodoRepository {
       sql`SELECT id, title, completed, created_at FROM todos ORDER BY created_at DESC`,
     );
 
-    return result.map(TodoRepository.toDomain);
+    return result.rows.map(TodoRepository.toDomain);
   }
 
   private static toDomain(row: TodoRecord): TodoModel {
