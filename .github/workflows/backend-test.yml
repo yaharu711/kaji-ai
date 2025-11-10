@@ -40,6 +40,8 @@ jobs:
         run: npm install
 
       - name: Run migrations
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: npm run migrate --workspace apps/backend
 
       - name: Type check
