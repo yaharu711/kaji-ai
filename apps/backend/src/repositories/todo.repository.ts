@@ -1,8 +1,8 @@
 import { sql } from "drizzle-orm";
 import type { NeonHttpDatabase } from "drizzle-orm/neon-http";
 
-import * as schema from "../db/schema.js";
-import type { TodoRecord } from "../db/schema.js";
+import * as schema from "../db/schema";
+import type { TodoRecord } from "../db/schema";
 
 type Database = NeonHttpDatabase<typeof schema>;
 
