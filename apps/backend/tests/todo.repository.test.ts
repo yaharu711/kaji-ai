@@ -1,11 +1,11 @@
 import { beforeAll, beforeEach, describe, expect, it } from "vitest";
 import { sql } from "drizzle-orm";
-import type { PostgresJsDatabase } from "drizzle-orm/postgres-js";
-import { getDb } from "../src/db/client.js";
-import * as schema from "../src/db/schema.js";
-import { TodoRepository } from "../src/repositories/todo.repository.js";
+import type { NeonHttpDatabase } from "drizzle-orm/neon-http";
+import { getDb } from "../src/db/client";
+import * as schema from "../src/db/schema";
+import { TodoRepository } from "../src/repositories/todo.repository";
 
-type Database = PostgresJsDatabase<typeof schema>;
+type Database = NeonHttpDatabase<typeof schema>;
 
 describe("TodoRepository.findAll", () => {
   let db: Database;
