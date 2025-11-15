@@ -1,5 +1,6 @@
 {
   "name": "kaiji-ai",
+  "type": "module",
   "private": true,
   "workspaces": [
     "apps/backend",
@@ -12,9 +13,12 @@
     "build:frontend": "npm --workspace apps/frontend run build",
     "start:backend": "npm --workspace apps/backend run start",
     "start:frontend": "npm --workspace apps/frontend run preview",
-    "lint": "npm --workspace apps/backend run lint",
-    "lint:fix": "npm --workspace apps/backend run lint:fix",
+    "lint": "npm run lint:backend && npm run lint:frontend",
+    "lint:backend": "npm --workspace apps/backend run lint",
     "lint:frontend": "npm --workspace apps/frontend run lint",
+    "lint:fix": "npm run lint:backend:fix && npm run lint:frontend:fix",
+    "lint:backend:fix": "npm --workspace apps/backend run lint:fix",
+    "lint:frontend:fix": "npm --workspace apps/frontend run lint:fix",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
     "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md}\""
   },
@@ -22,10 +26,15 @@
     "node": ">=20.0.0"
   },
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^7.8.0",
-    "@typescript-eslint/parser": "^7.8.0",
-    "eslint": "^8.57.0",
+    "@eslint/js": "^9.39.1",
+    "@eslint/eslintrc": "^3.1.0",
+    "eslint": "^9.39.1",
     "eslint-config-prettier": "^9.1.0",
-    "prettier": "^3.2.5"
+    "eslint-plugin-prettier": "^5.2.1",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "eslint-plugin-react-refresh": "^0.4.24",
+    "globals": "^16.5.0",
+    "prettier": "^3.2.5",
+    "typescript-eslint": "^8.46.3"
   }
 }
