@@ -9,7 +9,7 @@ on:
     paths:
       - "apps/backend/**"
       - "packages/**"
-      - ".github/workflows/backend-tests.yml"
+      - ".github/workflows/backend-lint.yml"
       - "eslint.config.js"
       - "apps/backend/eslint.config.js"
       - ".vscode/**"
