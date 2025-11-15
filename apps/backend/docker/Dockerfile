@@ -5,7 +5,7 @@ WORKDIR /app
 COPY package.json package.json
 COPY apps/backend/package.json apps/backend/package.json
 COPY apps/backend/tsconfig.json apps/backend/tsconfig.json
-COPY apps/backend/drizzle.config.cjs apps/backend/drizzle.config.cjs
+COPY apps/backend/drizzle.config.ts apps/backend/drizzle.config.ts
 
 RUN npm install --workspace apps/backend
 
