@@ -8,6 +8,7 @@ on:
       - ready_for_review
     paths:
       - "apps/frontend/**"
+      - ".github/workflows/frontend-lint.yml"
       - "packages/**"
       - "eslint.config.js"
       - "apps/frontend/eslint.config.js"
@@ -30,7 +31,7 @@ jobs:
           cache: "npm"
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: Run ESLint
         run: npm run lint:frontend
