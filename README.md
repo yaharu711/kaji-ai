@@ -63,7 +63,7 @@ kaiji-ai/
 
 ## 環境変数
 
-- ルート直下の `.env` には `DATABASE_URL` / `POSTGRES_USER`（ローカル Postgres 利用時のみ）に加えて **必ず `TEST_DATABASE_URL`** を定義してください。`apps/backend/docker/docker-entrypoint.sh` は開発用 DB とテスト用 DB の両方に migrate を流す設計になっており、どちらかが欠けると起動前にエラーで停止します。Drizzle Kit もこのファイルを参照します（`apps/backend/drizzle.config.cjs`）。
+- ルート直下の `.env` には `DATABASE_URL` / `POSTGRES_USER`（ローカル Postgres 利用時のみ）に加えて **必ず `TEST_DATABASE_URL`** を定義してください。`apps/backend/docker/docker-entrypoint.sh` は開発用 DB とテスト用 DB の両方に migrate を流す設計になっており、どちらかが欠けると起動前にエラーで停止します。Drizzle Kit もこのファイルを参照します（`apps/backend/drizzle.config.ts`）。
 - `apps/backend/.env.test` はテスト専用です。Vitest 実行時に読み込まれる `DATABASE_URL` に加え、Docker 上でも同じ値を共有したい場合は `TEST_DATABASE_URL` を必ず定義してください。
   - まず `cp apps/backend/.env.test.example apps/backend/.env.test` でテンプレートをコピーしてから値を調整すると楽です。
 - `NODE_ENV=production` で起動すると、DB クライアントが自動的に SSL を必須化します（`apps/backend/src/db/client.ts:1-22`）。
