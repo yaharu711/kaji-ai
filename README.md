@@ -21,7 +21,8 @@ kaiji-ai/
 ├─ apps/
 │  └─ backend/            # 今回構築する Hono バックエンド
 │     ├─ package.json
-│     ├─ api/index.ts     # Vercel から利用されるエントリブリッジ（dist/entry.edge.js を再利用）
+│     ├─ api/index.ts     # /api ルート用のエントリブリッジ
+│     ├─ api/[[...path]].ts # /api 以下を丸ごと Edge エントリへ委譲するキャッチオール
 │     ├─ src/
 │     │  ├─ entry.edge.ts     # Vercel Edge 用のエントリ
 │     │  ├─ entry.local.ts    # ローカル Node.js サーバー起動用エントリ
@@ -33,10 +34,10 @@ kaiji-ai/
 
 ## Node.js + TypeScript + ESM 方針
 
-- `package.json` は `"type": "module"`、`tsconfig.json` の `module` / `moduleResolution` は `NodeNext` で統一し、Node.js v20 以降で推奨されるESM構成に合わせています。
-  - (参考) https://blog.koh.dev/2024-04-23-nodejs-typescript-module/#%E6%96%B0%E8%A6%8F%E3%83%97%E3%83%AD%E3%82%B8%E3%82%A7%E3%82%AF%E3%83%88
-- すべての相対 `import` / `export` では **最終的に生成される `.js` ファイル名まで含めて記述** します（例: `import app from "./routing/index.js";`）。ES Modules では拡張子や `index` の自動解決がないため、ランタイムとビルド成果物の整合性を保証するためのルールです。
-- Vercel や Supabase などESMネイティブなサービスとの互換性を優先し、CommonJSへのダウングレードは行いません。`api/index.ts` は `dist/entry.edge.js`（Edge 用）を再エクスポートする薄いブリッジで、ローカルは `entry.local.ts` から Node.js サーバーを起動します。
+- `package.json` は `"type": "module"`、`tsconfig.json` の `module` / `moduleResolution` は `ESNext` / `Bundler` に設定し、Edge Runtime や Bun などモダンな ESM 実行環境に最適化しています。
+- 相対 `import` / `export` では **拡張子を付けない** 方針です。Bundler 解決により `import app from "./routing/index";` のように TypeScript でも Edge Runtime でも解決されます（local dev は `tsx` で src を直接実行）。
+- Vercel や Supabase など ESM ネイティブなサービスとの互換性を優先し、CommonJS へのダウングレードは行いません。`api/index.ts` と `api/[[...path]].ts` が `src/entry.edge.ts`（ビルド済み `dist/entry.edge.js`）を再エクスポートするブリッジとなり、ローカルは `entry.local.ts` から Node.js サーバーを起動します。
+  （TODO: ローカル環境でもvercelと同じ環境として、vercel devで立ち上げられるようにする予定）
 
 ---
 
@@ -79,7 +80,7 @@ npm run migration:gen --workspace apps/backend
 npm run migrate --workspace apps/backend
 ```
 
-常に `.env` の `DATABASE_URL` を参照して適用されます。テスト DB に適用したい場合は一時的に環境変数を差し替えてください。
+常に `.env` の `DATABASE_URL` を参照して適用されます。
 また、backendコンテナが立ち上がった時点で、開発環境・テスト環境のDBに対してmigrateが実行されるようになっています（`kaiji-ai/apps/backend/docker/docker-entrypoint.sh`）。
 
 ---
@@ -87,7 +88,7 @@ npm run migrate --workspace apps/backend
 ## テスト
 
 - `npm run test --workspace apps/backend`
-  - Vitest が `apps/backend/.env.test` を読み込み、テスト DB に接続します（`apps/backend/vitest.config.ts:1-20`）。
+  - Vitest が `apps/backend/.env.test` を読み込み、テスト用 DB に接続します（`apps/backend/vitest.config.ts:1-20`）。
   - `tests/todo.repository.test.ts:1-47` のように実 DB を操作する結合テストが含まれるため、事前に Postgres（`docker compose up postgres` など）を起動しておく必要があります。
 - API の疎通確認は `docker compose up backend` で `/api/hello` や `/api/todos` を叩くのが簡単です。
 
@@ -95,15 +96,6 @@ npm run migrate --workspace apps/backend
 
 ## Vercel へのデプロイの考え方
 
-- `apps/backend/api/index.ts` が Vercel の「ファイルベースルーティング」で検出されるエントリポイントで、`dist/entry.edge.js`（Edge Runtime 用）を再エクスポートするだけの薄いファイルです。
+- `apps/backend/api/index.ts` と `apps/backend/api/[[...path]].ts` が Vercel の「ファイルベースルーティング」で検出されるエントリポイントで、`dist/entry.edge.js`（Edge Runtime 用）を再エクスポートするだけの薄いファイルです。これにより `/api` および `/api/*` が同じ Edge Function にルーティングされます。
 - `src/entry.edge.ts` が Vercel Edge 上で動く Hono アプリ本体、`src/entry.local.ts` がローカル開発用に `@hono/node-server` で HTTP サーバーを立ち上げるファイルです。Edge 環境に Node 固有のモジュールが混ざらないよう完全に分離しています。
-- Postgres ドライバの都合で Node.js Runtime 固定です（Edge Runtime を使いたい場合は別エントリを用意してください）。
-
----
-
-## 今後の予定
-
-- 共有スキーマ（`packages/schema`）を追加し、バックエンドとフロントエンドで zod 定義を共通化する。
-- フロントエンドは Vite + React + TanStack Query を想定し、`apps/frontend` に構築する。
-
----
+- DB には Neon（HTTP 接続）を使用しているため、Edge Runtime でも問題なく動作します。Node.js Runtime を使いたい場合は `entry.local.ts` をそのままデプロイすれば OK です。
