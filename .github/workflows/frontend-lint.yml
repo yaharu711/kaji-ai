@@ -1,4 +1,4 @@
-name: Backend Lint
+name: Frontend Lint
 
 on:
   pull_request:
@@ -7,11 +7,10 @@ on:
       - synchronize
       - ready_for_review
     paths:
-      - "apps/backend/**"
+      - "apps/frontend/**"
       - "packages/**"
-      - ".github/workflows/backend-tests.yml"
       - "eslint.config.js"
-      - "apps/backend/eslint.config.js"
+      - "apps/frontend/eslint.config.js"
       - ".vscode/**"
       - "package.json"
       - "package-lock.json"
@@ -34,4 +33,4 @@ jobs:
         run: npm install
 
       - name: Run ESLint
-        run: npm run lint
+        run: npm run lint:frontend
