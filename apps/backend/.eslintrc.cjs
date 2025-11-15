@@ -1,6 +1,6 @@
 module.exports = {
   root: true,
-  ignorePatterns: [".eslintrc.cjs", "drizzle.config.cjs"],
+  ignorePatterns: [".eslintrc.cjs"],
   parser: "@typescript-eslint/parser",
   parserOptions: {
     ecmaVersion: 2021,

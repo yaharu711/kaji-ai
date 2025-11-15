@@ -2,14 +2,19 @@
   "name": "kaiji-ai",
   "private": true,
   "workspaces": [
-    "apps/backend"
+    "apps/backend",
+    "apps/frontend"
   ],
   "scripts": {
     "dev:backend": "npm --workspace apps/backend run dev",
+    "dev:frontend": "npm --workspace apps/frontend run dev -- --host 0.0.0.0 --port 5173",
     "build:backend": "npm --workspace apps/backend run build",
+    "build:frontend": "npm --workspace apps/frontend run build",
     "start:backend": "npm --workspace apps/backend run start",
+    "start:frontend": "npm --workspace apps/frontend run preview",
     "lint": "npm --workspace apps/backend run lint",
     "lint:fix": "npm --workspace apps/backend run lint:fix",
+    "lint:frontend": "npm --workspace apps/frontend run lint",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
     "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md}\""
   },
