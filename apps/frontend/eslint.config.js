@@ -11,7 +11,12 @@ import { sharedConfig } from "../../eslint.config.js";
 
 const dirname = path.dirname(fileURLToPath(import.meta.url));
 
-const typeAwareConfigs = tseslint.configs.recommendedTypeChecked.map((config) => ({
+const baseTypeAwareConfigs = [
+  ...tseslint.configs.strictTypeChecked,
+  ...tseslint.configs.stylisticTypeChecked,
+]
+
+const typeAwareConfigs = baseTypeAwareConfigs.map((config) => ({
   ...config,
   files: ["**/*.{ts,tsx}"],
   languageOptions: {
