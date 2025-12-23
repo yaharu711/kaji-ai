@@ -1,7 +1,7 @@
 name: Storybook Preview
 
 on:
-  pull_request:
+  pull_request_target:
     types:
       - opened
       - synchronize
@@ -27,8 +27,10 @@ jobs:
       issues: write
 
     steps:
-      - name: Checkout
+      - name: Checkout PR code
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
