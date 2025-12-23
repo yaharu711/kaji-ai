@@ -1,3 +1,6 @@
+// For more info, see https://github.com/storybookjs/eslint-plugin-storybook#configuration-flat-config-format
+import storybook from "eslint-plugin-storybook";
+
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -11,10 +14,14 @@ import { sharedConfig } from "../../eslint.config.js";
 
 const dirname = path.dirname(fileURLToPath(import.meta.url));
 
+// - no-unsafe-assignmentのような型情報がない時に検知ができる
+// - any型にキャストしてしまっている時も検知できる
+// - nullチェックがされないまま放置されることもlintで防げる
+// - Promise型ではないのに、awaitをつけているのも検知できる
 const baseTypeAwareConfigs = [
   ...tseslint.configs.strictTypeChecked,
   ...tseslint.configs.stylisticTypeChecked,
-]
+];
 
 const typeAwareConfigs = baseTypeAwareConfigs.map((config) => ({
   ...config,
@@ -36,6 +43,7 @@ const typeAwareConfigs = baseTypeAwareConfigs.map((config) => ({
 export default defineConfig([
   ...sharedConfig,
   ...typeAwareConfigs,
+  ...storybook.configs["flat/recommended"],
   globalIgnores(["dist"]),
   {
     files: ["**/*.{ts,tsx}"],
