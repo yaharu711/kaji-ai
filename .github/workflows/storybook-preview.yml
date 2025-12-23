@@ -23,8 +23,9 @@ jobs:
   deploy-storybook:
     runs-on: ubuntu-latest
     permissions:
+      # GitHub Pagesへのpush権限付与
       contents: write
-      issues: write
+      # PRへのコメント権限付与
       pull-requests: write
 
     steps:
