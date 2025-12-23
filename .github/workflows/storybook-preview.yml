@@ -1,0 +1,83 @@
+name: Storybook Preview
+
+on:
+  pull_request_target:
+    types:
+      - opened
+      - synchronize
+      - ready_for_review
+    paths:
+      - "apps/frontend/**"
+      - ".github/workflows/frontend-lint.yml"
+      - ".github/workflows/frontend-test.yml"
+      - ".github/workflows/storybook-preview.yml"
+      - "packages/**"
+      - "eslint.config.js"
+      - "apps/frontend/eslint.config.js"
+      - ".storybook/**"
+      - ".vscode/**"
+      - "package.json"
+      - "package-lock.json"
+
+jobs:
+  deploy-storybook:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+
+    steps:
+      - name: Checkout PR code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Storybook
+        run: npm --workspace apps/frontend run build-storybook
+
+      - name: Prepare preview bundle
+        env:
+          PREVIEW_PATH: previews/pr-${{ github.event.number }}
+        run: |
+          rm -rf storybook-preview
+          mkdir -p storybook-preview/$PREVIEW_PATH
+          cp -R apps/frontend/storybook-static/* storybook-preview/$PREVIEW_PATH
+
+      - name: Publish to GitHub Pages
+        # 変更をpushする先はgh-pagesブランチがデフォルト（publish_branchで一応変更できるみたい）
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: storybook-preview
+          # 過去のプレビューも残す
+          keep_files: true
+
+      - name: Comment preview URL on PR
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const prNumber = context.payload.pull_request?.number;
+            if (!prNumber) {
+              core.info('No pull request number found. Skipping comment.');
+              return;
+            }
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const previewUrl = `https://${owner}.github.io/${repo}/previews/pr-${prNumber}/`;
+            const body = `🧪 Storybook preview is available: ${previewUrl}`;
+            await github.rest.issues.createComment({
+              owner,
+              repo,
+              issue_number: prNumber,
+              body,
+            });

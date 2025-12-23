@@ -54,6 +54,11 @@ npm run build:frontend
 - Storybook プロジェクトでは `storybookTest` プラグインがストーリーをテストケースとして読み込み、`@storybook/addon-a11y` が `axe-core` ベースでアクセシビリティ違反を検出します。
 - 失敗例として `src/stories/Header.tsx` には意図的に `alt` 属性のない画像があり、`npx vitest run --project storybook` で a11y エラーが再現できます。
 
+### PR プレビュー (GitHub Pages)
+
+- `.github/workflows/storybook-preview.yml` が PR ごとに Storybook を静的ビルドし、`gh-pages` ブランチへデプロイします。
+- 有効化後は `https://<GitHubユーザー名>.github.io/kaiji-ai/previews/pr-<PR番号>/` で誰でも閲覧できます。公開には Repository settings > Pages で `gh-pages`/`/ (root)` を選択しておいてください。
+
 ## Lint / フォーマット
 
 - `npm run lint:frontend` … ESLint（Flat Config）を実行。Storybook の推奨ルールも読み込まれるため `*.stories.tsx` もチェック対象です。
