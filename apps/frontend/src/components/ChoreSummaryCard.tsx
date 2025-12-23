@@ -23,7 +23,7 @@ export const ChoreSummaryCard = ({
   return (
     <article className="chore-card" aria-live="polite">
       <header className="chore-card__header">
-        <p className="chore-card__eyebrow">今週の家事</p>
+        <p className="chore-card__eyebrow">今週の家事！</p>
         <h3 className="chore-card__title">{title}</h3>
       </header>
 
