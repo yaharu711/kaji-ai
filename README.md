@@ -47,9 +47,11 @@ kaiji-ai/
 
    ```bash
    npm install --workspace apps/backend
+   npm install --workspace apps/frontend
    ```
 
-   - Docker を使う場合でも、IDE の補完用にローカルへ依存を展開しておくと便利です。
+   - ホスト側の `node_modules` は IDE の補完や型エラー防止のためだけに利用します。コンテナ起動時は匿名ボリュームに Linux 用の依存を自動的に構築するため、実行経路にはホストの `node_modules` は使われません。
+   - npm workspaces の hoist により依存は原則ルート直下の `node_modules` に集約されます（一部 Storybook/Vitest などは競合回避のため各ワークスペース配下にも残ります）。`apps/*/node_modules` が空でも異常ではありません。
 
 2. **Docker でバックエンドを起動**
 
@@ -58,6 +60,7 @@ kaiji-ai/
    ```
 
    - 初回起動時にイメージをビルドし、`http://localhost:3000/api/hello` で `{"message":"Hello World"}` が返ることを確認してください。
+   - コンテナ内 `node_modules` は匿名ボリュームに保持されるため、ホスト側で `node_modules` を消してもコンテナ環境には影響しません（再ビルド時に再インストールされます）。
    - `docker compose down` で停止できます。
 
 ---
@@ -69,14 +72,17 @@ kaiji-ai/
   - まず `cp apps/backend/.env.test.example apps/backend/.env.test` でテンプレートをコピーしてから値を調整すると楽です。
 - `NODE_ENV=production` で起動すると、DB クライアントが自動的に SSL を必須化します（`apps/backend/src/db/client.ts:1-22`）。
 
----
-
 ## DB マイグレーション
 
-Drizzle Kit を利用しています。以下はバックエンドワークスペースで実行してください。
+Drizzle Kit を利用しています。
+
+1. `apps/backend/src/db/schemas/*` にテーブル定義・型 (`$inferSelect` など) を追加する。
+2. `apps/backend/src/db/schema.ts` で新しいテーブル／型を `export` し、Drizzle Kit が検知できるようにする。
+3. 以下のコマンドを実行してマイグレーションをDBに反映する。
 
 ```bash
 npm run migration:gen --workspace apps/backend
+# 開発環境のみ適応
 npm run migrate --workspace apps/backend
 ```
 
