@@ -1,3 +1,4 @@
+import type { AuthConfig } from "@auth/core";
 import { vi } from "vitest";
 
 /**
@@ -20,5 +21,27 @@ vi.mock("@hono/auth-js", async () => {
   };
 });
 
+/**
+ * ルーティングで参照している auth.config.ts は環境変数を読むため、
+ * CI など .env が無い環境でもテストできるようスタブ構成を注入する。
+ */
+const mockAuthConfig: AuthConfig = {
+  adapter: undefined,
+  secret: "test-secret",
+  basePath: "/auth",
+  providers: [],
+  session: {
+    strategy: "jwt",
+    maxAge: 60,
+  },
+  callbacks: {},
+};
+
+vi.mock("../../src/auth.config", () => ({
+  __esModule: true,
+  default: mockAuthConfig,
+  authConfig: mockAuthConfig,
+}));
+
 // テストごとに副作用インポートするだけでモックを適用できるようにする。
-export {}; 
+export {};
