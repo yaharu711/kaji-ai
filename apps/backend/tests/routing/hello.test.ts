@@ -1,8 +1,10 @@
 import { describe, expect, it } from "vitest";
 import { testClient } from "hono/testing";
-import app, { RoutingApp } from "../src/routing/index";
 
-describe("Hello API (typed client)", () => {
+import "../helpers/mockAuth";
+import app, { RoutingApp } from "../../src/routing/index";
+
+describe("helloメッセージが取得できること", () => {
   // <RoutingApp>の部分でルーティングアプリケーションの型を指定することで、型補完が効く
   const client = testClient<RoutingApp>(app);
 

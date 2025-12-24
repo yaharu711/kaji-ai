@@ -18,7 +18,9 @@
     "lint:fix": "eslint . --fix"
   },
   "dependencies": {
+    "@auth/core": "^0.41.1",
     "@auth/drizzle-adapter": "^1.11.1",
+    "@hono/auth-js": "^1.1.0",
     "@hono/node-server": "^1.8.1",
     "@neondatabase/serverless": "^1.0.2",
     "drizzle-orm": "^0.44.7",

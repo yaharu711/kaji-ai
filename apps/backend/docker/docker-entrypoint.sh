@@ -1,6 +1,9 @@
 #!/bin/sh
 set -euo pipefail
 
+# node_modules がボリュームで空になるため、起動時に依存をインストール
+npm install --workspace apps/backend
+
 if [ -z "${DATABASE_URL:-}" ]; then
   echo "DATABASE_URL が設定されていません。"
   exit 1
