@@ -1,11 +1,25 @@
 import { authHandler, initAuthConfig, verifyAuth } from "@hono/auth-js";
 import { Hono } from "hono";
+import { cors } from "hono/cors";
 
 import authConfig from "../auth.config";
+import env from "../util/env";
 import hello from "./hello";
 import todos from "./todos";
 
+const frontendOrigin = env("FRONTEND_ORIGIN");
+
 const app = new Hono()
+  .use(
+    "*",
+    cors({
+      origin: frontendOrigin,
+      credentials: true,
+      allowMethods: ["GET", "POST", "OPTIONS"],
+      // Auth.jsではX-Auth-Return-Redirectが必要になるため、ここで許可する
+      allowHeaders: ["Content-Type", "Authorization", "X-Auth-Return-Redirect"],
+    }),
+  )
   .use(
     "*",
     initAuthConfig(() => authConfig),

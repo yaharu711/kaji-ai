@@ -8,6 +8,7 @@ import { accounts, authenticators, sessions, users, verificationTokens } from ".
 import env from "./util/env";
 
 const db = getDb();
+const frontendOrigin = env("FRONTEND_ORIGIN");
 
 type TokenWithUserId = JWT & { userId?: string };
 
@@ -46,6 +47,23 @@ export const authConfig: AuthConfig = {
         (session.user as typeof session.user & { id?: string }).id = userId;
       }
       return session;
+    },
+    async redirect({ url, baseUrl }) {
+      if (url.startsWith("/")) {
+        return `${baseUrl}${url}`;
+      }
+
+      try {
+        const targetOrigin = new URL(url).origin;
+        // デフォルトの設定だと、バックエンドのオリジンと同じでないと、フロントエンドで指定されたコールバックURLにリダイレクトできないため
+        if (targetOrigin === baseUrl || targetOrigin === frontendOrigin) {
+          return url;
+        }
+      } catch {
+        // 無効な URL は baseUrl にフォールバック
+      }
+
+      return baseUrl;
     },
   },
 };
