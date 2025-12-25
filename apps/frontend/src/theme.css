@@ -1,0 +1,31 @@
+:root {
+  /* Base text */
+  --color-text-strong: #0f172a;
+  --color-text-muted: #475569;
+
+  /* Accent / primary */
+  --color-accent: #ec4899;
+  /* アクセントの濃い色 (a11y用) */
+  --color-accent-strong: #cf3f7b;
+  --color-primary-from: #f744a1;
+  --color-primary-to: #c084fc;
+  --color-primary-hover-from: #ec4899;
+  --color-primary-hover-to: #a855f7;
+  --shadow-primary: 0 8px 20px rgba(236, 72, 153, 0.28);
+  --shadow-primary-hover: 0 10px 22px rgba(236, 72, 153, 0.32);
+
+  /* Secondary */
+  --color-secondary-bg: #ffe4f3;
+  --color-secondary-border: #fbcfe8;
+  --color-secondary-text: #7c2d7f;
+
+  /* Surfaces */
+  --color-card-border: #f4d9ec;
+  --shadow-card: 0 15px 45px rgba(190, 24, 93, 0.12);
+  --color-surface: #ffffff;
+
+  /* Background */
+  --bg-grad-1: #ffe4f3;
+  --bg-grad-2: #fff5fb;
+  --bg-base: #fff8fc;
+}

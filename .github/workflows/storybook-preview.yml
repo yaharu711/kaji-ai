@@ -75,5 +75,5 @@ jobs:
             echo "No pull request number found. Skipping comment."
             exit 0
           fi
-          PREVIEW_URL="https://$OWNER.github.io/$REPO/previews/pr-$PR_NUMBER/"
+          PREVIEW_URL="https://$OWNER.github.io/$REPO/previews/pr-$PR_NUMBER"
           gh pr comment "$PR_NUMBER" --body "🧪 Storybook preview is available: $PREVIEW_URL"
