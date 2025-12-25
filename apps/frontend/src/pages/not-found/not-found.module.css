@@ -4,7 +4,8 @@
   align-items: center;
   justify-content: center;
   padding: 32px 16px;
-  background: radial-gradient(circle at 20% 20%, var(--bg-grad-1), var(--bg-grad-2) 35%), var(--bg-base);
+  background:
+    radial-gradient(circle at 20% 20%, var(--bg-grad-1), var(--bg-grad-2) 35%), var(--bg-base);
 }
 
 .card {
@@ -15,7 +16,8 @@
   font-size: 14px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--color-accent);
+  /* アクセントカラーだとコントラスト比 3.52 で a11y NG だったため、やや濃い色に */
+  color: var(--color-accent-strong);
   font-weight: 700;
   margin-bottom: 12px;
 }
