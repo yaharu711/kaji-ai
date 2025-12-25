@@ -6,11 +6,9 @@ import App from "./App.tsx";
 
 const AUTH_BASE_PATH = "/auth";
 const backendOrigin = import.meta.env.VITE_BACKEND_ORIGIN.trim();
-const fallbackBaseUrl = window.location.origin;
-const baseUrl = backendOrigin && backendOrigin.length > 0 ? backendOrigin : fallbackBaseUrl;
 
 authConfigManager.setConfig({
-  baseUrl,
+  baseUrl: backendOrigin,
   basePath: AUTH_BASE_PATH,
   // 異なるオリジンでもサブドメインなので、csrfトークンが送信されるようにする
   // csrfトークンはCookienに入っていて、ちゃんとsmae-site: laxになっている
