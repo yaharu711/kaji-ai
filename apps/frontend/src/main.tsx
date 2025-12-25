@@ -1,6 +1,7 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { SessionProvider, authConfigManager } from "@hono/auth-js/react";
+import "./theme.css";
 import "./index.css";
 import App from "./App.tsx";
 
