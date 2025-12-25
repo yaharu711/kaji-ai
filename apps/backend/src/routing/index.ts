@@ -24,7 +24,7 @@ const app = new Hono()
     "*",
     initAuthConfig(() => authConfig),
   )
-  .use("/auth/*", authHandler())
+  .use("/api/auth/*", authHandler())
   .use("/api/*", verifyAuth())
   .route("/api", hello)
   .route("/api/todos", todos)

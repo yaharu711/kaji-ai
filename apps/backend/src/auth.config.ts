@@ -21,7 +21,7 @@ export const authConfig: AuthConfig = {
     authenticatorsTable: authenticators,
   }),
   secret: env("AUTH_SECRET"),
-  basePath: "/auth",
+  basePath: "/api/auth",
   providers: [
     Google({
       clientId: env("GOOGLE_CLIENT_ID"),

@@ -4,7 +4,7 @@ import { SessionProvider, authConfigManager } from "@hono/auth-js/react";
 import "./index.css";
 import App from "./App.tsx";
 
-const AUTH_BASE_PATH = "/auth";
+const AUTH_BASE_PATH = "/api/auth";
 const backendOrigin = import.meta.env.VITE_BACKEND_ORIGIN.trim();
 
 authConfigManager.setConfig({
