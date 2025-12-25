@@ -2,7 +2,6 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import PageCard from ".";
 
 const meta = {
-  title: "Components/PageCard",
   component: PageCard,
   parameters: {
     layout: "centered",

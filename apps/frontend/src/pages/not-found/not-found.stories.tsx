@@ -3,7 +3,6 @@ import { MemoryRouter } from "react-router-dom";
 import NotFoundPage from ".";
 
 const meta = {
-  title: "Pages/NotFound",
   component: NotFoundPage,
   parameters: {
     layout: "fullscreen",

@@ -3,7 +3,6 @@ import { MemoryRouter } from "react-router-dom";
 import LinkButton from ".";
 
 const meta = {
-  title: "Components/LinkButton",
   component: LinkButton,
   parameters: {
     layout: "centered",
