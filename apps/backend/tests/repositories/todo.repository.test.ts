@@ -1,9 +1,9 @@
 import { beforeAll, beforeEach, describe, expect, it } from "vitest";
 import { sql } from "drizzle-orm";
 import type { NeonHttpDatabase } from "drizzle-orm/neon-http";
-import { getDb } from "../src/db/client";
-import * as schema from "../src/db/schema";
-import { TodoRepository } from "../src/repositories/todo.repository";
+import { getDb } from "../../src/db/client";
+import * as schema from "../../src/db/schema";
+import { TodoRepository } from "../../src/repositories/todo.repository";
 
 type Database = NeonHttpDatabase<typeof schema>;
 

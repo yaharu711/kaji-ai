@@ -1,0 +1,21 @@
+import { describe, expect, it } from "vitest";
+import { testClient } from "hono/testing";
+
+import "../helpers/mockAuth";
+import app, { RoutingApp } from "../../src/routing/index";
+
+describe("ログイン中ユーザーの情報取得ができること", () => {
+  const client = testClient<RoutingApp>(app);
+
+  it("returns authenticated user", async () => {
+    const res = await client.api.me.$get();
+
+    expect(res.status).toBe(200);
+    expect(await res.json()).toEqual({
+      user: {
+        id: "test-user",
+        name: "Test User",
+      },
+    });
+  });
+});
