@@ -40,7 +40,7 @@ vi.mock("@hono/auth-js", async () => {
 const mockAuthConfig: AuthConfig = {
   adapter: undefined,
   secret: "test-secret",
-  basePath: "/auth",
+  basePath: "/api/auth",
   providers: [],
   session: {
     strategy: "jwt",
