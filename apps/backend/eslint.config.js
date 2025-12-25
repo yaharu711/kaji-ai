@@ -10,7 +10,7 @@ const dirname = path.dirname(fileURLToPath(import.meta.url));
 export default [
   ...sharedConfig,
   {
-    files: ["src/**/*.{ts,tsx}", "tests/**/*.ts"],
+    files: ["src/**/*.{ts,tsx}", "api/**/*.ts", "tests/**/*.ts"],
     languageOptions: {
       parserOptions: {
         project: ["./tsconfig.eslint.json"],

@@ -1,11 +1,5 @@
 export { todos } from "./schemas/todos";
-export {
-  users,
-  accounts,
-  sessions,
-  verificationTokens,
-  authenticators,
-} from "./schemas/authjs";
+export { users, accounts, sessions, verificationTokens, authenticators } from "./schemas/authjs";
 
 export type { TodoRecord, NewTodoRecord } from "./schemas/todos";
 export type {
