@@ -8,10 +8,6 @@
     radial-gradient(circle at 20% 20%, var(--bg-grad-1), var(--bg-grad-2) 35%), var(--bg-base);
 }
 
-.card {
-  text-align: center;
-}
-
 .code {
   font-size: 14px;
   letter-spacing: 0.12em;
