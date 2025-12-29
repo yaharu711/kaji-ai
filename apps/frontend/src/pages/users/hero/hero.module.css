@@ -1,0 +1,37 @@
+.heroContent {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.heroBadge {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, var(--color-hero-badge-from), var(--color-hero-badge-to));
+  font-size: 22px;
+  box-shadow: var(--shadow-hero-badge);
+}
+
+.heroEyebrow {
+  margin: 0 0 4px 0;
+  color: var(--color-text-muted);
+  font-size: 13px;
+  letter-spacing: 0.05em;
+}
+
+.heroTitle {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--color-text-strong);
+}
+
+@media (max-width: 480px) {
+  .heroContent {
+    align-items: flex-start;
+    gap: 10px;
+  }
+}

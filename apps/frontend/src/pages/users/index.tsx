@@ -1,77 +1,18 @@
-import { CircleUser, UserPlus } from "lucide-react";
 import { useSessionUser } from "../../contexts/SessionUserContext";
-import PageCard from "../../components/PageCard";
 import styles from "./users.module.css";
+import GroupsSection from "./groups";
+import HeroSection from "./hero";
+import ProfileSection from "./profile";
 
 function UserPage() {
-  const { name, image } = useSessionUser();
-  const displayName = name ?? "ユーザー";
+  const user = useSessionUser();
 
   return (
     <div className={styles.page}>
       <main className={styles.shell}>
-        <PageCard>
-          <div className={styles.heroContent}>
-            <div className={styles.heroBadge} aria-hidden="true">
-              💖
-            </div>
-            <div>
-              <p className={styles.heroEyebrow}>あなたのダッシュボード</p>
-              <h1 className={styles.heroTitle}>
-                家事の見える化 <span aria-hidden="true">✨</span>
-              </h1>
-            </div>
-          </div>
-        </PageCard>
-
-        <PageCard>
-          <div className={styles.profileContent}>
-            <div className={styles.avatar}>
-              {image ? (
-                <img
-                  src={image}
-                  alt={`${displayName}のアイコン`}
-                  className={styles.avatarImage}
-                  // 画像を遅延ロード。初回描画が早くなる
-                  loading="lazy"
-                  // 画像リクエストにリファラ（このページのURL）を送らない
-                  referrerPolicy="no-referrer"
-                />
-              ) : (
-                <CircleUser aria-label={`${displayName}のアイコン`} className={styles.avatarIcon} />
-              )}
-            </div>
-            <div className={styles.profileText}>
-              <p className={styles.welcome}>ようこそ、</p>
-              <p className={styles.userName}>{displayName} さん</p>
-            </div>
-          </div>
-        </PageCard>
-
-        <PageCard>
-          <div className={styles.groupsContent} aria-label="グループ一覧">
-            <div className={styles.sectionHeader}>
-              <h2>あなたのグループ</h2>
-              <button type="button" className={styles.createButton}>
-                <UserPlus aria-hidden className={styles.iconSmall} />
-                <span>新規作成</span>
-              </button>
-            </div>
-
-            <div className={styles.emptyCard}>
-              <div className={styles.emptyEmoji} aria-hidden="true">
-                🏠
-              </div>
-              <p className={styles.emptyTitle}>まだグループがありません</p>
-              <p className={styles.emptyDescription}>
-                家族や友人とグループを作って
-                <br />
-                家事を共有しましょう！
-              </p>
-            </div>
-          </div>
-        </PageCard>
-
+        <HeroSection />
+        <ProfileSection user={user} />
+        <GroupsSection />
         <p className={styles.footerNote}>さあ、今週も頑張りましょう！ ✨</p>
       </main>
     </div>
