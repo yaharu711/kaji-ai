@@ -11,10 +11,14 @@ function UserPage() {
       <main className={styles.shell}>
         <PageCard>
           <div className={styles.heroContent}>
-            <div className={styles.heroBadge}>💖</div>
+            <div className={styles.heroBadge} aria-hidden="true">
+              💖
+            </div>
             <div>
               <p className={styles.heroEyebrow}>あなたのダッシュボード</p>
-              <h1 className={styles.heroTitle}>家事の見える化 ✨</h1>
+              <h1 className={styles.heroTitle}>
+                家事の見える化 <span aria-hidden="true">✨</span>
+              </h1>
             </div>
           </div>
         </PageCard>
@@ -42,7 +46,7 @@ function UserPage() {
             </div>
 
             <div className={styles.emptyCard}>
-              <div className={styles.emptyEmoji} aria-hidden>
+              <div className={styles.emptyEmoji} aria-hidden="true">
                 🏠
               </div>
               <p className={styles.emptyTitle}>まだグループがありません</p>
