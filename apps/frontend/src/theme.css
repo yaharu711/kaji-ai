@@ -8,6 +8,7 @@
   /* アクセントの濃い色 (a11y用) */
   --color-accent-strong: #cf3f7b;
   --color-primary-from: #f744a1;
+
   --color-primary-to: #c084fc;
   --color-primary-hover-from: #ec4899;
   --color-primary-hover-to: #a855f7;
@@ -20,6 +21,7 @@
   --color-secondary-text: #7c2d7f;
 
   /* Surfaces */
+  /* カード/ダイアログ/パネルなど、背景の上に浮く面（surface）の基調色 */
   --color-card-border: #f4d9ec;
   --shadow-card: 0 15px 45px rgba(190, 24, 93, 0.12);
   --color-surface: #ffffff;
@@ -28,4 +30,23 @@
   --bg-grad-1: #ffe4f3;
   --bg-grad-2: #fff5fb;
   --bg-base: #fff8fc;
+
+  /* User page specifics */
+  --bg-page-from: #ffe8f6;
+  --bg-page-mid: #f4e9ff;
+  --bg-page-to: #e5f3ff;
+  --color-hero-badge-from: #ffd1ec;
+  --color-hero-badge-to: #fbcfe8;
+  --shadow-hero-badge: 0 10px 22px rgba(236, 72, 153, 0.22);
+  --color-avatar-from: #fdf2ff;
+  --color-avatar-to: #f8e4ff;
+  --color-avatar-border: #e9d5ff;
+  --color-avatar-icon: #a855f7;
+  --shadow-avatar: inset 0 1px 0 rgba(255, 255, 255, 0.85), 0 8px 16px rgba(99, 102, 241, 0.18);
+  --shadow-avatar-icon: 0 4px 10px rgba(168, 85, 247, 0.24);
+  --color-empty-border: #f4c8e7;
+  --bg-empty-from: #ffffff;
+  --bg-empty-to: #fff9fd;
+  --shadow-empty: none;
+  --border-overlay-strong: rgba(255, 255, 255, 0.3);
 }
