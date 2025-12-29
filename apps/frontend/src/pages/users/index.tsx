@@ -27,7 +27,19 @@ function UserPage() {
         <PageCard>
           <div className={styles.profileContent}>
             <div className={styles.avatar}>
-              <CircleUser aria-hidden className={styles.avatarIcon} />
+              {image ? (
+                <img
+                  src={image}
+                  alt={`${displayName}のアイコン`}
+                  className={styles.avatarImage}
+                  // 画像を遅延ロード。初回描画が早くなる
+                  loading="lazy"
+                  // 画像リクエストにリファラ（このページのURL）を送らない
+                  referrerPolicy="no-referrer"
+                />
+              ) : (
+                <CircleUser aria-hidden className={styles.avatarIcon} />
+              )}
             </div>
             <div className={styles.profileText}>
               <p className={styles.welcome}>ようこそ、</p>
