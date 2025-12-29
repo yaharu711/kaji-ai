@@ -34,7 +34,13 @@ interface GoogleLoginButtonProps {
 
 function GoogleLoginButton({ onClick, disabled = false }: GoogleLoginButtonProps) {
   return (
-    <button type="button" className={styles.button} onClick={onClick} disabled={disabled} aria-busy={disabled}>
+    <button
+      type="button"
+      className={styles.button}
+      onClick={onClick}
+      disabled={disabled}
+      aria-busy={disabled}
+    >
       <GoogleIcon />
       <span>Googleでログイン</span>
     </button>

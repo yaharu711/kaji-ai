@@ -3,11 +3,11 @@ import { LoaderCircle } from "lucide-react";
 import GoogleLoginButton from "../google-login-button";
 import PageCard from "../../../../components/PageCard";
 
-type LoginViewProps = {
+interface LoginViewProps {
   isLoading: boolean;
   isBusy: boolean;
   onGoogleLogin: () => void;
-};
+}
 
 function LoginView({ isLoading, isBusy, onGoogleLogin }: LoginViewProps) {
   if (isLoading) {

@@ -22,7 +22,9 @@ export const Default: Story = {
   args: {
     isLoading: false,
     isBusy: false,
-    onGoogleLogin: () => console.log("google login (storybook)"),
+    onGoogleLogin: () => {
+      console.log("google login (storybook)");
+    },
   },
 };
 
@@ -30,7 +32,9 @@ export const Loading: Story = {
   args: {
     isLoading: true,
     isBusy: true,
-    onGoogleLogin: () => console.log("google login (storybook)"),
+    onGoogleLogin: () => {
+      console.log("google login (storybook)");
+    },
   },
 };
 
@@ -38,6 +42,8 @@ export const Busy: Story = {
   args: {
     isLoading: false,
     isBusy: true,
-    onGoogleLogin: () => console.log("google login (storybook)"),
+    onGoogleLogin: () => {
+      console.log("google login (storybook)");
+    },
   },
 };

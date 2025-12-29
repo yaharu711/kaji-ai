@@ -27,10 +27,26 @@ function LoginPage() {
   }, [status, userId, from?.pathname, navigate]);
 
   if (isLoading) {
-    return <LoginView isLoading isBusy onGoogleLogin={googleSignIn} />;
+    return (
+      <LoginView
+        isLoading
+        isBusy
+        onGoogleLogin={() => {
+          void googleSignIn();
+        }}
+      />
+    );
   }
 
-  return <LoginView isLoading={false} isBusy={isBusy} onGoogleLogin={googleSignIn} />;
+  return (
+    <LoginView
+      isLoading={false}
+      isBusy={isBusy}
+      onGoogleLogin={() => {
+        void googleSignIn();
+      }}
+    />
+  );
 }
 
 export default LoginPage;
