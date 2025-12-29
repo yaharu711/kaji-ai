@@ -6,6 +6,7 @@ import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import { getDb } from "./db/client";
 import { accounts, authenticators, sessions, users, verificationTokens } from "./db/schema";
 import env from "./util/env";
+import type { AppSessionUser } from "./types/auth";
 
 const db = getDb();
 const frontendOrigin = env("FRONTEND_ORIGIN");
@@ -44,7 +45,7 @@ export const authConfig: AuthConfig = {
       if (session.user && userId) {
         // Auth.js の SessionUser には id フィールドが含まれていないため、
         // JWT に詰めた userId を session.user に注入してフロント側(useSessionなど)で参照できるようにする。
-        (session.user as typeof session.user & { id?: string }).id = userId;
+        (session.user as AppSessionUser).id = userId;
       }
       return session;
     },

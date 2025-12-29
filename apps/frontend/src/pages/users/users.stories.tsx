@@ -1,4 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import type { AppSessionUser } from "../../../../backend/src/types/auth";
+import { SessionUserProvider } from "../../contexts/SessionUserContext";
 import UserPage from ".";
 
 const meta = {
@@ -12,4 +14,19 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {};
+const mockUser: AppSessionUser = {
+  id: "mock-user",
+  name: "山田 花子",
+  email: "hanako@example.com",
+  image: null,
+};
+
+export const Default: Story = {
+  render: () => {
+    return (
+      <SessionUserProvider value={mockUser}>
+        <UserPage />
+      </SessionUserProvider>
+    );
+  },
+};

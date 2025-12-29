@@ -1,10 +1,11 @@
 import { CircleUser, UserPlus } from "lucide-react";
+import { useSessionUser } from "../../contexts/SessionUserContext";
 import PageCard from "../../components/PageCard";
 import styles from "./users.module.css";
 
 function UserPage() {
-  // TODO: 認証済みユーザー情報をセッションから取得する
-  const displayName = "田中 花子";
+  const { name, image } = useSessionUser();
+  const displayName = name ?? "ユーザー";
 
   return (
     <div className={styles.page}>
