@@ -1,6 +1,7 @@
 :root {
   /* Base text */
   --color-text-strong: #0f172a;
+  /* 補足文や説明文など主文より一段トーンを落としたテキストに使う色 */
   --color-text-muted: #475569;
 
   /* Accent / primary */
@@ -12,6 +13,7 @@
   --color-primary-to: #c084fc;
   --color-primary-hover-from: #ec4899;
   --color-primary-hover-to: #a855f7;
+  /* ピンク系の影。次のホバー時にはさらに濃くして浮き感を出している */
   --shadow-primary: 0 8px 20px rgba(236, 72, 153, 0.28);
   --shadow-primary-hover: 0 10px 22px rgba(236, 72, 153, 0.32);
 
@@ -23,6 +25,7 @@
   /* Surfaces */
   /* カード/ダイアログ/パネルなど、背景の上に浮く面（surface）の基調色 */
   --color-card-border: #f4d9ec;
+  /* 背景からの浮き感を出している */
   --shadow-card: 0 15px 45px rgba(190, 24, 93, 0.12);
   --color-surface: #ffffff;
 
@@ -42,6 +45,7 @@
   --color-avatar-to: #f8e4ff;
   --color-avatar-border: #e9d5ff;
   --color-avatar-icon: #a855f7;
+  /*  */
   --shadow-avatar: inset 0 1px 0 rgba(255, 255, 255, 0.85), 0 8px 16px rgba(99, 102, 241, 0.18);
   --shadow-avatar-icon: 0 4px 10px rgba(168, 85, 247, 0.24);
   --color-empty-border: #f4c8e7;

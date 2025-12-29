@@ -29,11 +29,12 @@ const GoogleIcon = () => (
 
 interface GoogleLoginButtonProps {
   onClick: () => void;
+  disabled?: boolean;
 }
 
-function GoogleLoginButton({ onClick }: GoogleLoginButtonProps) {
+function GoogleLoginButton({ onClick, disabled = false }: GoogleLoginButtonProps) {
   return (
-    <button type="button" className={styles.button} onClick={onClick}>
+    <button type="button" className={styles.button} onClick={onClick} disabled={disabled} aria-busy={disabled}>
       <GoogleIcon />
       <span>Googleでログイン</span>
     </button>

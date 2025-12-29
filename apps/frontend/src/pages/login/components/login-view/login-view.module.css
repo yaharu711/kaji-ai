@@ -1,0 +1,104 @@
+.container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 16px;
+  background:
+    radial-gradient(circle at 20% 20%, var(--bg-grad-1), var(--bg-grad-2) 35%),
+    var(--bg-base);
+}
+
+.cardShell {
+  width: min(420px, 100%);
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.loadingContent {
+  padding: 8px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
+  text-align: center;
+}
+
+.spinner {
+  width: 64px;
+  height: 64px;
+  color: var(--color-accent-strong);
+  animation: spin 1.1s linear infinite;
+}
+
+.loadingTexts {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.loadingEyebrow {
+  margin: 0;
+  font-size: 0.9rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-accent-strong);
+  font-weight: 700;
+}
+
+.loadingTitle {
+  margin: 0;
+  font-size: 1.25rem;
+  color: var(--color-text-strong);
+  font-weight: 800;
+}
+
+.loadingDescription {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.header {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.eyebrow {
+  font-size: 0.9rem;
+  color: var(--color-accent-strong);
+  margin: 0;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.title {
+  font-size: 1.75rem;
+  margin: 0;
+  color: var(--color-text-strong);
+  font-weight: 800;
+}
+
+.description {
+  margin: 0 auto;
+  color: var(--color-text-muted);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0turn);
+  }
+  to {
+    transform: rotate(1turn);
+  }
+}
