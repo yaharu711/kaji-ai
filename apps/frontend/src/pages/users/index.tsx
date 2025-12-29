@@ -1,6 +1,6 @@
 import { CircleUser, UserPlus } from "lucide-react";
 import PageCard from "../../components/PageCard";
-import styles from "./index.module.css";
+import styles from "./users.module.css";
 
 function UserPage() {
   // TODO: 認証済みユーザー情報をセッションから取得する
