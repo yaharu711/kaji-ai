@@ -17,6 +17,12 @@ npm run format
 npm run lint
 ```
 
+- 自動修正可能なものは以下で修正できます。
+
+```bash
+npm run lint:fix
+```
+
 ## 2. テスト
 
 バックエンドの API テストを必ず通してください。

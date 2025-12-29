@@ -18,7 +18,8 @@ function ProtectedLayout() {
     return <div>読み込み中...</div>;
   }
 
-  const sessionUser = sessionResult.data?.user as AppSessionUser | undefined;
+  const { user } = sessionResult.data;
+  const sessionUser = user as AppSessionUser | undefined;
 
   if (!sessionUser) {
     // required:true なので基本ここには来ないが、保険としてガード。
