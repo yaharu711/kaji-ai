@@ -67,12 +67,17 @@
   background: linear-gradient(135deg, #fdf2ff, #f8e4ff);
   display: grid;
   place-items: center;
-  font-size: 28px;
-  color: var(--color-text-muted);
   border: 1px solid #e9d5ff;
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.85),
     0 8px 16px rgba(99, 102, 241, 0.18);
+}
+
+.avatarIcon {
+  width: 32px;
+  height: 32px;
+  color: #a855f7;
+  filter: drop-shadow(0 4px 10px rgba(168, 85, 247, 0.24));
 }
 
 .profileText {
@@ -104,9 +109,9 @@
 
 .sectionHeader {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
   margin-bottom: 14px;
 }
 
@@ -116,24 +121,27 @@
   color: var(--color-text-strong);
 }
 
-.ghostButton {
+.createButton {
   display: inline-flex;
   align-items: center;
   gap: 8px;
   border-radius: 999px;
-  padding: 8px 12px;
-  background: #fff1fb;
-  color: var(--color-secondary-text);
-  border: 1px solid var(--color-secondary-border);
-  font-weight: 600;
+  padding: 10px 14px;
+  background: linear-gradient(135deg, #f744a1, #c084fc);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  font-weight: 700;
   cursor: pointer;
-  transition: background-color 0.2s ease, transform 0.12s ease, box-shadow 0.2s ease;
+  box-shadow: var(--shadow-primary);
+  transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.2s ease;
+  justify-content: center;
+  width: 100%;
 }
 
-.ghostButton:hover {
-  background: #ffe6f7;
+.createButton:hover {
   transform: translateY(-1px);
-  box-shadow: 0 8px 18px rgba(252, 231, 243, 0.6);
+  box-shadow: var(--shadow-primary-hover);
+  background: linear-gradient(135deg, var(--color-primary-hover-from), var(--color-primary-hover-to));
 }
 
 .emptyCard {
@@ -186,6 +194,11 @@
   transform: translateY(-1px);
   box-shadow: var(--shadow-primary-hover);
   background: linear-gradient(135deg, var(--color-primary-hover-from), var(--color-primary-hover-to));
+}
+
+.iconSmall {
+  width: 16px;
+  height: 16px;
 }
 
 .footerNote {

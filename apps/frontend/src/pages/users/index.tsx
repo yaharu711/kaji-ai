@@ -1,3 +1,4 @@
+import { CircleUser, UserPlus } from "lucide-react";
 import styles from "./index.module.css";
 
 function UserPage() {
@@ -17,7 +18,7 @@ function UserPage() {
 
         <section className={styles.profileCard}>
           <div className={styles.avatar}>
-            <span aria-hidden>👤</span>
+            <CircleUser aria-hidden className={styles.avatarIcon} />
           </div>
           <div className={styles.profileText}>
             <p className={styles.welcome}>ようこそ、</p>
@@ -28,8 +29,8 @@ function UserPage() {
         <section className={styles.groupsSection} aria-label="グループ一覧">
           <div className={styles.sectionHeader}>
             <h2>あなたのグループ</h2>
-            <button type="button" className={styles.ghostButton}>
-              <span aria-hidden>👥</span>
+            <button type="button" className={styles.createButton}>
+              <UserPlus aria-hidden className={styles.iconSmall} />
               <span>新規作成</span>
             </button>
           </div>
@@ -44,10 +45,6 @@ function UserPage() {
               <br />
               家事を共有しましょう！
             </p>
-            <button type="button" className={styles.primaryButton}>
-              <span aria-hidden>👥</span>
-              <span>最初のグループを作成</span>
-            </button>
           </div>
         </section>
 
