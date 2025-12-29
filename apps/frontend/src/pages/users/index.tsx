@@ -38,7 +38,7 @@ function UserPage() {
                   referrerPolicy="no-referrer"
                 />
               ) : (
-                <CircleUser aria-hidden className={styles.avatarIcon} />
+                <CircleUser aria-label={`${displayName}のアイコン`} className={styles.avatarIcon} />
               )}
             </div>
             <div className={styles.profileText}>
