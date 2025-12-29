@@ -13,15 +13,10 @@
   gap: 18px;
 }
 
-.hero {
+.heroContent {
   display: flex;
   align-items: center;
   gap: 14px;
-  background: var(--color-surface);
-  border: 1px solid #f3d6ea;
-  border-radius: 18px;
-  padding: 18px 20px;
-  box-shadow: 0 18px 40px rgba(236, 72, 153, 0.12);
 }
 
 .heroBadge {
@@ -49,15 +44,10 @@
   color: var(--color-text-strong);
 }
 
-.profileCard {
+.profileContent {
   display: flex;
   align-items: center;
   gap: 14px;
-  background: linear-gradient(135deg, #f7edff, #fff);
-  border: 1px solid #edd9ff;
-  border-radius: 18px;
-  padding: 16px 18px;
-  box-shadow: 0 14px 30px rgba(148, 163, 184, 0.18);
 }
 
 .avatar {
@@ -99,18 +89,15 @@
   color: var(--color-text-strong);
 }
 
-.groupsSection {
-  background: var(--color-surface);
-  border-radius: 18px;
-  border: 1px solid #f2d9ee;
-  padding: 18px 18px 20px;
-  box-shadow: 0 18px 38px rgba(190, 24, 93, 0.1);
+.groupsContent {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .sectionHeader {
   display: flex;
   flex-direction: column;
-  align-items: stretch;
   gap: 10px;
   margin-bottom: 14px;
 }
@@ -133,7 +120,10 @@
   font-weight: 700;
   cursor: pointer;
   box-shadow: var(--shadow-primary);
-  transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.2s ease;
+  transition:
+    transform 0.12s ease,
+    box-shadow 0.12s ease,
+    background 0.2s ease;
   justify-content: center;
   width: 100%;
 }
@@ -141,7 +131,11 @@
 .createButton:hover {
   transform: translateY(-1px);
   box-shadow: var(--shadow-primary-hover);
-  background: linear-gradient(135deg, var(--color-primary-hover-from), var(--color-primary-hover-to));
+  background: linear-gradient(
+    135deg,
+    var(--color-primary-hover-from),
+    var(--color-primary-hover-to)
+  );
 }
 
 .emptyCard {
@@ -187,13 +181,20 @@
   font-weight: 700;
   cursor: pointer;
   box-shadow: var(--shadow-primary);
-  transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.2s ease;
+  transition:
+    transform 0.12s ease,
+    box-shadow 0.12s ease,
+    background 0.2s ease;
 }
 
 .primaryButton:hover {
   transform: translateY(-1px);
   box-shadow: var(--shadow-primary-hover);
-  background: linear-gradient(135deg, var(--color-primary-hover-from), var(--color-primary-hover-to));
+  background: linear-gradient(
+    135deg,
+    var(--color-primary-hover-from),
+    var(--color-primary-hover-to)
+  );
 }
 
 .iconSmall {
@@ -209,20 +210,13 @@
 }
 
 @media (max-width: 480px) {
-  .hero,
-  .profileCard,
-  .groupsSection {
-    padding: 16px;
+  .heroContent {
+    align-items: flex-start;
+    gap: 10px;
   }
 
   .sectionHeader {
-    flex-direction: column;
     align-items: flex-start;
-  }
-
-  .ghostButton {
-    width: 100%;
-    justify-content: center;
   }
 
   .primaryButton {
