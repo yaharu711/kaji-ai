@@ -12,7 +12,7 @@ authConfigManager.setConfig({
   baseUrl: backendOrigin,
   basePath: AUTH_BASE_PATH,
   // 異なるオリジンでもサブドメインなので、csrfトークンが送信されるようにする
-  // csrfトークンはCookienに入っていて、ちゃんとsmae-site: laxになっている
+  // csrfトークンはCookieに入っていて、ちゃんとsmae-site: laxになっている
   credentials: "include",
 });
 
@@ -24,6 +24,10 @@ if (!container) {
 
 createRoot(container).render(
   <StrictMode>
+    {/*
+     * refetchOnWindowFocusがあるおかげで、ずっと同じ画面開きっぱなしでも、フォーカスが戻った時にsession APIをリフェッチしてくれる。
+     * これで、axiosのinterceptorとかで401が返ってきた時の共通処理を実装しなくても一旦大丈夫そう
+     */}
     <SessionProvider refetchOnWindowFocus>
       <App />
     </SessionProvider>
