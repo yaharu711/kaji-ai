@@ -9,6 +9,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "test": "vitest run --passWithNoTests",
+    "typecheck": "tsc --noEmit",
     "preview": "vite preview",
     "storybook": "storybook dev --port 6006",
     "build-storybook": "storybook build"
