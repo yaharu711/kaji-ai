@@ -1,5 +1,5 @@
 import { googleSignIn } from "./lib/googleSignIn";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useSession } from "@hono/auth-js/react";
 import { useLocation, useNavigate } from "react-router-dom";
 import LoginView from "./components/login-view";
@@ -8,14 +8,18 @@ import LoginView from "./components/login-view";
 function LoginPage() {
   const navigate = useNavigate();
   const location = useLocation();
+  const [isSigningIn, setIsSigningIn] = useState(false);
   const { data: session, status } = useSession();
   const userId = (session?.user as { id?: string } | undefined)?.id;
   const from = (location.state as { from?: Location } | null)?.from;
 
   const isAuthChecking = status === "loading";
   const isRedirecting = status === "authenticated" && Boolean(userId);
-  const isLoading = useMemo(() => isAuthChecking || isRedirecting, [isAuthChecking, isRedirecting]);
-  const isBusy = status === "loading" || status === "authenticated";
+  const isLoading = useMemo(
+    () => isAuthChecking || isRedirecting || isSigningIn,
+    [isAuthChecking, isRedirecting, isSigningIn],
+  );
+  const isBusy = status === "loading" || status === "authenticated" || isSigningIn;
 
   useEffect(() => {
     if (status === "authenticated" && userId) {
@@ -32,7 +36,11 @@ function LoginPage() {
         isLoading
         isBusy
         onGoogleLogin={() => {
-          void googleSignIn();
+          setIsSigningIn(true);
+          void googleSignIn().catch((error: unknown) => {
+            console.error(error);
+            setIsSigningIn(false);
+          });
         }}
       />
     );
@@ -43,7 +51,12 @@ function LoginPage() {
       isLoading={false}
       isBusy={isBusy}
       onGoogleLogin={() => {
-        void googleSignIn();
+        if (isSigningIn) return;
+        setIsSigningIn(true);
+        void googleSignIn().catch((error: unknown) => {
+          console.error(error);
+          setIsSigningIn(false);
+        });
       }}
     />
   );
