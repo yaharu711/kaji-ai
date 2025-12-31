@@ -11,9 +11,6 @@
     box-shadow 0.12s ease,
     background-color 0.16s ease,
     opacity 0.12s ease;
-  color: var(--color-surface);
-  background: linear-gradient(135deg, var(--color-primary-from), var(--color-primary-to));
-  box-shadow: var(--shadow-primary);
 }
 
 .button:disabled {
@@ -25,7 +22,6 @@
 
 .button:hover:not(:disabled) {
   transform: translateY(-1px);
-  box-shadow: var(--shadow-primary-hover);
 }
 
 .button:focus-visible {
@@ -93,7 +89,11 @@
 }
 
 .variantPrimary:hover:not(:disabled) {
-  background: linear-gradient(135deg, var(--color-primary-hover-from), var(--color-primary-hover-to));
+  background: linear-gradient(
+    135deg,
+    var(--color-primary-hover-from),
+    var(--color-primary-hover-to)
+  );
   box-shadow: var(--shadow-primary-hover);
 }
 

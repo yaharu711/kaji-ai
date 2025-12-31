@@ -52,9 +52,6 @@ export const Sizes: Story = {
       <Button size="lg">Large</Button>
     </div>
   ),
-  args: {
-    children: "サイズ",
-  },
 };
 
 export const Radius: Story = {
@@ -65,7 +62,12 @@ export const Radius: Story = {
       <Button radius="pill">R: pill</Button>
     </div>
   ),
+};
+
+export const Disabled: Story = {
   args: {
-    children: "Radius",
+    children: "処理中…",
+    variant: "primary",
+    disabled: true,
   },
 };

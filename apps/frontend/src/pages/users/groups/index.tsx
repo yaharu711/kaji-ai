@@ -14,7 +14,7 @@ function GroupsSection() {
             radius="pill"
             size="md"
             fullWidth
-            icon={<UserPlus aria-hidden className={styles.iconSmall} />}
+            icon={<UserPlus aria-hidden size={16} />}
           >
             新規作成
           </Button>
