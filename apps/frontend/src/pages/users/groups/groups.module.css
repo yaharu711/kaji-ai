@@ -76,11 +76,6 @@
   line-height: 1.6;
 }
 
-.iconSmall {
-  width: 16px;
-  height: 16px;
-}
-
 @media (max-width: 480px) {
   .sectionHeader {
     align-items: flex-start;

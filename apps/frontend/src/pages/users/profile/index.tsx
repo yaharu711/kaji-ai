@@ -19,7 +19,6 @@ function ProfileSection({ user }: Props) {
               src={user.image}
               alt={`${displayName}のアイコン`}
               className={styles.avatarImage}
-              loading="lazy"
               referrerPolicy="no-referrer"
             />
           ) : (
