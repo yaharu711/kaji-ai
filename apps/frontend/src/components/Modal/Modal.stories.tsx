@@ -85,4 +85,13 @@ function WithTrigger() {
 
 export const WithTriggerButton: Story = {
   render: () => <WithTrigger />,
+  // コンポーネントの必須propsを満たすためのダミー値（render内で制御するため未使用）
+  args: {
+    open: false,
+    onOpenChange: () => {
+      /* noop (storybook args placeholder) */
+    },
+    title: "",
+    children: null,
+  },
 };
