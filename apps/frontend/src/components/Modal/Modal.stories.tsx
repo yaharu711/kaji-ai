@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
 import Modal from ".";
+import Button from "../Button";
 import "../../theme.css";
 
 const meta = {
@@ -19,24 +20,15 @@ function WithTrigger() {
 
   return (
     <div style={{ padding: 32, display: "flex", gap: 16 }}>
-      <button
-        type="button"
+      <Button
         onClick={() => {
           setOpen(true);
         }}
-        style={{
-          border: "none",
-          borderRadius: 12,
-          padding: "12px 16px",
-          background: "linear-gradient(135deg, var(--color-primary-from), var(--color-primary-to))",
-          color: "#fff",
-          fontWeight: 700,
-          cursor: "pointer",
-          boxShadow: "var(--shadow-primary)",
-        }}
+        radius="lg"
+        size="md"
       >
         モーダルを開く
-      </button>
+      </Button>
 
       <Modal
         open={open}
@@ -44,25 +36,16 @@ function WithTrigger() {
         title="新しいグループを作成 ✨"
         description="トリガーボタンから開く例"
         footer={
-          <button
-            type="button"
-            style={{
-              width: "100%",
-              border: "none",
-              padding: "14px 16px",
-              borderRadius: 12,
-              background:
-                "linear-gradient(135deg, var(--color-primary-from), var(--color-primary-to))",
-              color: "#fff",
-              fontWeight: 700,
-              cursor: "pointer",
-            }}
+          <Button
+            fullWidth
+            size="lg"
+            radius="lg"
             onClick={() => {
               setOpen(false);
             }}
           >
             作成する
-          </button>
+          </Button>
         }
       >
         <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>

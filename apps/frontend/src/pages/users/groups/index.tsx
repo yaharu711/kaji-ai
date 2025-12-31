@@ -1,5 +1,6 @@
 import { UserPlus } from "lucide-react";
 import PageCard from "../../../components/PageCard";
+import Button from "../../../components/Button";
 import styles from "./groups.module.css";
 
 function GroupsSection() {
@@ -8,10 +9,15 @@ function GroupsSection() {
       <div className={styles.groupsContent} aria-label="グループ一覧">
         <div className={styles.sectionHeader}>
           <h2>あなたのグループ</h2>
-          <button type="button" className={styles.createButton}>
-            <UserPlus aria-hidden className={styles.iconSmall} />
-            <span>新規作成</span>
-          </button>
+          <Button
+            variant="primary"
+            radius="pill"
+            size="md"
+            fullWidth
+            icon={<UserPlus aria-hidden className={styles.iconSmall} />}
+          >
+            新規作成
+          </Button>
         </div>
 
         <div className={styles.emptyCard}>
