@@ -28,6 +28,10 @@
   /* 背景からの浮き感を出している */
   --shadow-card: 0 15px 45px rgba(190, 24, 93, 0.12);
   --color-surface: #ffffff;
+  /* ダイアログ専用: 少し強めに沈み込みを出す影（背面オーバーレイ上でも輪郭が保たれるように） */
+  --shadow-dialog: 0 20px 45px rgba(15, 23, 42, 0.18);
+  /* モーダルなどの背面スクリーン色 */
+  --color-overlay-scrim: rgba(15, 23, 42, 0.45);
 
   /* Background */
   --bg-grad-1: #ffe4f3;
