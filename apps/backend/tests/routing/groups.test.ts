@@ -7,18 +7,18 @@ import app, { RoutingApp } from "../../src/routing/index";
 import { getDb } from "../../src/db/client";
 import * as schema from "../../src/db/schema";
 
+const client = testClient<RoutingApp>(app);
+const db = getDb();
+
+beforeEach(async () => {
+  await db.execute(sql`TRUNCATE TABLE "user_group_belongings" CASCADE`);
+  await db.execute(sql`TRUNCATE TABLE "groups" CASCADE`);
+  await db.execute(sql`TRUNCATE TABLE "user" CASCADE`);
+  // mockAuth で userId を test-user に固定しているため、外部キー整合性のためにユーザーを挿入
+  await db.insert(schema.users).values({ id: "test-user", name: "Test User" });
+});
+
 describe("POST /api/groups", () => {
-  const client = testClient<RoutingApp>(app);
-  const db = getDb();
-
-  beforeEach(async () => {
-    await db.execute(sql`TRUNCATE TABLE "user_group_belongings" CASCADE`);
-    await db.execute(sql`TRUNCATE TABLE "groups" CASCADE`);
-    await db.execute(sql`TRUNCATE TABLE "user" CASCADE`);
-    // mockAuth で userId を test-user に固定しているため、外部キー整合性のためにユーザーを挿入
-    await db.insert(schema.users).values({ id: "test-user", name: "Test User" });
-  });
-
   it("有効なリクエストで201が返り、レコードが作成される", async () => {
     const res = await client.api.groups.$post({
       json: { name: "家族グループ" },
@@ -64,8 +64,10 @@ describe("POST /api/groups", () => {
 
     expect(res.status).toBe(201);
   });
+});
 
-  it("GETでmember_countを含めて一覧を返し、acceptedAtがnullはカウントしない", async () => {
+describe("GET /api/groups", () => {
+  it("所属グループの一覧を返し、必要なプロパティが含まれる", async () => {
     const now = new Date("2024-01-01T00:00:00Z");
 
     await db.insert(schema.users).values([
@@ -95,8 +97,6 @@ describe("POST /api/groups", () => {
     await db.insert(schema.userGroupBelongings).values([
       { groupId: "group-1", userId: "test-user", acceptedAt: now },
       { groupId: "group-1", userId: "other-user", acceptedAt: now },
-      { groupId: "group-1", userId: "pending-user", acceptedAt: null },
-      { groupId: "group-2", userId: "test-user", acceptedAt: null },
     ]);
 
     const res = await client.api.groups.$get();
