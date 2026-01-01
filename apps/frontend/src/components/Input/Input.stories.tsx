@@ -63,7 +63,7 @@ export const WithIcons: Story = {
   ),
 };
 
-export const Requite: Story = {
+export const Required: Story = {
   args: {
     label: "氏名",
     placeholder: "例: 山田太郎",

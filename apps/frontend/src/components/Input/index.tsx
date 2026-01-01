@@ -55,8 +55,6 @@ function Input({
     RADIUS_CLASS[radius],
     error ? styles.error : "",
     disabled ? styles.disabled : "",
-    leftIcon ? styles.withLeftIcon : "",
-    rightIcon ? styles.withRightIcon : "",
     fullWidth ? styles.fullWidth : "",
   ]
     .filter(Boolean)
@@ -76,7 +74,7 @@ function Input({
         <input
           id={inputId}
           className={styles.input}
-          aria-invalid={error || undefined}
+          aria-invalid={error}
           aria-describedby={descriptionId}
           disabled={disabled}
           required={required}

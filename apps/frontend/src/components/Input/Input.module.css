@@ -30,13 +30,13 @@
 
 .field:hover:not(.disabled) {
   border-color: var(--color-input-border-strong);
-  background: #fff;
+  background: var(--color-surface);
 }
 
 .field:focus-within {
   border-color: var(--color-input-border-strong);
   box-shadow: var(--shadow-input-focus);
-  background: #fff;
+  background: var(--color-surface);
   transform: translateY(-1px);
 }
 
@@ -72,12 +72,12 @@
 .errorText {
   margin: 0;
   font-size: 13px;
-  color: var(--color-input-error);
+  color: var(--color-input-error-strong);
 }
 
 .error {
   border-color: var(--color-input-error);
-  box-shadow: 0 0 0 2px rgba(225, 29, 72, 0.15);
+  box-shadow: var(--shadow-input-error);
 }
 
 .disabled {
@@ -129,14 +129,6 @@
 
 .radiusPill {
   border-radius: 999px;
-}
-
-.withLeftIcon {
-  padding-left: 12px;
-}
-
-.withRightIcon {
-  padding-right: 12px;
 }
 
 .fullWidth {
