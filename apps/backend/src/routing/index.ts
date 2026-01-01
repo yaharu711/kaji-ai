@@ -6,6 +6,7 @@ import authConfig from "../auth.config";
 import env from "../util/env";
 import hello from "./hello";
 import todos from "./todos";
+import groups from "./groups";
 
 const frontendOrigin = env("FRONTEND_ORIGIN");
 
@@ -28,6 +29,7 @@ const app = new Hono()
   .use("/api/*", verifyAuth())
   .route("/api", hello)
   .route("/api/todos", todos)
+  .route("/api/groups", groups)
   .get("/api/me", (c) => {
     const auth = c.get("authUser");
     if (!auth) {

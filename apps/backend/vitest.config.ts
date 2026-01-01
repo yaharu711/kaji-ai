@@ -16,6 +16,18 @@ if (existsSync(testEnvPath)) {
 export default defineConfig({
   test: {
     include: ["tests/**/*.test.ts"],
+    // DB 共有のためワーカ1つに制限
+    pool: "threads",
+    poolOptions: {
+      threads: {
+        minThreads: 1,
+        maxThreads: 1,
+      },
+    },
+    sequence: {
+      concurrent: false,
+    },
+    // もしNode専用のモジュールを使っていると、テストでは通っているけど番の Vercel Edge（Web 標準のみ・Node API なし）では落ちるリスクがあり
     environment: "node",
   },
 });
