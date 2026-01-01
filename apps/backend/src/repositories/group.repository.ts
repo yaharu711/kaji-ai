@@ -60,7 +60,7 @@ export class GroupRepository {
     return rows.map((row) => ({
       id: row.id,
       name: row.name,
-      image: row.image ?? null,
+      image: row.image,
       memberCount: Number(row.memberCount),
     }));
   }
