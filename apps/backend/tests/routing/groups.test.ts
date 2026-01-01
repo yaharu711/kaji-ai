@@ -12,6 +12,7 @@ describe("POST /api/groups", () => {
   const db = getDb();
 
   beforeEach(async () => {
+    await db.execute(sql`TRUNCATE TABLE "user_group_belongings" CASCADE`);
     await db.execute(sql`TRUNCATE TABLE "groups" CASCADE`);
     await db.execute(sql`TRUNCATE TABLE "user" CASCADE`);
     // mockAuth で userId を test-user に固定しているため、外部キー整合性のためにユーザーを挿入
@@ -62,5 +63,47 @@ describe("POST /api/groups", () => {
     });
 
     expect(res.status).toBe(201);
+  });
+
+  it("GETでmember_countを含めて一覧を返し、acceptedAtがnullはカウントしない", async () => {
+    const now = new Date("2024-01-01T00:00:00Z");
+
+    await db.insert(schema.users).values([
+      { id: "other-user", name: "Other User" },
+      { id: "pending-user", name: "Pending User" },
+    ]);
+
+    await db.insert(schema.groups).values([
+      {
+        id: "group-1",
+        name: "Group One",
+        ownerId: "test-user",
+        image: null,
+        createdAt: now,
+        updatedAt: now,
+      },
+      {
+        id: "group-2",
+        name: "Group Two",
+        ownerId: "test-user",
+        image: null,
+        createdAt: new Date("2024-01-02T00:00:00Z"),
+        updatedAt: new Date("2024-01-02T00:00:00Z"),
+      },
+    ]);
+
+    await db.insert(schema.userGroupBelongings).values([
+      { groupId: "group-1", userId: "test-user", acceptedAt: now },
+      { groupId: "group-1", userId: "other-user", acceptedAt: now },
+      { groupId: "group-1", userId: "pending-user", acceptedAt: null },
+      { groupId: "group-2", userId: "test-user", acceptedAt: null },
+    ]);
+
+    const res = await client.api.groups.$get();
+
+    expect(res.status).toBe(200);
+    expect(await res.json()).toEqual({
+      groups: [{ id: "group-1", name: "Group One", image: null, member_count: 2 }],
+    });
   });
 });
