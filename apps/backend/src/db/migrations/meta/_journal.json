@@ -43,6 +43,13 @@
       "when": 1767246942779,
       "tag": "0005_huge_saracen",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1767248687185,
+      "tag": "0006_flippant_wild_child",
+      "breakpoints": true
     }
   ]
 }

@@ -3,9 +3,9 @@ import { pgTable, primaryKey, text, timestamp } from "drizzle-orm/pg-core";
 import { users } from "./authjs";
 import { groups } from "./groups";
 
-// user_group_beloging: ユーザーの所属と招待状態を保持する中間テーブル
+// user_group_belogings: ユーザーの所属と招待状態を保持する中間テーブル
 export const userGroupBelongings = pgTable(
-  "user_group_beloging",
+  "user_group_belongings",
   {
     groupId: text("group_id")
       .notNull()
