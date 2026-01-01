@@ -1,0 +1,136 @@
+.root {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.label {
+  font-weight: 600;
+  color: var(--color-text-strong);
+  font-size: 14px;
+}
+
+.required {
+  color: var(--color-accent-strong);
+  margin-left: 4px;
+}
+
+.field {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--color-input-bg);
+  border: 1px solid var(--color-input-border);
+  transition:
+    border-color 0.12s ease,
+    box-shadow 0.12s ease,
+    background-color 0.12s ease,
+    transform 0.12s ease;
+}
+
+.field:hover:not(.disabled) {
+  border-color: var(--color-input-border-strong);
+  background: var(--color-surface);
+}
+
+.field:focus-within {
+  border-color: var(--color-input-border-strong);
+  box-shadow: var(--shadow-input-focus);
+  background: var(--color-surface);
+  transform: translateY(-1px);
+}
+
+.input {
+  flex: 1 1 auto;
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 15px;
+  color: var(--color-text-strong);
+  padding: 0;
+  min-width: 0;
+}
+
+.input::placeholder {
+  color: var(--color-input-placeholder);
+}
+
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-input-placeholder);
+  line-height: 0;
+}
+
+.helperText {
+  margin: 0;
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+.errorText {
+  margin: 0;
+  font-size: 13px;
+  color: var(--color-input-error-strong);
+}
+
+.error {
+  border-color: var(--color-input-error);
+  box-shadow: var(--shadow-input-error);
+}
+
+.disabled {
+  background: var(--color-input-bg-disabled);
+  border-color: var(--color-input-border-disabled);
+  color: var(--color-input-text-disabled);
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.disabled .input {
+  color: var(--color-input-text-disabled);
+}
+
+.disabled .input::placeholder {
+  color: var(--color-input-placeholder);
+  opacity: 0.6;
+}
+
+.disabled .icon {
+  color: var(--color-input-text-disabled);
+}
+
+.sizeSm {
+  padding: 10px 12px;
+  border-radius: 10px;
+  font-size: 14px;
+}
+
+.sizeMd {
+  padding: 12px 14px;
+  border-radius: 12px;
+  font-size: 15px;
+}
+
+.sizeLg {
+  padding: 14px 16px;
+  border-radius: 14px;
+  font-size: 16px;
+}
+
+.radiusMd {
+  border-radius: 10px;
+}
+
+.radiusLg {
+  border-radius: 12px;
+}
+
+.radiusPill {
+  border-radius: 999px;
+}
+
+.fullWidth {
+  width: 100%;
+}

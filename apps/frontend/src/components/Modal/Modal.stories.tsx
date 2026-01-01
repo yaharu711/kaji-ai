@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
 import Modal from ".";
 import Button from "../Button";
+import Input from "../Input";
 import "../../theme.css";
 
 const meta = {
@@ -49,17 +50,7 @@ function WithTrigger() {
         }
       >
         <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-          <label style={{ fontWeight: 600 }}>グループ名</label>
-          <input
-            placeholder="例: 田中家"
-            style={{
-              borderRadius: 12,
-              border: "1px solid #cbd5e1",
-              padding: "12px 14px",
-              fontSize: 15,
-              background: "#f8fafc",
-            }}
-          />
+          <Input label="グループ名" placeholder="例: 田中家" fullWidth />
         </div>
       </Modal>
     </div>
