@@ -8,28 +8,46 @@ import { GroupRepository } from "../../src/repositories/group.repository";
 
 type Database = NeonHttpDatabase<typeof schema>;
 
-describe("GroupRepository", () => {
-  let db: Database;
-  let repository: GroupRepository;
+let db: Database;
+let repository: GroupRepository;
 
-  const truncateTables = async () => {
-    await db.execute(sql`TRUNCATE TABLE "groups" CASCADE`);
-    await db.execute(sql`TRUNCATE TABLE "user" CASCADE`);
-  };
+const truncateTables = async () => {
+  await db.execute(sql`TRUNCATE TABLE "user_group_belongings" CASCADE`);
+  await db.execute(sql`TRUNCATE TABLE "groups" CASCADE`);
+  await db.execute(sql`TRUNCATE TABLE "user" CASCADE`);
+};
 
-  const insertOwner = async (id: string) => {
-    await db.insert(schema.users).values({ id, name: "Owner" });
-  };
+const insertOwner = async (id: string) => {
+  await db.insert(schema.users).values({ id, name: "Owner" });
+};
 
-  beforeAll(() => {
-    db = getDb();
-    repository = new GroupRepository(db);
+const createGroup = async (params: {
+  id: string;
+  name: string;
+  ownerId: string;
+  image: string | null;
+  date: Date;
+}) => {
+  await repository.create({
+    id: params.id,
+    name: params.name,
+    ownerId: params.ownerId,
+    image: params.image,
+    createdAt: params.date,
+    updatedAt: params.date,
   });
+};
 
-  beforeEach(async () => {
-    await truncateTables();
-  });
+beforeAll(() => {
+  db = getDb();
+  repository = new GroupRepository(db);
+});
 
+beforeEach(async () => {
+  await truncateTables();
+});
+
+describe("create", () => {
   it("グループを作成できること", async () => {
     const ownerId = "owner-1";
     await insertOwner(ownerId);
@@ -75,5 +93,89 @@ describe("GroupRepository", () => {
     expect(groups[0].image).toBe("https://example.com/image.png");
     expect(groups[0].createdAt).toEqual(fixedDate);
     expect(groups[0].updatedAt).toEqual(fixedDate);
+  });
+});
+
+describe("findAllWithMemberCount", () => {
+  it("承諾済みのみをカウントし、作成日時昇順で返す", async () => {
+    // グループのオーナーを作成
+    await insertOwner("owner-1");
+    const date1 = new Date("2024-01-01T00:00:00Z");
+    const date2 = new Date("2024-01-02T00:00:00Z");
+
+    // メンバーを作成
+    await db.insert(schema.users).values([
+      { id: "member-1", name: "Member 1" },
+      { id: "member-2", name: "Member 2" },
+      { id: "pending", name: "Pending" },
+    ]);
+
+    // グループ作成
+    await repository.create({
+      id: "group-1",
+      name: "Group1",
+      ownerId: "owner-1",
+      image: null,
+      createdAt: date1,
+      updatedAt: date1,
+    });
+    await repository.create({
+      id: "group-2",
+      name: "Group2",
+      ownerId: "owner-1",
+      image: "img",
+      createdAt: date2,
+      updatedAt: date2,
+    });
+
+    // メンバーシップを作成、一部承諾済み、一部未承諾
+    await db.insert(schema.userGroupBelongings).values([
+      { groupId: "group-1", userId: "owner-1", acceptedAt: date1 },
+      { groupId: "group-1", userId: "member-1", acceptedAt: date1 },
+      { groupId: "group-1", userId: "pending", acceptedAt: null },
+      { groupId: "group-2", userId: "member-2", acceptedAt: null },
+    ]);
+
+    const result = await repository.findAllWithMemberCount("owner-1");
+
+    expect(result).toEqual([{ id: "group-1", name: "Group1", image: null, memberCount: 2 }]);
+  });
+
+  it("ユーザーが所属する複数グループをすべて返す", async () => {
+    await insertOwner("owner-1");
+    await db.insert(schema.users).values([{ id: "member-1", name: "Member 1" }]);
+
+    const date1 = new Date("2024-01-01T00:00:00Z");
+    const date2 = new Date("2024-01-02T00:00:00Z");
+
+    await repository.create({
+      id: "group-a",
+      name: "GroupA",
+      ownerId: "owner-1",
+      image: null,
+      createdAt: date1,
+      updatedAt: date1,
+    });
+    await repository.create({
+      id: "group-b",
+      name: "GroupB",
+      ownerId: "owner-1",
+      image: null,
+      createdAt: date2,
+      updatedAt: date2,
+    });
+
+    await db.insert(schema.userGroupBelongings).values([
+      { groupId: "group-a", userId: "owner-1", acceptedAt: date1 },
+      { groupId: "group-a", userId: "member-1", acceptedAt: date1 },
+      { groupId: "group-b", userId: "owner-1", acceptedAt: date2 },
+    ]);
+
+    const result = await repository.findAllWithMemberCount("owner-1");
+
+    expect(result).toEqual([
+      { id: "group-a", name: "GroupA", image: null, memberCount: 2 },
+      { id: "group-b", name: "GroupB", image: null, memberCount: 1 },
+    ]);
   });
 });
