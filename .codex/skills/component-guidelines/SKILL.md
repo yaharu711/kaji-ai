@@ -5,7 +5,7 @@ description: 汎用UIコンポーネント(Button/Modalなど)を新規追加・
 
 # コンポーネント作成ガイド (概要)
 
-このスキルは `docs/component-guidelines.md` のチェックリストを参照して、汎用コンポーネントを一貫したデザインで実装するための手順を提供する。
+このスキルは `references/component-guidelines.md` のチェックリストを参照して、汎用コンポーネントを一貫したデザインで実装するための手順を提供する。
 
 ## 使い方
 1. `docs/component-guidelines.md` を開き、チェックリストを順に確認する。
@@ -16,7 +16,7 @@ description: 汎用UIコンポーネント(Button/Modalなど)を新規追加・
 6. 実装後は必ず `npm run lint` を実行（AGENTS.md での約束事項）。
 
 ## 参照
-- プロジェクト内: `docs/component-guidelines.md`
+- スキル内: `references/component-guidelines.md`
 - テーマトークン: `apps/frontend/src/theme.css`
 
 ## メモ
