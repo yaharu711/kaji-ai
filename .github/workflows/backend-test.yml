@@ -25,7 +25,7 @@ jobs:
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: |
-          cat <<EOF > apps/backend/.env.test
+          cat <<'EOF' > apps/backend/.env.test
           DATABASE_URL=${DATABASE_URL}
           EOF
 
@@ -41,6 +41,5 @@ jobs:
       - name: Type check
         run: npm run typecheck --workspace apps/backend
 
-      # kaiji-ai/apps/backend/vitest.config.tsで.env.testを参照しているため、DBもテスト環境で実行されるようになっている
       - name: Run backend tests
         run: npm run test --workspace apps/backend
