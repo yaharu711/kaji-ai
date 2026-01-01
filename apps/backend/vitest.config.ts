@@ -13,6 +13,8 @@ if (existsSync(testEnvPath)) {
   throw new Error(".env.test が見つかりません。テスト実行前に作成してください。");
 }
 
+console.log("vitest" + process.env.DATABASE_URL);
+
 export default defineConfig({
   test: {
     include: ["tests/**/*.test.ts"],
