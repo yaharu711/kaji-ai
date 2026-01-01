@@ -54,4 +54,13 @@ describe("POST /api/groups", () => {
       ],
     });
   });
+
+  it("name が100文字であれば201を返す", async () => {
+    const longName = "あ".repeat(100);
+    const res = await client.api.groups.$post({
+      json: { name: longName },
+    });
+
+    expect(res.status).toBe(201);
+  });
 });

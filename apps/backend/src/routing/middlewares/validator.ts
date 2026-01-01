@@ -7,7 +7,7 @@ import { unprocessableEntitySchema } from "../schemas/responses/common";
  * 共通の zod バリデーションミドルウェア
  * - 422 Unprocessable Entity でフィールドごとのエラーを返す
  */
-export const validateJson = (schema: ZodType) =>
+export const validateJson = <T extends ZodType>(schema: T) =>
   zValidator("json", schema, (result, c) => {
     if (!result.success) {
       const errors = result.error.issues.map((issue) => ({

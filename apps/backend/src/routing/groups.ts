@@ -8,9 +8,10 @@ import { createGroupSuccessSchema } from "./schemas/responses/createGroupRespons
 import { validateJson } from "./middlewares/validator";
 
 const groupRepository = new GroupRepository(getDb());
-const now = new Date();
 
 const app = new Hono().post("/", validateJson(createGroupRequestSchema), async (c) => {
+  const now = new Date();
+
   const { name } = c.req.valid("json");
   const auth = c.get("authUser");
 
