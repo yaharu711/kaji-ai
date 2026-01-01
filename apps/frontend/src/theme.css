@@ -4,6 +4,19 @@
   /* 補足文や説明文など主文より一段トーンを落としたテキストに使う色 */
   --color-text-muted: #475569;
 
+  /* Form controls */
+  /* Inputの基調色と境界線。既存の淡いグレーを踏襲して背景を少し浮かせる */
+  --color-input-bg: #f8fafc;
+  --color-input-bg-disabled: #f1f5f9;
+  --color-input-border: #cbd5e1;
+  --color-input-border-strong: #94a3b8;
+  /* disabled時は境界線を明るくして入力不可を明示する */
+  --color-input-border-disabled: #e2e8f0;
+  --color-input-placeholder: #94a3b8;
+  --color-input-text-disabled: #94a3b8;
+  --color-input-error: #e11d48;
+  --shadow-input-focus: 0 0 0 3px rgba(236, 72, 153, 0.18);
+
   /* Accent / primary */
   --color-accent: #ec4899;
   /* アクセントの濃い色 (a11y用) */
