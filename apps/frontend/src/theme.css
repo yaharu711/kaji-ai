@@ -13,8 +13,9 @@
   /* disabled時は境界線を明るくして入力不可を明示する */
   --color-input-border-disabled: #e2e8f0;
   --color-input-placeholder: #94a3b8;
+  /* エラーテキストはコントラスト確保のため少し濃い色を使用 */
+  --color-input-error: #b91c1c;
   --color-input-text-disabled: #94a3b8;
-  --color-input-error: #e11d48;
   --shadow-input-focus: 0 0 0 3px rgba(236, 72, 153, 0.18);
 
   /* Accent / primary */
