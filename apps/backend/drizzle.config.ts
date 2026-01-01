@@ -4,6 +4,8 @@ import { existsSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
+// このファイルでマイグレーション生成や適用を行う際に、.env や .env.test の内容を読み込むための処理
+
 const currentDir = dirname(fileURLToPath(import.meta.url));
 const envPath = resolve(currentDir, ".env");
 const envTestPath = resolve(currentDir, ".env.test");
