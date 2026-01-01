@@ -16,6 +16,7 @@ if (existsSync(testEnvPath)) {
 export default defineConfig({
   test: {
     include: ["tests/**/*.test.ts"],
+    // もしNode専用のモジュールを使っていると、テストでは通っているけど番の Vercel Edge（Web 標準のみ・Node API なし）では落ちるリスクがあり
     environment: "node",
   },
 });
