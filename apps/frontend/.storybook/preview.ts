@@ -1,6 +1,10 @@
 import type { Preview } from "@storybook/react-vite";
+import { initialize, mswLoader } from "msw-storybook-addon";
 import "../src/theme.css";
 import "../src/index.css";
+
+// MSWをStorybook全体で有効化
+initialize({ onUnhandledRequest: "bypass" });
 
 const preview: Preview = {
   parameters: {
@@ -18,6 +22,7 @@ const preview: Preview = {
       test: "error",
     },
   },
+  loaders: [mswLoader],
 };
 
 export default preview;
