@@ -8,7 +8,7 @@ import styles from "./groups.module.css";
 function GroupsSection() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const handleSubmit = (name: string) => {
+  const handleSubmit = () => {
     // TODO: グループ作成APIと接続
     setIsModalOpen(false);
   };
@@ -24,7 +24,9 @@ function GroupsSection() {
             size="md"
             fullWidth
             icon={<UserPlus aria-hidden size={16} />}
-            onClick={() => setIsModalOpen(true)}
+            onClick={() => {
+              setIsModalOpen(true);
+            }}
           >
             新規作成
           </Button>

@@ -1,4 +1,4 @@
-import { useState, type ChangeEventHandler } from "react";
+import { useState, type ChangeEventHandler, type FormEventHandler, useId } from "react";
 import Modal from "../../../../components/Modal";
 import Input from "../../../../components/Input";
 import Button from "../../../../components/Button";
@@ -18,6 +18,7 @@ function GroupCreateModal({
   isSubmitting = false,
 }: GroupCreateModalProps) {
   const [groupName, setGroupName] = useState("");
+  const formId = useId();
 
   const handleChange: ChangeEventHandler<HTMLInputElement> = (event) => {
     setGroupName(event.target.value);
@@ -30,7 +31,8 @@ function GroupCreateModal({
     onOpenChange(nextOpen);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit: FormEventHandler<HTMLFormElement> = (event) => {
+    event.preventDefault();
     if (!groupName.trim()) return;
     onSubmit(groupName.trim());
     setGroupName("");
@@ -44,19 +46,12 @@ function GroupCreateModal({
       onOpenChange={handleOpenChange}
       title="新しいグループを作成 ✨"
       footer={
-        <Button
-          fullWidth
-          radius="pill"
-          size="lg"
-          type="button"
-          onClick={handleSubmit}
-          disabled={isDisabled}
-        >
+        <Button form={formId} fullWidth radius="pill" size="lg" type="submit" disabled={isDisabled}>
           作成する
         </Button>
       }
     >
-      <div className={styles.modalContent}>
+      <form id={formId} onSubmit={handleSubmit} className={styles.modalContent}>
         <Input
           label="グループ名"
           placeholder="例: 田中家"
@@ -66,7 +61,7 @@ function GroupCreateModal({
           onChange={handleChange}
           disabled={isSubmitting}
         />
-      </div>
+      </form>
     </Modal>
   );
 }
