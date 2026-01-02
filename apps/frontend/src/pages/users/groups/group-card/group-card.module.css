@@ -1,0 +1,134 @@
+.card {
+  border-radius: 18px;
+  background: linear-gradient(180deg, rgba(255, 232, 246, 0.85), rgba(255, 249, 253, 0.92));
+  border: 1px solid var(--color-card-border);
+  box-shadow: var(--shadow-card);
+  padding: 16px 18px 14px;
+  display: grid;
+  gap: 12px;
+}
+
+.cardHeader {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 12px;
+  align-items: center;
+  width: 100%;
+  text-align: left;
+  border: none;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  border-radius: 12px;
+  transition: background-color 0.12s ease, transform 0.12s ease;
+}
+
+.cardHeader:hover {
+  background: rgba(236, 72, 153, 0.05);
+  transform: translateY(-1px);
+}
+
+.cardHeader:focus-visible {
+  outline: 3px solid rgba(236, 72, 153, 0.28);
+  outline-offset: 2px;
+}
+
+.avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #ffe6ff, #f3e0ff, #d9c5ff);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-avatar);
+  overflow: hidden;
+}
+
+.avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.avatarEmoji {
+  font-size: 28px;
+  line-height: 1;
+}
+
+.meta {
+  display: grid;
+  gap: 4px;
+}
+
+.name {
+  margin: 0;
+  font-weight: 800;
+  font-size: 17px;
+  color: var(--color-text-strong);
+}
+
+.member {
+  margin: 0;
+  font-size: 14px;
+  color: var(--color-text-muted);
+}
+
+.arrowIcon {
+  color: var(--color-accent);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.divider {
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(236, 72, 153, 0.25) 25%,
+    rgba(236, 72, 153, 0.35) 50%,
+    rgba(236, 72, 153, 0.25) 75%,
+    rgba(255, 255, 255, 0) 100%
+  );
+}
+
+.inviteButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: 14px;
+  padding: 11px 14px;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid var(--color-secondary-border);
+  color: var(--color-accent);
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    transform 0.12s ease,
+    box-shadow 0.12s ease,
+    background-color 0.12s ease,
+    border-color 0.12s ease;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 6px 16px rgba(236, 72, 153, 0.12);
+}
+
+.inviteButton:hover {
+  transform: translateY(-1px);
+  background: #ffffff;
+  border-color: var(--color-accent);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.95), 0 8px 18px rgba(236, 72, 153, 0.18);
+}
+
+.inviteButton:focus-visible,
+.cardHeader:focus-visible {
+  outline: 3px solid rgba(236, 72, 153, 0.28);
+  outline-offset: 2px;
+}
+
+.inviteLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+}
