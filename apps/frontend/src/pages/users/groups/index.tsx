@@ -1,9 +1,18 @@
+import { useState } from "react";
 import { UserPlus } from "lucide-react";
 import PageCard from "../../../components/PageCard";
 import Button from "../../../components/Button";
+import GroupCreateModal from "./group-create-modal";
 import styles from "./groups.module.css";
 
 function GroupsSection() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleSubmit = (name: string) => {
+    // TODO: グループ作成APIと接続
+    setIsModalOpen(false);
+  };
+
   return (
     <PageCard>
       <div className={styles.groupsContent} aria-label="グループ一覧">
@@ -15,6 +24,7 @@ function GroupsSection() {
             size="md"
             fullWidth
             icon={<UserPlus aria-hidden size={16} />}
+            onClick={() => setIsModalOpen(true)}
           >
             新規作成
           </Button>
@@ -31,6 +41,12 @@ function GroupsSection() {
             家事を共有しましょう！
           </p>
         </div>
+
+        <GroupCreateModal
+          open={isModalOpen}
+          onOpenChange={setIsModalOpen}
+          onSubmit={handleSubmit}
+        />
       </div>
     </PageCard>
   );
