@@ -8,6 +8,7 @@
     "dev": "tsx watch ./src/entry.local.ts",
     "build": "tsc -p tsconfig.json",
     "build:types": "tsc -p tsconfig.types.json",
+    "prepare": "npm run build:types",
     "start": "tsx ./src/entry.local.ts",
     "migration:gen": "drizzle-kit generate --config ./drizzle.config.ts",
     "migrate": "drizzle-kit migrate --config ./drizzle.config.ts",
