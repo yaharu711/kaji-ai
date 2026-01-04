@@ -2,6 +2,8 @@ import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useSession } from "@hono/auth-js/react";
 import type { AppSessionUser } from "@kaiji-ai/backend/contracts";
 import { SessionUserProvider } from "../../contexts/SessionUserContext";
+import { LoaderCircle } from "../../components";
+import styles from "./protected-layout.module.css";
 
 function ProtectedLayout() {
   const navigate = useNavigate();
@@ -15,7 +17,11 @@ function ProtectedLayout() {
   });
 
   if (sessionResult.status === "loading") {
-    return <div>読み込み中...</div>;
+    return (
+      <div className={styles.loadingContainer}>
+        <LoaderCircle size="lg" ariaLabel="セッションを確認中" />
+      </div>
+    );
   }
 
   const { user } = sessionResult.data;

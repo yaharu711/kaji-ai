@@ -1,7 +1,6 @@
 import styles from "./login-view.module.css";
-import { LoaderCircle } from "lucide-react";
 import GoogleLoginButton from "../google-login-button";
-import PageCard from "../../../../components/PageCard";
+import { LoaderCircle, PageCard } from "../../../../components";
 
 interface LoginViewProps {
   isLoading: boolean;
@@ -16,7 +15,7 @@ function LoginView({ isLoading, isBusy, onGoogleLogin }: LoginViewProps) {
         <div className={styles.cardShell}>
           <PageCard align="center">
             <div className={styles.loadingContent} aria-busy>
-              <LoaderCircle className={styles.spinner} aria-hidden />
+              <LoaderCircle size="lg" />
               <div className={styles.loadingTexts}>
                 <p className={styles.loadingEyebrow}>しばらくお待ちください</p>
                 <p className={styles.loadingTitle}>ログイン処理を実行中です</p>
