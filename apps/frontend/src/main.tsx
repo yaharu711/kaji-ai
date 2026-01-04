@@ -1,12 +1,20 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { SessionProvider, authConfigManager } from "@hono/auth-js/react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "./theme.css";
 import "./index.css";
 import App from "./App.tsx";
 
 const AUTH_BASE_PATH = "/api/auth";
 const backendOrigin = import.meta.env.VITE_BACKEND_ORIGIN.trim();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 authConfigManager.setConfig({
   baseUrl: backendOrigin,
@@ -29,7 +37,9 @@ createRoot(container).render(
      * これで、axiosのinterceptorとかで401が返ってきた時の共通処理を実装しなくても一旦大丈夫そう
      */}
     <SessionProvider refetchOnWindowFocus>
-      <App />
+      <QueryClientProvider client={queryClient}>
+        <App />
+      </QueryClientProvider>
     </SessionProvider>
   </StrictMode>,
 );

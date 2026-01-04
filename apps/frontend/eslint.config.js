@@ -44,7 +44,7 @@ export default defineConfig([
   ...sharedConfig,
   ...typeAwareConfigs,
   ...storybook.configs["flat/recommended"],
-  globalIgnores(["dist"]),
+  globalIgnores(["dist", "public/mockServiceWorker.js"]),
   {
     files: ["**/*.{ts,tsx}"],
     plugins: {

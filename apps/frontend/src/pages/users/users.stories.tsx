@@ -1,12 +1,35 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { http, HttpResponse } from "msw";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import type { GetGroupsResponse } from "../../../../backend/src/routing/schemas/responses/getGroupsResponse";
 import type { AppSessionUser } from "../../../../backend/src/types/auth";
 import { SessionUserProvider } from "../../contexts/SessionUserContext";
 import UserPage from ".";
+
+const mockGroupsResponse: GetGroupsResponse = {
+  groups: [
+    { id: "group-1", name: "永井家", image: null, member_count: 1 },
+    { id: "group-2", name: "浅井家", image: null, member_count: 3 },
+    {
+      id: "group-3",
+      name: "シェアハウス桜",
+      image:
+        "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=200&h=200&q=80",
+      member_count: 5,
+    },
+  ],
+};
 
 const meta = {
   component: UserPage,
   parameters: {
     layout: "fullscreen",
+    msw: {
+      handlers: [
+        // 相対/絶対どちらのパスでも拾えるように正規表現で指定
+        http.get(/\/api\/groups$/, () => HttpResponse.json(mockGroupsResponse)),
+      ],
+    },
   },
   argTypes: {
     // Storybook の Controls パネルに出さず、UI から変更させないため control:false を設定。
@@ -14,11 +37,22 @@ const meta = {
     user: { control: false },
   },
   decorators: [
-    (Story, context) => (
-      <SessionUserProvider value={context.args.user}>
-        <Story />
-      </SessionUserProvider>
-    ),
+    (Story, context) => {
+      const queryClient = new QueryClient({
+        defaultOptions: {
+          queries: {
+            refetchOnWindowFocus: false,
+          },
+        },
+      });
+      return (
+        <SessionUserProvider value={context.args.user}>
+          <QueryClientProvider client={queryClient}>
+            <Story />
+          </QueryClientProvider>
+        </SessionUserProvider>
+      );
+    },
   ],
   render: () => <UserPage />,
 } satisfies Meta<{ user: AppSessionUser }>;
