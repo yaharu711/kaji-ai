@@ -1,4 +1,4 @@
-import type { GetGroupsResponse } from "../../../../backend/src/routing/schemas/responses/getGroupsResponse";
+import type { GetGroupsResponse } from "@kaiji-ai/backend/contracts";
 import { honoClient } from "../client";
 
 const groupsApi = honoClient.api.groups;

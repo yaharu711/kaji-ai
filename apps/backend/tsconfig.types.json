@@ -11,5 +11,5 @@
     "strict": true,
     "verbatimModuleSyntax": true
   },
-  "include": ["src/types/app-routes.ts"]
+  "include": ["src/types/*.ts"]
 }
