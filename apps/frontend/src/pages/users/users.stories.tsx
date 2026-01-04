@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { http, HttpResponse } from "msw";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import type { GetGroupsResponse } from "../../../../backend/src/routing/schemas/responses/getGroupsResponse";
-import type { AppSessionUser } from "../../../../backend/src/types/auth";
+import type { AppSessionUser } from "@kaiji-ai/backend/contracts";
 import { SessionUserProvider } from "../../contexts/SessionUserContext";
 import UserPage from ".";
 
