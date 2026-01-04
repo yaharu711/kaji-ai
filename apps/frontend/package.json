@@ -26,7 +26,7 @@
     "react-router-dom": "^7.11.0"
   },
   "devDependencies": {
-    "@kaiji-ai/backend": "workspace:*",
+    "@kaiji-ai/backend": "file:../backend",
     "@eslint/js": "^9.39.1",
     "@storybook/addon-a11y": "^10.1.10",
     "@storybook/addon-docs": "^10.1.10",
