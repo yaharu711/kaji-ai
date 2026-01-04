@@ -1,0 +1,28 @@
+.spinner {
+  color: var(--color-accent-strong);
+  animation: spinner-rotate 1.1s linear infinite;
+}
+
+.sizeSm {
+  width: 32px;
+  height: 32px;
+}
+
+.sizeMd {
+  width: 48px;
+  height: 48px;
+}
+
+.sizeLg {
+  width: 64px;
+  height: 64px;
+}
+
+@keyframes spinner-rotate {
+  from {
+    transform: rotate(0turn);
+  }
+  to {
+    transform: rotate(1turn);
+  }
+}

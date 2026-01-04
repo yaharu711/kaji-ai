@@ -6,6 +6,7 @@ import { useGroupsQuery } from "../hooks/useGroupsQuery";
 import GroupCreateModal from "./group-create-modal";
 import GroupCard from "./group-card";
 import styles from "./groups.module.css";
+import { LoaderCircle } from "../../../components";
 
 function GroupsSection() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -20,7 +21,12 @@ function GroupsSection() {
   const hasGroups = groups.length > 0;
 
   const renderContent = () => {
-    if (isLoading) return <p className={styles.helperText}>読み込み中です…</p>;
+    if (isLoading)
+      return (
+        <div className={styles.loadingWrapper}>
+          <LoaderCircle size="md" ariaLabel="グループを読み込み中" />
+        </div>
+      );
     if (isError) return <p className={styles.helperText}>グループの取得に失敗しました</p>;
     if (!hasGroups)
       return (
