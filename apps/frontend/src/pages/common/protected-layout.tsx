@@ -1,6 +1,6 @@
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useSession } from "@hono/auth-js/react";
-import type { AppSessionUser } from "../../../../backend/src/types/auth";
+import type { AppSessionUser } from "@kaiji-ai/backend/contracts";
 import { SessionUserProvider } from "../../contexts/SessionUserContext";
 
 function ProtectedLayout() {

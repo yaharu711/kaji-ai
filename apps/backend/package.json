@@ -36,6 +36,10 @@
     "./app-routes": {
       "types": "./dist/types/types/app-routes.d.ts",
       "import": "./dist/types/types/app-routes.d.ts"
+    },
+    "./contracts": {
+      "types": "./dist/types/types/contracts.d.ts",
+      "import": "./dist/types/types/contracts.d.ts"
     }
   },
   "types": "./dist/types/types/app-routes.d.ts",

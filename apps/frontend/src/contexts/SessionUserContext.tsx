@@ -1,5 +1,5 @@
 import { createContext, useContext } from "react";
-import type { AppSessionUser } from "../../../backend/src/types/auth";
+import type { AppSessionUser } from "@kaiji-ai/backend/contracts";
 
 const SessionUserContext = createContext<AppSessionUser | null>(null);
 

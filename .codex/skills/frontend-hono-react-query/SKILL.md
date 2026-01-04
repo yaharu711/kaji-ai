@@ -9,6 +9,7 @@ description: kaiji-aiフロントエンドでHonoのhcクライアントとTanSt
 - フロントで新しいAPIモジュールや取得系フックを追加するとき（hc + useQuery）
 - APIクライアントを共通化したいとき（credentials: include などの設定を一元化）
 - Storybook/MSWでモックしつつCORSを避けたいとき
+- バックエンドの型（AppRoutes / DTO / AppSessionUser）をフロントから参照したいとき
 
 ## ディレクトリ構成パターン
 - `src/api/client.ts` … hcクライアントを1か所に集約。`backendOrigin`は `VITE_BACKEND_ORIGIN?.trim() ?? ""` で、未設定なら相対パス→MSWが捕捉しやすい。`fetch`は`credentials: "include"`をデフォルト付与。
@@ -33,6 +34,39 @@ description: kaiji-aiフロントエンドでHonoのhcクライアントとTanSt
 ## Lintで躓かないために
 - ESLint設定の `globalIgnores` に `public/mockServiceWorker.js` を入れる（TypeScriptパーサが複数tsconfigを検出する問題を回避）。
 - StorybookのStoryは `@storybook/react-vite` から型をimport（`@storybook/react`直 import はlint違反）。
+
+## バックエンド型をフロントで安全に使う手順（契約ファイル一本化）
+**なぜ @kaiji-ai/backend パッケージ経由にするのか**  
+- モノレポ内の相対import（例: `../../backend/src/...`）だと、実装ソースを辿って Drizzle などバックエンド依存まで読み込まれ、フロントビルドが失敗することがある。  
+- パッケージの exports で「型だけ」を公開し、`emitDeclarationOnly` した .d.ts を参照させることで、余計な依存をフロントに引き込まずに型補完を維持できる。  
+- `file:../backend` + `prepare` で型生成を自動化すると、CI/Vercelでも型が常に揃う。
+
+**なぜ barrel を使うのか**  
+- リクエスト/レスポンス型が増えるたびに複数ファイルへ import 先を追加する手間と漏れを防ぐため。  
+- `schemas/{requests,responses}/index.ts` → `schemas/index.ts` → `types/contracts.ts` の1本に集約することで、追加時は barrel に1行足すだけで全利用箇所へ行き渡る。
+
+1. **バックエンドで型用エントリを分離**
+   - `src/types/app-routes.ts` … `export type AppRoutes = typeof app;`（ルート用）
+   - `src/routing/schemas/{requests,responses}/index.ts` を barrel 化。
+   - `src/types/contracts.ts` … `export * from "../routing/schemas"; export type { AppSessionUser } from "./auth";`
+2. **型だけを出力する tsconfig を用意**
+   - `tsconfig.types.json`: `emitDeclarationOnly: true`, `outDir: "dist/types"`, `include: ["src/types/*.ts"]`
+3. **package.json の exports で型を公開**
+   ```json
+   "exports": {
+     ".": "./dist/entry.edge.js",
+     "./app-routes": { "types": "./dist/types/types/app-routes.d.ts", "import": "./dist/types/types/app-routes.d.ts" },
+     "./contracts": { "types": "./dist/types/types/contracts.d.ts", "import": "./dist/types/types/contracts.d.ts" }
+   },
+   "types": "./dist/types/types/app-routes.d.ts",
+   "scripts": { "build:types": "tsc -p tsconfig.types.json", "prepare": "npm run build:types" }
+   ```
+   - `prepare` により依存インストール時に型が自動生成される（CI/Vercel対応）。
+4. **フロントでの import 例**
+   - `hc` の型: `import type { AppRoutes } from "@kaiji-ai/backend/app-routes";`
+   - DTO/ユーザー型: `import type { GetGroupsResponse, AppSessionUser } from "@kaiji-ai/backend/contracts";`
+5. **CI/デプロイ**
+   - 通常は追加の前処理不要（`prepare` が型生成を担保）。`prepare` を無効化する場合のみ、フロントビルド前に `npm --workspace apps/backend run build:types` を挟む。
 
 ## 実装手順まとめ（最短ルート）
 1. `src/api/client.ts` を用意し、hcクライアント＋`credentials: "include"`を共通化。
