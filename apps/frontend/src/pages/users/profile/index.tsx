@@ -1,7 +1,6 @@
 import { CircleUser } from "lucide-react";
 import PageCard from "../../../components/PageCard";
 import styles from "./profile.module.css";
-// TODO: backend/package.jsonのexports経由で型をインポートするように統一する
 import type { AppSessionUser } from "@kaiji-ai/backend/contracts";
 
 interface Props {

@@ -20,7 +20,6 @@ const app = new Hono()
     }
 
     const groups = await groupRepository.findAllWithMemberCount(userId);
-    console.log("Fetched groups:", groups, userId);
 
     const response = getGroupsSuccessSchema.parse({
       groups: groups.map((group) => ({
