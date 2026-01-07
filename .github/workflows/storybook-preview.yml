@@ -44,7 +44,7 @@ jobs:
         run: npm ci
 
       - name: Build Storybook
-        run: npm --workspace apps/frontend run build-storybook
+        run: npm run build-storybook --workspace apps/frontend
 
       - name: Prepare preview bundle
         env:
