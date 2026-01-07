@@ -1,14 +1,12 @@
 import { alias } from "drizzle-orm/pg-core";
 import { and, asc, count, eq, isNotNull } from "drizzle-orm";
-import type { NeonHttpDatabase } from "drizzle-orm/neon-http";
 
 import type { GroupModel } from "../models/group";
 import type { GroupWithMemberCountDto } from "../dtos/group";
 import * as schema from "../db/schema";
 import type { GroupRecord } from "../db/schema";
 import type { NewUserGroupBelongingRecord } from "../db/schemas/userGroupBelongings";
-
-type Database = NeonHttpDatabase<typeof schema>;
+import type { Database } from "../db/client";
 
 export class GroupRepository {
   constructor(private readonly db: Database) {}

@@ -8,7 +8,8 @@ import { createGroupSuccessSchema } from "./schemas/responses/createGroupRespons
 import { getGroupsSuccessSchema } from "./schemas/responses/getGroupsResponse";
 import { validateJson } from "./middlewares/validator";
 
-const groupRepository = new GroupRepository(getDb());
+const db = getDb();
+const groupRepository = new GroupRepository(db);
 
 const app = new Hono()
   .get("/", async (c) => {
@@ -45,13 +46,22 @@ const app = new Hono()
       return c.json(body, 401);
     }
 
-    await groupRepository.create({
-      id: crypto.randomUUID(),
+    const groupId = crypto.randomUUID();
+    const group = {
+      id: groupId,
       name,
       ownerId: userId,
       image: null,
       createdAt: now,
       updatedAt: now,
+    };
+
+    await db.transaction(async (tx) => {
+      const repository = new GroupRepository(tx);
+
+      await repository.create(group);
+      // 作成者を所属済みとして登録
+      await repository.addBelonging(group);
     });
 
     // POST 成功のみを伝える。ステータスを明示したレスポンスを返す。
