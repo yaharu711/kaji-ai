@@ -36,6 +36,10 @@ export class GroupRepository {
     await this.db.insert(schema.userGroupBelongings).values(record);
   }
 
+  async deleteById(id: string): Promise<void> {
+    await this.db.delete(schema.groups).where(eq(schema.groups.id, id));
+  }
+
   async findAllWithMemberCount(userId: string): Promise<GroupWithMemberCountDto[]> {
     const countedBelongings = alias(schema.userGroupBelongings, "counted_belongings");
 

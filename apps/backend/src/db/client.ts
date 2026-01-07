@@ -1,20 +1,14 @@
 import { neon, neonConfig } from "@neondatabase/serverless";
-import { drizzle, type NeonHttpDatabase, type NeonTransaction } from "drizzle-orm/neon-http";
-import type { TablesRelationalConfig } from "drizzle-orm";
+import { drizzle, type NeonHttpDatabase } from "drizzle-orm/neon-http";
 import * as schema from "./schema";
 
 let singleton: NeonHttpDatabase<typeof schema> | null = null;
 
 /**
  * Repository で共通して使う DB 型。
- * - トランザクション内では `NeonTransaction` が渡されるため DB と Tx の union にする。
- * - `NeonTransaction` の第2型引数は `TablesRelationalConfig` を要求するが、
- *   リレーション定義を持っていなくても `TablesRelationalConfig` を指定しないと
- *   `typeof schema` では制約に合わず型エラーになるため、この形を採用している。
+ * neon-http はトランザクション非対応なので、単一の `NeonHttpDatabase` のみを扱う。
  */
-export type Database =
-  | NeonHttpDatabase<typeof schema>
-  | NeonTransaction<typeof schema, TablesRelationalConfig>;
+export type Database = NeonHttpDatabase<typeof schema>;
 
 const createDbClient = (): NeonHttpDatabase<typeof schema> => {
   const databaseUrl = process.env.DATABASE_URL;

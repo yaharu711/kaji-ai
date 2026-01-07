@@ -56,13 +56,20 @@ const app = new Hono()
       updatedAt: now,
     };
 
-    await db.transaction(async (tx) => {
-      const repository = new GroupRepository(tx);
+    const repository = new GroupRepository(db);
 
+    try {
       await repository.create(group);
       // 作成者を所属済みとして登録
       await repository.addBelonging(group);
-    });
+    } catch (error) {
+      // neon-http ドライバはトランザクション非対応のため、失敗時は手動で作成済みグループを削除して整合性を保つ
+      await repository.deleteById(group.id).catch(() => {
+        // 二次的な削除失敗はログだけにとどめる（ここでは throw せず元のエラーを優先）
+        console.error("Failed to rollback group creation", group.id);
+      });
+      throw error;
+    }
 
     // POST 成功のみを伝える。ステータスを明示したレスポンスを返す。
     const response = createGroupSuccessSchema.parse({ status: 201 });
