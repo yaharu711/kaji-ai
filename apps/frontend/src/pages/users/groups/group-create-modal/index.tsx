@@ -18,27 +18,43 @@ function GroupCreateModal({
   isSubmitting = false,
 }: GroupCreateModalProps) {
   const [groupName, setGroupName] = useState("");
+  const [errorText, setErrorText] = useState("");
   const formId = useId();
+  const MAX_LENGTH = 100;
 
   const handleChange: ChangeEventHandler<HTMLInputElement> = (event) => {
-    setGroupName(event.target.value);
+    const nextValue = event.target.value;
+    setGroupName(nextValue);
+
+    if (nextValue.trim().length <= MAX_LENGTH && errorText) {
+      setErrorText("");
+    }
   };
 
   const handleOpenChange = (nextOpen: boolean) => {
     if (!nextOpen) {
       setGroupName("");
+      setErrorText("");
     }
     onOpenChange(nextOpen);
   };
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault();
-    if (!groupName.trim()) return;
-    onSubmit(groupName.trim());
+    const trimmedName = groupName.trim();
+    if (!trimmedName) return;
+
+    if (trimmedName.length > MAX_LENGTH) {
+      setErrorText("グループ名は100文字以内で入力してください");
+      return;
+    }
+
+    onSubmit(trimmedName);
     setGroupName("");
+    setErrorText("");
   };
 
-  const isDisabled = isSubmitting || !groupName.trim();
+  const isDisabled = isSubmitting || !groupName.trim() || Boolean(errorText);
 
   return (
     <Modal
@@ -60,6 +76,8 @@ function GroupCreateModal({
           value={groupName}
           onChange={handleChange}
           disabled={isSubmitting}
+          error={Boolean(errorText)}
+          errorText={errorText}
         />
       </form>
     </Modal>
