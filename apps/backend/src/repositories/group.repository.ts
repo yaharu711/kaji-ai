@@ -1,13 +1,11 @@
 import { alias } from "drizzle-orm/pg-core";
 import { and, asc, count, eq, isNotNull } from "drizzle-orm";
-import type { NeonHttpDatabase } from "drizzle-orm/neon-http";
 
 import type { GroupModel } from "../models/group";
-import type { GroupWithMemberCountDto } from "../dtos/group";
+import type { BelongingDto, GroupWithMemberCountDto } from "../dtos/group";
 import * as schema from "../db/schema";
 import type { GroupRecord } from "../db/schema";
-
-type Database = NeonHttpDatabase<typeof schema>;
+import type { Database } from "../db/client";
 
 export class GroupRepository {
   constructor(private readonly db: Database) {}
@@ -24,6 +22,14 @@ export class GroupRepository {
       createdAt: group.createdAt,
       updatedAt: group.updatedAt,
     });
+  }
+
+  async addBelonging(params: BelongingDto): Promise<void> {
+    await this.db.insert(schema.userGroupBelongings).values(params);
+  }
+
+  async deleteById(id: string): Promise<void> {
+    await this.db.delete(schema.groups).where(eq(schema.groups.id, id));
   }
 
   async findAllWithMemberCount(userId: string): Promise<GroupWithMemberCountDto[]> {

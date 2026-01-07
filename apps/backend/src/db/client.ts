@@ -4,6 +4,12 @@ import * as schema from "./schema";
 
 let singleton: NeonHttpDatabase<typeof schema> | null = null;
 
+/**
+ * Repository で共通して使う DB 型。
+ * neon-http はトランザクション非対応なので、単一の `NeonHttpDatabase` のみを扱う。
+ */
+export type Database = NeonHttpDatabase<typeof schema>;
+
 const createDbClient = (): NeonHttpDatabase<typeof schema> => {
   const databaseUrl = process.env.DATABASE_URL;
   if (!databaseUrl) {

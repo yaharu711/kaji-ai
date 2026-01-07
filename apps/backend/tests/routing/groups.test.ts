@@ -19,7 +19,7 @@ beforeEach(async () => {
 });
 
 describe("POST /api/groups", () => {
-  it("有効なリクエストで201が返り、レコードが作成される", async () => {
+  it("有効なリクエストで201が返り、グループが作成されオーナーの所属情報も作成される", async () => {
     const res = await client.api.groups.$post({
       json: { name: "家族グループ" },
     });
@@ -34,8 +34,13 @@ describe("POST /api/groups", () => {
       ownerId: "test-user",
       image: null,
     });
-    expect(rows[0].createdAt).toBeInstanceOf(Date);
-    expect(rows[0].updatedAt).toBeInstanceOf(Date);
+    // 所属情報も作成されていることを確認
+    const belongings = await db.select().from(schema.userGroupBelongings);
+    expect(belongings).toHaveLength(1);
+    expect(belongings[0]).toMatchObject({
+      groupId: rows[0].id,
+      userId: "test-user",
+    });
   });
 
   it("name が101文字であれば422を返す", async () => {

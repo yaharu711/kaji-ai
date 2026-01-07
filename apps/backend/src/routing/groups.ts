@@ -8,7 +8,8 @@ import { createGroupSuccessSchema } from "./schemas/responses/createGroupRespons
 import { getGroupsSuccessSchema } from "./schemas/responses/getGroupsResponse";
 import { validateJson } from "./middlewares/validator";
 
-const groupRepository = new GroupRepository(getDb());
+const db = getDb();
+const groupRepository = new GroupRepository(db);
 
 const app = new Hono()
   .get("/", async (c) => {
@@ -45,14 +46,30 @@ const app = new Hono()
       return c.json(body, 401);
     }
 
-    await groupRepository.create({
-      id: crypto.randomUUID(),
+    const groupId = crypto.randomUUID();
+    const group = {
+      id: groupId,
       name,
       ownerId: userId,
       image: null,
       createdAt: now,
       updatedAt: now,
-    });
+    };
+    // 作成者なので所属済みとして登録するためのデータ
+    const beloging = { groupId, userId, createdAt: now, acceptedAt: now };
+
+    try {
+      await groupRepository.create(group);
+      // 作成者を所属済みとして登録
+      await groupRepository.addBelonging(beloging);
+    } catch (error) {
+      // neon-http ドライバはトランザクション非対応のため、失敗時は手動で作成済みグループを削除して整合性を保つ
+      await groupRepository.deleteById(group.id).catch(() => {
+        // 二次的な削除失敗はログだけにとどめる（ここでは throw せず元のエラーを優先）
+        console.error("Failed to rollback group creation", group.id);
+      });
+      throw error;
+    }
 
     // POST 成功のみを伝える。ステータスを明示したレスポンスを返す。
     const response = createGroupSuccessSchema.parse({ status: 201 });

@@ -21,23 +21,6 @@ const insertOwner = async (id: string) => {
   await db.insert(schema.users).values({ id, name: "Owner" });
 };
 
-const createGroup = async (params: {
-  id: string;
-  name: string;
-  ownerId: string;
-  image: string | null;
-  date: Date;
-}) => {
-  await repository.create({
-    id: params.id,
-    name: params.name,
-    ownerId: params.ownerId,
-    image: params.image,
-    createdAt: params.date,
-    updatedAt: params.date,
-  });
-};
-
 beforeAll(() => {
   db = getDb();
   repository = new GroupRepository(db);
@@ -93,6 +76,46 @@ describe("create", () => {
     expect(groups[0].image).toBe("https://example.com/image.png");
     expect(groups[0].createdAt).toEqual(fixedDate);
     expect(groups[0].updatedAt).toEqual(fixedDate);
+  });
+});
+
+describe("addBelonging", () => {
+  const ownerId = "owner-1";
+  const groupId = "group-1";
+
+  beforeEach(async () => {
+    await insertOwner(ownerId);
+    const fixedDate = new Date("2024-12-31T00:00:00Z");
+
+    await repository.create({
+      id: groupId,
+      name: "Test Group",
+      ownerId,
+      image: null,
+      createdAt: fixedDate,
+      updatedAt: fixedDate,
+    });
+  });
+
+  it("ユーザー（所有者）とグループの紐付けを作成できること", async () => {
+    const createdAt = new Date("2025-01-01T00:00:00Z");
+
+    await repository.addBelonging({
+      groupId,
+      userId: ownerId,
+      createdAt,
+      acceptedAt: createdAt,
+    });
+
+    const belongings = await db.select().from(schema.userGroupBelongings);
+    expect(belongings).toHaveLength(1);
+    expect(belongings[0]).toMatchObject({
+      groupId,
+      userId: ownerId,
+      createdAt,
+      acceptedAt: createdAt,
+    });
+    expect(belongings[0].createdAt).toEqual(createdAt);
   });
 });
 
