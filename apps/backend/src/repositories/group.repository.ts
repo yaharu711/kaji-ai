@@ -2,7 +2,7 @@ import { alias } from "drizzle-orm/pg-core";
 import { and, asc, count, eq, isNotNull } from "drizzle-orm";
 
 import type { GroupModel } from "../models/group";
-import type { GroupWithMemberCountDto } from "../dtos/group";
+import type { BelogingDto, GroupWithMemberCountDto } from "../dtos/group";
 import * as schema from "../db/schema";
 import type { GroupRecord } from "../db/schema";
 import type { NewUserGroupBelongingRecord } from "../db/schemas/userGroupBelongings";
@@ -25,12 +25,12 @@ export class GroupRepository {
     });
   }
 
-  async addBelonging(group: GroupModel): Promise<void> {
+  async addBelonging(params: BelogingDto): Promise<void> {
     const record: NewUserGroupBelongingRecord = {
-      groupId: group.id,
-      userId: group.ownerId,
-      createdAt: group.createdAt,
-      acceptedAt: null,
+      groupId: params.groupId,
+      userId: params.userId,
+      createdAt: params.createdAt,
+      acceptedAt: params.acceptedAt,
     };
 
     await this.db.insert(schema.userGroupBelongings).values(record);

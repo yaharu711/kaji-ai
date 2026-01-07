@@ -101,12 +101,10 @@ describe("addBelonging", () => {
     const createdAt = new Date("2025-01-01T00:00:00Z");
 
     await repository.addBelonging({
-      id: groupId,
-      ownerId,
-      image: null,
-      name: "Test Group",
+      groupId,
+      userId: ownerId,
       createdAt,
-      updatedAt: createdAt,
+      acceptedAt: createdAt,
     });
 
     const belongings = await db.select().from(schema.userGroupBelongings);
@@ -115,7 +113,7 @@ describe("addBelonging", () => {
       groupId,
       userId: ownerId,
       createdAt,
-      acceptedAt: null,
+      acceptedAt: createdAt,
     });
     expect(belongings[0].createdAt).toEqual(createdAt);
   });
