@@ -83,7 +83,9 @@ function GroupsSection() {
         <GroupCreateModal
           open={isModalOpen}
           onOpenChange={setIsModalOpen}
-          onSubmit={handleSubmit}
+          onSubmit={(name) => {
+            void handleSubmit(name);
+          }}
           isSubmitting={isCreating}
         />
       </div>

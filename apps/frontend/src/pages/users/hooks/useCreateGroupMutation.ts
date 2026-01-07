@@ -8,8 +8,8 @@ export const useCreateGroupMutation = () => {
 
   return useMutation({
     mutationFn: (name: string) => createGroup({ name }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: GROUPS_QUERY_KEY });
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: GROUPS_QUERY_KEY });
     },
   });
 };
