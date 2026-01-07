@@ -115,3 +115,14 @@ export const WithSmallImage: Story = {
     user: mockUserWithSmallImage,
   },
 };
+
+export const NoGroups: Story = {
+  args: {
+    user: mockUserWithoutImage,
+  },
+  parameters: {
+    msw: {
+      handlers: [http.get(/\/api\/groups$/, () => HttpResponse.json({ groups: [] }))],
+    },
+  },
+};

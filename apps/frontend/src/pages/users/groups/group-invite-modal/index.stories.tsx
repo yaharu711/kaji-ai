@@ -1,6 +1,14 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import GroupInviteModal from ".";
 
+const noopOpenChange = (open: boolean) => {
+  void open;
+};
+
+const noopSearch = (keyword: string) => {
+  void keyword;
+};
+
 const meta = {
   component: GroupInviteModal,
   parameters: {
@@ -9,8 +17,8 @@ const meta = {
   args: {
     open: true,
     groupName: "永井家",
-    onOpenChange: () => {},
-    onSearch: () => {},
+    onOpenChange: noopOpenChange,
+    onSearch: noopSearch,
   },
 } satisfies Meta<typeof GroupInviteModal>;
 

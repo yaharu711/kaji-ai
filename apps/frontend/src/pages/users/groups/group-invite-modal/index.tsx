@@ -55,7 +55,9 @@ function GroupInviteModal({
           placeholder="kaji-enjoy@thankyou.com"
           value={keyword}
           label="メールアドレス"
-          onChange={(e) => setKeyword(e.target.value)}
+          onChange={(e) => {
+            setKeyword(e.target.value);
+          }}
           disabled={isSearching}
         />
         <Button
