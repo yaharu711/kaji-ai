@@ -38,4 +38,4 @@ jobs:
         run: npx playwright install --with-deps chromium
 
       - name: Run frontend tests (unit + storybook)
-        run: npm --workspace apps/frontend run test
+        run: npm run test --workspace apps/frontend
