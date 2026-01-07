@@ -5,7 +5,7 @@ export type GroupWithMemberCountDto = {
   memberCount: number;
 };
 
-export type BelogingDto = {
+export type BelongingDto = {
   groupId: string;
   userId: string;
   createdAt: Date;
