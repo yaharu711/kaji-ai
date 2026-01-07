@@ -6,6 +6,7 @@ import type { GroupModel } from "../models/group";
 import type { GroupWithMemberCountDto } from "../dtos/group";
 import * as schema from "../db/schema";
 import type { GroupRecord } from "../db/schema";
+import type { NewUserGroupBelongingRecord } from "../db/schemas/userGroupBelongings";
 
 type Database = NeonHttpDatabase<typeof schema>;
 
@@ -24,6 +25,17 @@ export class GroupRepository {
       createdAt: group.createdAt,
       updatedAt: group.updatedAt,
     });
+  }
+
+  async addBelonging(group: GroupModel): Promise<void> {
+    const record: NewUserGroupBelongingRecord = {
+      groupId: group.id,
+      userId: group.ownerId,
+      createdAt: group.createdAt,
+      acceptedAt: null,
+    };
+
+    await this.db.insert(schema.userGroupBelongings).values(record);
   }
 
   async findAllWithMemberCount(userId: string): Promise<GroupWithMemberCountDto[]> {
