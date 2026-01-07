@@ -3,6 +3,7 @@ import { UserPlus } from "lucide-react";
 import PageCard from "../../../components/PageCard";
 import Button from "../../../components/Button";
 import { useGroupsQuery } from "../hooks/useGroupsQuery";
+import { useCreateGroupMutation } from "../hooks/useCreateGroupMutation";
 import GroupCreateModal from "./group-create-modal";
 import GroupCard from "./group-card";
 import styles from "./groups.module.css";
@@ -11,10 +12,16 @@ import { LoaderCircle } from "../../../components";
 function GroupsSection() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { data, isLoading, isError } = useGroupsQuery();
+  const { mutateAsync: createGroup, isPending: isCreating } = useCreateGroupMutation();
 
-  const handleSubmit = () => {
-    // TODO: グループ作成APIと接続
-    setIsModalOpen(false);
+  const handleSubmit = async (groupName: string) => {
+    try {
+      await createGroup(groupName);
+      setIsModalOpen(false);
+    } catch (error) {
+      // TODO: UI でのエラーハンドリングを検討する
+      console.error(error);
+    }
   };
 
   const groups = data?.groups ?? [];
@@ -77,6 +84,7 @@ function GroupsSection() {
           open={isModalOpen}
           onOpenChange={setIsModalOpen}
           onSubmit={handleSubmit}
+          isSubmitting={isCreating}
         />
       </div>
     </PageCard>
