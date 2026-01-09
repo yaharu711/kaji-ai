@@ -16,6 +16,12 @@
   place-items: center;
 }
 
+.emptyContainer {
+  width: 100%;
+  display: grid;
+  place-items: center;
+}
+
 .emptyState {
   display: grid;
   gap: 10px;

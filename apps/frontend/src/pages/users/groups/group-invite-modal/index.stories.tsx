@@ -31,17 +31,26 @@ export const Empty: Story = {};
 export const Searching: Story = {
   args: {
     isSearching: true,
-    results: <p style={{ margin: 0 }}>検索中...</p>,
   },
 };
 
 export const WithResults: Story = {
   args: {
-    results: (
-      <div style={{ display: "grid", gap: 8 }}>
-        <div>永井 太郎 (nagai@example.com)</div>
-        <div>永井 花子 (hanako@example.com)</div>
-      </div>
-    ),
+    searchResults: [
+      { id: "1", name: "佐藤 太郎", email: "sato@example.com" },
+      { id: "2", name: "田中 花子", email: "hanako@example.com" },
+    ],
+    onInvite: (user) => {
+      console.log("invite", user);
+    },
+  },
+};
+
+export const AlreadyJoined: Story = {
+  args: {
+    searchResults: [
+      { id: "1", name: "佐藤 太郎", email: "sato@example.com", status: "joined" },
+      { id: "2", name: "田中 花子", email: "hanako@example.com" },
+    ],
   },
 };

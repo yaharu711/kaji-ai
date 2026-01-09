@@ -17,6 +17,12 @@ export const Default: Story = {
     memberCount: 1,
     invitedCount: 0,
     imageUrl: undefined,
+    onInviteClick: () => {
+      console.log("invite click");
+    },
+    onOpenClick: () => {
+      console.log("open click");
+    },
   },
 };
 
@@ -27,5 +33,11 @@ export const WithImage: Story = {
     invitedCount: 1,
     imageUrl:
       "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=facearea&w=200&h=200&q=80",
+    onInviteClick: () => {
+      console.log("invite click");
+    },
+    onOpenClick: () => {
+      console.log("open click");
+    },
   },
 };
