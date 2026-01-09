@@ -116,6 +116,7 @@ describe("GET /api/groups", () => {
           image: null,
           member_count: 2,
           invited_count: 1,
+          is_invited: false,
         },
       ],
     });

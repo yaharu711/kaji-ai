@@ -4,6 +4,7 @@ export type GroupWithMemberCountDto = {
   image: string | null;
   memberCount: number;
   invitedCount: number;
+  isInvited: boolean;
 };
 
 export type BelongingDto = {

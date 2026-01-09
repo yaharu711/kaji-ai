@@ -6,6 +6,7 @@ export const groupSchema = z.object({
   image: z.string().nullable(),
   member_count: z.number(),
   invited_count: z.number(),
+  is_invited: z.boolean(),
 });
 
 export const getGroupsSuccessSchema = z.object({

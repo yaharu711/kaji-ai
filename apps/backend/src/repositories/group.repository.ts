@@ -42,6 +42,8 @@ export class GroupRepository {
         image: schema.groups.image,
         memberCount: sql<number>`count(*) filter (where ${countedBelongings.acceptedAt} is not null)`,
         invitedCount: sql<number>`count(*) filter (where ${countedBelongings.acceptedAt} is null)`,
+        // innerJoin で絞った「本人の所属レコード」が未承諾かどうかを集計（1件想定だが bool_or で安全に）
+        isInvited: sql<boolean>`bool_or(${schema.userGroupBelongings.acceptedAt} is null)`,
       })
       .from(schema.groups)
       // ユーザーが所属(承諾済み)しているグループに絞り込み
@@ -63,6 +65,7 @@ export class GroupRepository {
       image: row.image,
       memberCount: Number(row.memberCount),
       invitedCount: Number(row.invitedCount),
+      isInvited: row.isInvited,
     }));
   }
 
