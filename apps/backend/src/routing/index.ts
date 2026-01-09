@@ -7,7 +7,6 @@ import env from "../util/env";
 import groups from "./groups";
 
 const frontendOrigin = env("FRONTEND_ORIGIN");
-
 const app = new Hono()
   .use(
     "*",

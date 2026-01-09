@@ -2,14 +2,18 @@ import { Hono } from "hono";
 
 import { getDb } from "../db/client";
 import { GroupRepository } from "../repositories/group.repository";
+import { UserRepository } from "../repositories/user.repository";
 import { createGroupRequestSchema } from "./schemas/requests/createGroupRequest";
+import { searchUsersRequestSchema } from "./schemas/requests";
 import { unauthorizedSchema } from "./schemas/responses/common";
 import { createGroupSuccessSchema } from "./schemas/responses/createGroupResponse";
 import { getGroupsSuccessSchema } from "./schemas/responses/getGroupsResponse";
-import { validateJson } from "./middlewares/validator";
+import { searchUsersSuccessSchema } from "./schemas/responses/searchUsersResponse";
+import { validateJson, validateQuery } from "./middlewares/validator";
 
 const db = getDb();
 const groupRepository = new GroupRepository(db);
+const userRepository = new UserRepository(db);
 
 const app = new Hono()
   .get("/", async (c) => {
@@ -34,6 +38,40 @@ const app = new Hono()
     });
 
     return c.json(response, 200);
+  })
+  .get("/:groupId/search/users", validateQuery(searchUsersRequestSchema), async (c) => {
+    const auth = c.get("authUser");
+    if (!auth?.session?.user?.id) {
+      const body = unauthorizedSchema.parse({ status: 401, message: "Unauthorized" });
+      return c.json(body, 401);
+    }
+
+    const { email } = c.req.valid("query");
+    const { groupId } = c.req.param();
+
+    const user = await userRepository.findByEmail(email);
+    if (!user) {
+      const body = searchUsersSuccessSchema.parse({ users: [] });
+      return c.json(body, 200);
+    }
+
+    const belongings = await groupRepository.findUsersByGroupId(groupId);
+    const belonging = belongings.find((member) => member.id === user.id);
+    const isInvited = belonging ? belonging.acceptedAt === null : false;
+
+    const body = searchUsersSuccessSchema.parse({
+      users: [
+        {
+          id: user.id,
+          name: user.name ?? null,
+          email: user.email ?? null,
+          image_url: user.image ?? null,
+          is_invited: isInvited,
+        },
+      ],
+    });
+
+    return c.json(body, 200);
   })
   .post("/", validateJson(createGroupRequestSchema), async (c) => {
     const now = new Date();
