@@ -7,11 +7,15 @@ import { useCreateGroupMutation } from "../hooks/useCreateGroupMutation";
 import GroupCreateModal from "./group-create-modal";
 import GroupCard from "./group-card";
 import GroupInviteCard from "./invite-card";
+import GroupInviteModal, { type UserSearchResult } from "./group-invite-modal";
 import styles from "./groups.module.css";
 import { LoaderCircle } from "../../../components";
 
 function GroupsSection() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [inviteModalGroup, setInviteModalGroup] = useState<string | null>(null);
+  const [searchResults, setSearchResults] = useState<UserSearchResult[] | undefined>(undefined);
+  const [isSearching, setIsSearching] = useState(false);
   const { data, isLoading, isError } = useGroupsQuery();
   const { mutateAsync: createGroup, isPending: isCreating } = useCreateGroupMutation();
 
@@ -29,6 +33,23 @@ function GroupsSection() {
   const invitedGroups = groups.filter((group) => group.is_invited);
   const joinedGroups = groups.filter((group) => !group.is_invited);
   const hasJoinedGroups = joinedGroups.length > 0;
+
+  const handleInviteClick = (groupName: string) => {
+    setInviteModalGroup(groupName);
+    setSearchResults(undefined);
+  };
+
+  const closeInviteModal = () => {
+    setInviteModalGroup(null);
+  };
+
+  const handleSearch = (keyword: string) => {
+    // TODO: API 連携時に検索結果を取得する
+    setIsSearching(true);
+    setSearchResults([]);
+    setIsSearching(false);
+    console.info("search keyword:", keyword);
+  };
 
   const renderContent = () => {
     if (isLoading)
@@ -69,6 +90,8 @@ function GroupsSection() {
             name={group.name}
             memberCount={group.member_count}
             invitedCount={group.invited_count}
+            onInviteClick={() => handleInviteClick(group.name)}
+            onOpenClick={() => handleInviteClick(group.name)}
           />
         ))}
       </div>
@@ -105,6 +128,17 @@ function GroupsSection() {
           isSubmitting={isCreating}
         />
       </section>
+
+      <GroupInviteModal
+        open={Boolean(inviteModalGroup)}
+        onOpenChange={(open) => {
+          if (!open) closeInviteModal();
+        }}
+        groupName={inviteModalGroup ?? ""}
+        onSearch={handleSearch}
+        isSearching={isSearching}
+        searchResults={searchResults}
+      />
     </PageCard>
   );
 }

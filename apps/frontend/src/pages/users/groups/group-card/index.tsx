@@ -7,8 +7,8 @@ interface GroupCardProps {
   memberCount: number;
   invitedCount: number;
   imageUrl?: string | null;
-  onInviteClick?: () => void;
-  onOpenClick?: () => void;
+  onInviteClick: () => void;
+  onOpenClick: () => void;
 }
 
 function GroupCard({
@@ -19,20 +19,12 @@ function GroupCard({
   onInviteClick,
   onOpenClick,
 }: GroupCardProps) {
-  const handleInvite = () => {
-    onInviteClick?.();
-  };
-
-  const handleOpen = () => {
-    onOpenClick?.();
-  };
-
   return (
     <div className={styles.card} aria-label={`${name} のグループカード`}>
       <button
         type="button"
         className={styles.cardHeader}
-        onClick={handleOpen}
+        onClick={onOpenClick}
         aria-label={`${name}の詳細へ`}
       >
         <div className={styles.avatar} aria-hidden="true">
@@ -54,7 +46,7 @@ function GroupCard({
 
       <div className={styles.divider} aria-hidden="true" />
 
-      <button type="button" className={styles.inviteButton} onClick={handleInvite}>
+      <button type="button" className={styles.inviteButton} onClick={onInviteClick}>
         <span className={styles.inviteLabel}>
           <Mail size={18} strokeWidth={2.2} />
           メンバーを招待
