@@ -6,6 +6,7 @@ import type {
   UnprocessableEntityResponse,
 } from "@kaiji-ai/backend/contracts";
 import { honoClient } from "../client";
+import { ApiError } from "../errors";
 
 const groupsApi = honoClient.api.groups;
 
@@ -37,11 +38,11 @@ export const searchGroupUsers = async ({
       .map((error) => error.message)
       .filter(Boolean)
       .join(" / ");
-    throw new Error(message || "入力内容を確認してください");
+    throw new ApiError(422, message || "入力内容を確認してください");
   }
 
   if (!res.ok) {
-    throw new Error("ユーザー検索に失敗しました");
+    throw new ApiError(res.status, "ユーザー検索に失敗しました");
   }
 
   return res.json();

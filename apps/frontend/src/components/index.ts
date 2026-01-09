@@ -4,3 +4,6 @@ export { default as Button } from "./Button";
 export { default as Input } from "./Input";
 export { default as LoaderCircle } from "./LoaderCircle";
 export { default as LinkButton } from "./LinkButton";
+export { default as ErrorModal } from "./ErrorModal";
+export { default as ErrorModalProvider } from "./ErrorModalProvider";
+export { useErrorModal } from "./ErrorModalProvider/useErrorModal";
