@@ -120,3 +120,15 @@
   background: rgba(15, 23, 42, 0.05);
   transform: translateY(-1px);
 }
+
+.variantOutline {
+  background: var(--color-surface);
+  color: var(--color-text-strong);
+  border-color: var(--color-primary-to);
+  box-shadow: var(--shadow-card);
+}
+
+.variantOutline:hover:not(:disabled) {
+  border-color: var(--color-primary-hover-to);
+  transform: translateY(-1px);
+}
