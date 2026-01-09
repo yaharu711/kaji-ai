@@ -66,9 +66,9 @@ function GroupsSection() {
 
   return (
     <PageCard>
-      <div className={styles.groupsContent} aria-label="グループ一覧">
+      <section className={styles.groupsContent} aria-labelledby="groups-heading">
         <div className={styles.sectionHeader}>
-          <h2>あなたのグループ</h2>
+          <h2 id="groups-heading">あなたのグループ</h2>
           <Button
             variant="primary"
             radius="pill"
@@ -93,7 +93,7 @@ function GroupsSection() {
           }}
           isSubmitting={isCreating}
         />
-      </div>
+      </section>
     </PageCard>
   );
 }

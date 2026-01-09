@@ -4,7 +4,7 @@ import styles from "./hero.module.css";
 function HeroSection() {
   return (
     <PageCard>
-      <div className={styles.heroContent}>
+      <section className={styles.heroContent} aria-labelledby="hero-heading">
         <div className={styles.heroBadge} aria-hidden="true">
           <img
             src="https://kaji-ai.s3.ap-northeast-1.amazonaws.com/favicon.svg"
@@ -12,10 +12,12 @@ function HeroSection() {
           />
         </div>
         <div>
-          <h1 className={styles.heroTitle}>カジアイ</h1>
+          <h1 id="hero-heading" className={styles.heroTitle}>
+            カジアイ
+          </h1>
           <p className={styles.heroEyebrow}>あなたのダッシュボード</p>
         </div>
-      </div>
+      </section>
     </PageCard>
   );
 }
