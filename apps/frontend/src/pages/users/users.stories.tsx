@@ -7,8 +7,22 @@ import UserPage from ".";
 
 const mockGroupsResponse: GetGroupsResponse = {
   groups: [
-    { id: "group-1", name: "永井家", image: null, member_count: 1, invited_count: 0 },
-    { id: "group-2", name: "浅井家", image: null, member_count: 3, invited_count: 1 },
+    {
+      id: "group-1",
+      name: "永井家",
+      image: null,
+      member_count: 1,
+      invited_count: 0,
+      is_invited: false,
+    },
+    {
+      id: "group-2",
+      name: "浅井家",
+      image: null,
+      member_count: 3,
+      invited_count: 1,
+      is_invited: false,
+    },
     {
       id: "group-3",
       name: "シェアハウス桜",
@@ -16,6 +30,7 @@ const mockGroupsResponse: GetGroupsResponse = {
         "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=200&h=200&q=80",
       member_count: 5,
       invited_count: 2,
+      is_invited: false,
     },
   ],
 };
