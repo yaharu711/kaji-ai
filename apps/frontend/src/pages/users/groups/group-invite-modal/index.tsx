@@ -1,8 +1,9 @@
 import { Search } from "lucide-react";
-import { useId, useState, type FormEventHandler, type ReactNode } from "react";
+import { useId, useState, type FormEventHandler } from "react";
 import Button from "../../../../components/Button";
 import Input from "../../../../components/Input";
 import Modal from "../../../../components/Modal";
+import SearchResultList from "./search-result-list";
 import styles from "./group-invite-modal.module.css";
 
 interface GroupInviteModalProps {
@@ -11,7 +12,16 @@ interface GroupInviteModalProps {
   groupName: string;
   onSearch: (keyword: string) => void;
   isSearching?: boolean;
-  results?: ReactNode;
+  searchResults?: UserSearchResult[];
+  onInvite?: (user: UserSearchResult) => void;
+  invitingUserId?: string;
+}
+
+export interface UserSearchResult {
+  id: string;
+  name: string;
+  email: string;
+  status?: "available" | "joined" | "invited";
 }
 
 function GroupInviteModal({
@@ -20,7 +30,9 @@ function GroupInviteModal({
   groupName,
   onSearch,
   isSearching = false,
-  results,
+  searchResults,
+  onInvite,
+  invitingUserId,
 }: GroupInviteModalProps) {
   const [keyword, setKeyword] = useState("");
   const formId = useId();
@@ -40,6 +52,8 @@ function GroupInviteModal({
   };
 
   const isDisabled = isSearching || !keyword.trim();
+
+  const hasSearchResults = Boolean(searchResults && searchResults.length > 0);
 
   return (
     <Modal
@@ -73,12 +87,20 @@ function GroupInviteModal({
       </form>
 
       <div className={styles.resultArea} aria-live="polite">
-        {results ?? (
-          <div className={styles.emptyState}>
-            <span className={styles.emptyEmoji} aria-hidden="true">
-              🔍
-            </span>
-            <p className={styles.emptyText}>ユーザーが見つかりませんでした</p>
+        {hasSearchResults ? (
+          <SearchResultList
+            results={searchResults!}
+            onInvite={onInvite}
+            invitingUserId={invitingUserId}
+          />
+        ) : (
+          <div className={styles.emptyContainer}>
+            <div className={styles.emptyState}>
+              <span className={styles.emptyEmoji} aria-hidden="true">
+                🔍
+              </span>
+              <p className={styles.emptyText}>ユーザーが見つかりませんでした</p>
+            </div>
           </div>
         )}
       </div>
