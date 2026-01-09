@@ -26,7 +26,6 @@ function GroupCard({
   const handleOpen = () => {
     onOpenClick?.();
   };
-  console.log("GroupCard rendered:", invitedCount);
 
   return (
     <div className={styles.card} aria-label={`${name} のグループカード`}>
