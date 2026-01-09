@@ -122,3 +122,103 @@ describe("GET /api/groups", () => {
     });
   });
 });
+
+describe("GET /api/groups/:groupId/search/users", () => {
+  it("招待中のユーザーを email で検索し、is_invited=true で返す", async () => {
+    const groupId = "group-1";
+    const invitedUser = {
+      id: "user-1",
+      name: "Invited User",
+      email: "invited@example.com",
+    };
+    const now = new Date("2025-01-01T00:00:00Z");
+
+    await db.insert(schema.groups).values({
+      id: groupId,
+      name: "Test Group",
+      ownerId: "test-user",
+      image: null,
+      createdAt: now,
+      updatedAt: now,
+    });
+    await db.insert(schema.users).values({ ...invitedUser, image: null });
+    await db.insert(schema.userGroupBelongings).values({
+      groupId,
+      userId: invitedUser.id,
+      createdAt: now,
+      acceptedAt: null,
+    });
+
+    const res = await client.api.groups[":groupId"].search.users.$get({
+      param: { groupId },
+      query: { email: invitedUser.email },
+    });
+
+    expect(res.status).toBe(200);
+    expect(await res.json()).toEqual({
+      users: [
+        {
+          id: invitedUser.id,
+          name: invitedUser.name,
+          email: invitedUser.email,
+          image_url: null,
+          is_invited_or_belonging: true,
+        },
+      ],
+    });
+  });
+
+  it("メール一致するが承諾済みの場合も is_invited=true で返す", async () => {
+    const groupId = "group-2";
+    const member = {
+      id: "user-2",
+      name: "Accepted User",
+      email: "accepted@example.com",
+    };
+    const now = new Date("2025-01-02T00:00:00Z");
+
+    await db.insert(schema.groups).values({
+      id: groupId,
+      name: "Accepted Group",
+      ownerId: "test-user",
+      image: null,
+      createdAt: now,
+      updatedAt: now,
+    });
+    await db.insert(schema.users).values({ ...member, image: null });
+    await db.insert(schema.userGroupBelongings).values({
+      groupId,
+      userId: member.id,
+      createdAt: now,
+      acceptedAt: now,
+    });
+
+    const res = await client.api.groups[":groupId"].search.users.$get({
+      param: { groupId },
+      query: { email: member.email },
+    });
+
+    expect(res.status).toBe(200);
+    expect(await res.json()).toEqual({
+      users: [
+        {
+          id: member.id,
+          name: member.name,
+          email: member.email,
+          image_url: null,
+          is_invited_or_belonging: true,
+        },
+      ],
+    });
+  });
+
+  it("一致するユーザーがいなければ空配列を返す", async () => {
+    const res = await client.api.groups[":groupId"].search.users.$get({
+      param: { groupId: "group-x" },
+      query: { email: "none@example.com" },
+    });
+
+    expect(res.status).toBe(200);
+    expect(await res.json()).toEqual({ users: [] });
+  });
+});

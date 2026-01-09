@@ -13,3 +13,11 @@ export type BelongingDto = {
   createdAt: Date;
   acceptedAt: Date | null;
 };
+
+export type GroupUserDto = {
+  id: string;
+  name: string | null;
+  email: string | null;
+  image: string | null;
+  acceptedAt: Date | null;
+};
