@@ -2,7 +2,7 @@ import { alias } from "drizzle-orm/pg-core";
 import { and, asc, eq, sql } from "drizzle-orm";
 
 import type { GroupModel } from "../models/group";
-import type { BelongingDto, GroupWithMemberCountDto } from "../dtos/group";
+import type { BelongingDto, GroupUserDto, GroupWithMemberCountDto } from "../dtos/group";
 import * as schema from "../db/schema";
 import type { GroupRecord } from "../db/schema";
 import type { Database } from "../db/client";
@@ -73,6 +73,29 @@ export class GroupRepository {
     const [row] = await this.db.select().from(schema.groups).where(eq(schema.groups.id, id));
     if (!row) return null;
     return GroupRepository.toDomain(row);
+  }
+
+  async findUsersByGroupId(groupId: string): Promise<GroupUserDto[]> {
+    const rows = await this.db
+      .select({
+        id: schema.users.id,
+        name: schema.users.name,
+        email: schema.users.email,
+        image: schema.users.image,
+        acceptedAt: schema.userGroupBelongings.acceptedAt,
+      })
+      .from(schema.userGroupBelongings)
+      .innerJoin(schema.users, eq(schema.userGroupBelongings.userId, schema.users.id))
+      .where(eq(schema.userGroupBelongings.groupId, groupId))
+      .orderBy(asc(schema.userGroupBelongings.createdAt));
+
+    return rows.map((row) => ({
+      id: row.id,
+      name: row.name,
+      email: row.email,
+      image: row.image,
+      acceptedAt: row.acceptedAt,
+    }));
   }
 
   private static toDomain(row: GroupRecord): GroupModel {

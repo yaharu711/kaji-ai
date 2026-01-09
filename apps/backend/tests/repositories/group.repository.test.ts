@@ -277,3 +277,66 @@ describe("findAllWithMemberCount", () => {
     ]);
   });
 });
+
+describe("findUsersByGroupId", () => {
+  it("招待中を含む所属ユーザーを作成日時昇順で返す", async () => {
+    const groupId = "group-1";
+    const ownerId = "owner-1";
+    const memberId = "member-1";
+    const pendingId = "pending-1";
+
+    // ユーザーとグループ作成
+    await insertOwner(ownerId);
+    await db.insert(schema.users).values([
+      { id: memberId, name: "Member One", email: "member1@example.com" },
+      { id: pendingId, name: "Pending User", email: "pending@example.com" },
+    ]);
+
+    const createdAt = new Date("2025-01-01T00:00:00Z");
+    await repository.create({
+      id: groupId,
+      name: "Test Group",
+      ownerId,
+      image: null,
+      createdAt,
+      updatedAt: createdAt,
+    });
+
+    const belongingCreated1 = new Date("2025-01-02T00:00:00Z");
+    const belongingCreated2 = new Date("2025-01-03T00:00:00Z");
+    const belongingCreated3 = new Date("2025-01-04T00:00:00Z");
+
+    // 所属レコード（acceptedAt の有無を混在させる）
+    await db.insert(schema.userGroupBelongings).values([
+      { groupId, userId: ownerId, createdAt: belongingCreated1, acceptedAt: belongingCreated1 },
+      { groupId, userId: pendingId, createdAt: belongingCreated2, acceptedAt: null },
+      { groupId, userId: memberId, createdAt: belongingCreated3, acceptedAt: belongingCreated3 },
+    ]);
+
+    const result = await repository.findUsersByGroupId(groupId);
+
+    expect(result).toEqual([
+      {
+        id: ownerId,
+        name: "Owner",
+        email: null,
+        image: null,
+        acceptedAt: belongingCreated1,
+      },
+      {
+        id: pendingId,
+        name: "Pending User",
+        email: "pending@example.com",
+        image: null,
+        acceptedAt: null,
+      },
+      {
+        id: memberId,
+        name: "Member One",
+        email: "member1@example.com",
+        image: null,
+        acceptedAt: belongingCreated3,
+      },
+    ]);
+  });
+});
