@@ -3,6 +3,7 @@ import { useId, useState, type FormEventHandler } from "react";
 import Button from "../../../../components/Button";
 import Input from "../../../../components/Input";
 import Modal from "../../../../components/Modal";
+import type { SearchUser } from "@kaiji-ai/backend/contracts";
 import SearchResultList from "./search-result-list";
 import styles from "./group-invite-modal.module.css";
 
@@ -11,17 +12,11 @@ interface GroupInviteModalProps {
   onOpenChange: (open: boolean) => void;
   groupName: string;
   onSearch: (keyword: string) => void;
-  isSearching?: boolean;
-  searchResults?: UserSearchResult[];
-  onInvite?: (user: UserSearchResult) => void;
-  invitingUserId?: string;
-}
-
-export interface UserSearchResult {
-  id: string;
-  name: string;
-  email: string;
-  status?: "available" | "joined" | "invited";
+  isSearching: boolean;
+  searchResults: SearchUser[];
+  searchError: string;
+  onClearSearchError: () => void;
+  onInvite?: (user: SearchUser) => void;
 }
 
 function GroupInviteModal({
@@ -31,10 +26,12 @@ function GroupInviteModal({
   onSearch,
   isSearching = false,
   searchResults,
+  searchError,
+  onClearSearchError,
   onInvite,
-  invitingUserId,
 }: GroupInviteModalProps) {
   const [keyword, setKeyword] = useState("");
+  const [hasSearched, setHasSearched] = useState(false);
   const formId = useId();
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = (event) => {
@@ -42,18 +39,23 @@ function GroupInviteModal({
     const trimmed = keyword.trim();
     if (!trimmed) return;
     onSearch(trimmed);
+    setHasSearched(true);
   };
 
   const handleOpenChange = (nextOpen: boolean) => {
     if (!nextOpen) {
       setKeyword("");
+      setHasSearched(false);
     }
     onOpenChange(nextOpen);
   };
 
   const isDisabled = isSearching || !keyword.trim();
 
-  const hasSearchResults = Boolean(searchResults && searchResults.length > 0);
+  const hasSearchResults = searchResults.length > 0;
+  const emptyText = hasSearched
+    ? "該当するユーザーが見つかりませんでした"
+    : "招待したいユーザーを検索しましょう！";
 
   return (
     <Modal
@@ -71,8 +73,13 @@ function GroupInviteModal({
           label="メールアドレス"
           onChange={(e) => {
             setKeyword(e.target.value);
+            if (searchError) {
+              onClearSearchError();
+            }
           }}
           disabled={isSearching}
+          error={Boolean(searchError)}
+          errorText={searchError}
         />
         <Button
           type="submit"
@@ -88,18 +95,14 @@ function GroupInviteModal({
 
       <div className={styles.resultArea} aria-live="polite">
         {hasSearchResults ? (
-          <SearchResultList
-            results={searchResults ?? []}
-            onInvite={onInvite}
-            invitingUserId={invitingUserId}
-          />
+          <SearchResultList results={searchResults} onInvite={onInvite} />
         ) : (
           <div className={styles.emptyContainer}>
             <div className={styles.emptyState}>
               <span className={styles.emptyEmoji} aria-hidden="true">
                 🔍
               </span>
-              <p className={styles.emptyText}>招待したいユーザーを検索しましょう！</p>
+              <p className={styles.emptyText}>{emptyText}</p>
             </div>
           </div>
         )}

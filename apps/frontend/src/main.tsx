@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "./theme.css";
 import "./index.css";
 import App from "./App.tsx";
+import ErrorModalProvider from "./components/ErrorModalProvider";
 
 const AUTH_BASE_PATH = "/api/auth";
 const backendOrigin = import.meta.env.VITE_BACKEND_ORIGIN.trim();
@@ -38,7 +39,9 @@ createRoot(container).render(
      */}
     <SessionProvider refetchOnWindowFocus>
       <QueryClientProvider client={queryClient}>
-        <App />
+        <ErrorModalProvider>
+          <App />
+        </ErrorModalProvider>
       </QueryClientProvider>
     </SessionProvider>
   </StrictMode>,

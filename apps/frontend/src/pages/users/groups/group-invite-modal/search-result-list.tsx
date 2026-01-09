@@ -1,16 +1,15 @@
 import { Check, UserPlus } from "lucide-react";
+import type { SearchUser } from "@kaiji-ai/backend/contracts";
 import Button from "../../../../components/Button";
-import type { UserSearchResult } from ".";
 import styles from "./search-result-list.module.css";
 
 interface SearchResultListProps {
-  results: UserSearchResult[];
-  onInvite?: (user: UserSearchResult) => void;
-  invitingUserId?: string;
+  results: SearchUser[];
+  onInvite?: (user: SearchUser) => void;
 }
 
-function SearchResultList({ results, onInvite, invitingUserId }: SearchResultListProps) {
-  const handleInvite = (user: UserSearchResult) => {
+function SearchResultList({ results, onInvite }: SearchResultListProps) {
+  const handleInvite = (user: SearchUser) => {
     if (!onInvite) return;
     onInvite(user);
   };
@@ -29,32 +28,15 @@ function SearchResultList({ results, onInvite, invitingUserId }: SearchResultLis
 
       <ul className={styles.list}>
         {results.map((user) => {
-          const isInviting = invitingUserId === user.id;
-          const status = user.status ?? "available";
+          const isUnavailable = user.is_invited_or_belonging;
 
           const { label, disabled, icon, variant } = (() => {
-            if (status === "joined") {
+            if (isUnavailable) {
               return {
                 label: "参加/招待済み",
                 disabled: true,
                 icon: <Check size={18} strokeWidth={2.2} />,
                 variant: "secondary" as const,
-              };
-            }
-            if (status === "invited") {
-              return {
-                label: "招待済み",
-                disabled: true,
-                icon: <Check size={18} strokeWidth={2.2} />,
-                variant: "secondary" as const,
-              };
-            }
-            if (isInviting) {
-              return {
-                label: "招待中...",
-                disabled: true,
-                icon: <UserPlus size={18} strokeWidth={2.2} />,
-                variant: "primary" as const,
               };
             }
             return {
@@ -68,11 +50,11 @@ function SearchResultList({ results, onInvite, invitingUserId }: SearchResultLis
           return (
             <li key={user.id} className={styles.card}>
               <div className={styles.avatar} aria-hidden="true">
-                <span className={styles.avatarInitial}>{getInitial(user.name)}</span>
+                <span className={styles.avatarInitial}>{getInitial(user.name ?? "")}</span>
               </div>
               <div className={styles.meta}>
-                <p className={styles.name}>{user.name}</p>
-                <p className={styles.email}>{user.email}</p>
+                <p className={styles.name}>{user.name ?? ""}</p>
+                <p className={styles.email}>{user.email ?? ""}</p>
               </div>
               <Button
                 size="md"
