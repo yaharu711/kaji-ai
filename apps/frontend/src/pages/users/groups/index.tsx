@@ -4,20 +4,29 @@ import PageCard from "../../../components/PageCard";
 import Button from "../../../components/Button";
 import { useGroupsQuery } from "../hooks/useGroupsQuery";
 import { useCreateGroupMutation } from "../hooks/useCreateGroupMutation";
+import { useSearchGroupUsers } from "../hooks/useSearchGroupUsers";
 import GroupCreateModal from "./group-create-modal";
 import GroupCard from "./group-card";
 import GroupInviteCard from "./invite-card";
-import GroupInviteModal, { type UserSearchResult } from "./group-invite-modal";
+import GroupInviteModal from "./group-invite-modal";
 import styles from "./groups.module.css";
 import { LoaderCircle } from "../../../components";
 
 function GroupsSection() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [inviteModalGroup, setInviteModalGroup] = useState<string | null>(null);
-  const [searchResults, setSearchResults] = useState<UserSearchResult[] | undefined>(undefined);
-  const [isSearching, setIsSearching] = useState(false);
+  const [inviteModalGroup, setInviteModalGroup] = useState<{ id: string; name: string } | null>(
+    null,
+  );
   const { data, isLoading, isError } = useGroupsQuery();
   const { mutateAsync: createGroup, isPending: isCreating } = useCreateGroupMutation();
+  const {
+    mutateAsync: searchGroupUsers,
+    isPending: isSearching,
+    data: searchUsersResult,
+    errorMessage: searchError,
+    clearErrorMessage,
+    resetSearchResult,
+  } = useSearchGroupUsers();
 
   const handleSubmit = async (groupName: string) => {
     try {
@@ -34,21 +43,24 @@ function GroupsSection() {
   const joinedGroups = groups.filter((group) => !group.is_invited);
   const hasJoinedGroups = joinedGroups.length > 0;
 
-  const handleInviteClick = (groupName: string) => {
-    setInviteModalGroup(groupName);
-    setSearchResults(undefined);
+  const handleInviteClick = (groupId: string, groupName: string) => {
+    setInviteModalGroup({ id: groupId, name: groupName });
+    resetSearchResult();
   };
 
   const closeInviteModal = () => {
     setInviteModalGroup(null);
+    resetSearchResult();
   };
 
-  const handleSearch = (keyword: string) => {
-    // TODO: API 連携時に検索結果を取得する
-    setIsSearching(true);
-    setSearchResults([]);
-    setIsSearching(false);
-    console.info("search keyword:", keyword);
+  const handleSearch = async (keyword: string) => {
+    if (!inviteModalGroup) return;
+
+    try {
+      await searchGroupUsers({ groupId: inviteModalGroup.id, email: keyword });
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const renderContent = () => {
@@ -91,10 +103,10 @@ function GroupsSection() {
             memberCount={group.member_count}
             invitedCount={group.invited_count}
             onInviteClick={() => {
-              handleInviteClick(group.name);
+              handleInviteClick(group.id, group.name);
             }}
             onOpenClick={() => {
-              handleInviteClick(group.name);
+              console.log(`Open group ${group.id}`);
             }}
           />
         ))}
@@ -138,10 +150,14 @@ function GroupsSection() {
         onOpenChange={(open) => {
           if (!open) closeInviteModal();
         }}
-        groupName={inviteModalGroup ?? ""}
-        onSearch={handleSearch}
+        groupName={inviteModalGroup?.name ?? "グループ名"}
+        onSearch={(keyword) => {
+          void handleSearch(keyword);
+        }}
         isSearching={isSearching}
-        searchResults={searchResults}
+        searchResults={searchUsersResult?.users ?? []}
+        searchError={searchError}
+        onClearSearchError={clearErrorMessage}
       />
     </PageCard>
   );

@@ -2,6 +2,8 @@ import type {
   CreateGroupRequest,
   CreateGroupResponse,
   GetGroupsResponse,
+  SearchUsersResponse,
+  UnprocessableEntityResponse,
 } from "@kaiji-ai/backend/contracts";
 import { honoClient } from "../client";
 
@@ -12,6 +14,34 @@ export const fetchGroups = async (): Promise<GetGroupsResponse> => {
 
   if (!res.ok) {
     throw new Error("グループ一覧の取得に失敗しました");
+  }
+
+  return res.json();
+};
+
+export const searchGroupUsers = async ({
+  groupId,
+  email,
+}: {
+  groupId: string;
+  email: string;
+}): Promise<SearchUsersResponse> => {
+  const res = await groupsApi[":groupId"].search.users.$get({
+    param: { groupId },
+    query: { email },
+  });
+
+  if (res.status === 422) {
+    const body = (await res.json()) as UnprocessableEntityResponse;
+    const message = body.errors
+      .map((error) => error.message)
+      .filter(Boolean)
+      .join(" / ");
+    throw new Error(message || "入力内容を確認してください");
+  }
+
+  if (!res.ok) {
+    throw new Error("ユーザー検索に失敗しました");
   }
 
   return res.json();
