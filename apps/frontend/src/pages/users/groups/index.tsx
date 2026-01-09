@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { UserPlus } from "lucide-react";
+import { HousePlus } from "lucide-react";
 import PageCard from "../../../components/PageCard";
 import Button from "../../../components/Button";
 import { useGroupsQuery } from "../hooks/useGroupsQuery";
@@ -69,7 +69,7 @@ function GroupsSection() {
             radius="pill"
             size="md"
             fullWidth
-            icon={<UserPlus aria-hidden size={16} />}
+            icon={<HousePlus aria-hidden size={18} />}
             onClick={() => {
               setIsModalOpen(true);
             }}
