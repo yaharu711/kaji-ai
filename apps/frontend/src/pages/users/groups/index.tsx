@@ -6,6 +6,7 @@ import { useGroupsQuery } from "../hooks/useGroupsQuery";
 import { useCreateGroupMutation } from "../hooks/useCreateGroupMutation";
 import GroupCreateModal from "./group-create-modal";
 import GroupCard from "./group-card";
+import GroupInviteCard from "./invite-card";
 import styles from "./groups.module.css";
 import { LoaderCircle } from "../../../components";
 
@@ -25,7 +26,9 @@ function GroupsSection() {
   };
 
   const groups = data?.groups ?? [];
-  const hasGroups = groups.length > 0;
+  const invitedGroups = groups.filter((group) => group.is_invited);
+  const joinedGroups = groups.filter((group) => !group.is_invited);
+  const hasJoinedGroups = joinedGroups.length > 0;
 
   const renderContent = () => {
     if (isLoading)
@@ -35,7 +38,7 @@ function GroupsSection() {
         </div>
       );
     if (isError) return <p className={styles.helperText}>グループの取得に失敗しました</p>;
-    if (!hasGroups)
+    if (!hasJoinedGroups && invitedGroups.length === 0)
       return (
         <div className={styles.emptyCard}>
           <div className={styles.emptyEmoji} aria-hidden="true">
@@ -52,7 +55,15 @@ function GroupsSection() {
 
     return (
       <div className={styles.list}>
-        {groups.map((group) => (
+        {invitedGroups.map((group) => (
+          <GroupInviteCard
+            key={`invite-${group.id}`}
+            groupName={group.name}
+            inviterName={undefined}
+          />
+        ))}
+
+        {joinedGroups.map((group) => (
           <GroupCard
             key={group.id}
             name={group.name}

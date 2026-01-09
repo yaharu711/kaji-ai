@@ -5,7 +5,7 @@ import styles from "./invite-card.module.css";
 
 interface GroupInviteCardProps {
   groupName: string;
-  inviterName: string;
+  inviterName?: string;
   disabled?: boolean;
   onAccept?: () => void;
   onDecline?: () => void;
@@ -40,10 +40,14 @@ function GroupInviteCard({
             <p className={styles.groupName}>{groupName}</p>
             <span className={styles.badge}>招待中</span>
           </div>
-          <p className={styles.inviteText}>
-            <span className={styles.inviterName}>{inviterName}</span>
-            <span> さんから招待されました</span>
-          </p>
+          {inviterName ? (
+            <p className={styles.inviteText}>
+              <span className={styles.inviterName}>{inviterName}</span>
+              <span> さんから招待されました</span>
+            </p>
+          ) : (
+            <p className={styles.inviteText}>このグループに招待されています</p>
+          )}
         </div>
       </div>
 
