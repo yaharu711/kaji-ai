@@ -89,7 +89,7 @@ function GroupInviteModal({
       <div className={styles.resultArea} aria-live="polite">
         {hasSearchResults ? (
           <SearchResultList
-            results={searchResults!}
+            results={searchResults ?? []}
             onInvite={onInvite}
             invitingUserId={invitingUserId}
           />

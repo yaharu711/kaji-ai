@@ -15,7 +15,8 @@ function SearchResultList({ results, onInvite, invitingUserId }: SearchResultLis
     onInvite(user);
   };
 
-  const formatCountLabel = (count: number) => `${count}件のユーザーが見つかりました`;
+  const formatCountLabel = (count: number) =>
+    `${count.toLocaleString()}件のユーザーが見つかりました`;
 
   const getInitial = (name: string) => {
     if (!name) return "?";

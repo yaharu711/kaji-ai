@@ -90,8 +90,12 @@ function GroupsSection() {
             name={group.name}
             memberCount={group.member_count}
             invitedCount={group.invited_count}
-            onInviteClick={() => handleInviteClick(group.name)}
-            onOpenClick={() => handleInviteClick(group.name)}
+            onInviteClick={() => {
+              handleInviteClick(group.name);
+            }}
+            onOpenClick={() => {
+              handleInviteClick(group.name);
+            }}
           />
         ))}
       </div>
