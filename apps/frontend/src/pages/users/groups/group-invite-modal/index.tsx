@@ -99,7 +99,7 @@ function GroupInviteModal({
               <span className={styles.emptyEmoji} aria-hidden="true">
                 🔍
               </span>
-              <p className={styles.emptyText}>ユーザーが見つかりませんでした</p>
+              <p className={styles.emptyText}>招待したいユーザーを検索しましょう！</p>
             </div>
           </div>
         )}
