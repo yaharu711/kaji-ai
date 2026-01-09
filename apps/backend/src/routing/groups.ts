@@ -28,6 +28,7 @@ const app = new Hono()
         name: group.name,
         image: group.image,
         member_count: group.memberCount,
+        invited_count: group.invitedCount,
       })),
     });
 

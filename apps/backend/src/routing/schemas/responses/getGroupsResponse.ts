@@ -5,6 +5,7 @@ export const groupSchema = z.object({
   name: z.string(),
   image: z.string().nullable(),
   member_count: z.number(),
+  invited_count: z.number(),
 });
 
 export const getGroupsSuccessSchema = z.object({

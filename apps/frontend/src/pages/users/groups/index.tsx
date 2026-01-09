@@ -53,7 +53,12 @@ function GroupsSection() {
     return (
       <div className={styles.list}>
         {groups.map((group) => (
-          <GroupCard key={group.id} name={group.name} memberCount={group.member_count} />
+          <GroupCard
+            key={group.id}
+            name={group.name}
+            memberCount={group.member_count}
+            invitedCount={group.invited_count}
+          />
         ))}
       </div>
     );

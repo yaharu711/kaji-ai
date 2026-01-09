@@ -15,6 +15,7 @@ export const Default: Story = {
   args: {
     name: "永井",
     memberCount: 1,
+    invitedCount: 0,
     imageUrl: undefined,
   },
 };
@@ -23,6 +24,7 @@ export const WithImage: Story = {
   args: {
     name: "浅井",
     memberCount: 3,
+    invitedCount: 1,
     imageUrl:
       "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=facearea&w=200&h=200&q=80",
   },

@@ -3,6 +3,7 @@ export type GroupWithMemberCountDto = {
   name: string;
   image: string | null;
   memberCount: number;
+  invitedCount: number;
 };
 
 export type BelongingDto = {

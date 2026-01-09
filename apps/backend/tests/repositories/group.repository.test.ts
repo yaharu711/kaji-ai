@@ -161,7 +161,9 @@ describe("findAllWithMemberCount", () => {
 
     const result = await repository.findAllWithMemberCount("owner-1");
 
-    expect(result).toEqual([{ id: "group-1", name: "Group1", image: null, memberCount: 2 }]);
+    expect(result).toEqual([
+      { id: "group-1", name: "Group1", image: null, memberCount: 2, invitedCount: 1 },
+    ]);
   });
 
   it("ユーザーが所属する複数グループをすべて返す", async () => {
@@ -197,8 +199,8 @@ describe("findAllWithMemberCount", () => {
     const result = await repository.findAllWithMemberCount("owner-1");
 
     expect(result).toEqual([
-      { id: "group-a", name: "GroupA", image: null, memberCount: 2 },
-      { id: "group-b", name: "GroupB", image: null, memberCount: 1 },
+      { id: "group-a", name: "GroupA", image: null, memberCount: 2, invitedCount: 0 },
+      { id: "group-b", name: "GroupB", image: null, memberCount: 1, invitedCount: 0 },
     ]);
   });
 });
