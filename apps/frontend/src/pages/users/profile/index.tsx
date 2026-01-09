@@ -26,7 +26,7 @@ function ProfileSection({ user }: Props) {
           )}
         </div>
         <div className={styles.profileText}>
-          <p className={styles.welcome}>ようこそ、</p>
+          <p className={styles.welcome}>ようこそ！</p>
           <p className={styles.userName}>{displayName} さん</p>
         </div>
       </div>

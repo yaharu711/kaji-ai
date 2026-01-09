@@ -1,0 +1,98 @@
+.card {
+  width: min(540px, 100%);
+  border-radius: 18px;
+  padding: 16px 16px 14px;
+  background: linear-gradient(180deg, var(--color-group-card-from), var(--color-group-card-to));
+  border: 1px solid var(--color-card-border);
+  box-shadow: var(--shadow-card);
+  display: grid;
+  gap: 12px;
+}
+
+.summary {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 12px;
+  align-items: center;
+}
+
+.avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 30% 30%,
+    var(--color-group-avatar-from),
+    var(--color-group-avatar-mid),
+    var(--color-group-avatar-to)
+  );
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-avatar);
+}
+
+.avatarEmoji {
+  font-size: 30px;
+  line-height: 1;
+}
+
+.meta {
+  display: grid;
+  gap: 6px;
+}
+
+.titleRow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.groupName {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--color-text-strong);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--color-invite-badge-bg);
+  color: var(--color-invite-badge-text);
+  font-weight: 700;
+  font-size: 12px;
+}
+
+.inviteText {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 14px;
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.inviterName {
+  font-weight: 700;
+  color: var(--color-text-strong);
+}
+
+.actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+@media (max-width: 520px) {
+  .card {
+    padding: 14px 14px 12px;
+  }
+
+  .actions {
+    grid-template-columns: 1fr;
+  }
+}

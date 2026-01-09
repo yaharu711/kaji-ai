@@ -17,6 +17,7 @@ const VARIANT_CLASS = {
   primary: styles.variantPrimary,
   secondary: styles.variantSecondary,
   ghost: styles.variantGhost,
+  outline: styles.variantOutline,
 } as const;
 
 type Size = keyof typeof SIZE_CLASS;
