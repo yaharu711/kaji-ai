@@ -5,12 +5,20 @@ import styles from "./group-card.module.css";
 interface GroupCardProps {
   name: string;
   memberCount: number;
+  invitedCount: number;
   imageUrl?: string | null;
   onInviteClick?: () => void;
   onOpenClick?: () => void;
 }
 
-function GroupCard({ name, memberCount, imageUrl, onInviteClick, onOpenClick }: GroupCardProps) {
+function GroupCard({
+  name,
+  memberCount,
+  invitedCount,
+  imageUrl,
+  onInviteClick,
+  onOpenClick,
+}: GroupCardProps) {
   const handleInvite = () => {
     onInviteClick?.();
   };
@@ -37,6 +45,7 @@ function GroupCard({ name, memberCount, imageUrl, onInviteClick, onOpenClick }: 
         <div className={styles.meta}>
           <p className={styles.name}>{name}</p>
           <p className={styles.member}>メンバー {memberCount}人</p>
+          <p className={styles.invited}>招待中 {invitedCount}人</p>
         </div>
         <span className={styles.arrowIcon} aria-hidden>
           <ArrowRight size={20} strokeWidth={2.5} />

@@ -102,13 +102,23 @@ describe("GET /api/groups", () => {
     await db.insert(schema.userGroupBelongings).values([
       { groupId: "group-1", userId: "test-user", acceptedAt: now },
       { groupId: "group-1", userId: "other-user", acceptedAt: now },
+      { groupId: "group-1", userId: "pending-user", acceptedAt: null },
     ]);
 
     const res = await client.api.groups.$get();
 
     expect(res.status).toBe(200);
     expect(await res.json()).toEqual({
-      groups: [{ id: "group-1", name: "Group One", image: null, member_count: 2 }],
+      groups: [
+        {
+          id: "group-1",
+          name: "Group One",
+          image: null,
+          member_count: 2,
+          invited_count: 1,
+          is_invited: false,
+        },
+      ],
     });
   });
 });

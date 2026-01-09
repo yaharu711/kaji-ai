@@ -1,5 +1,5 @@
 import { alias } from "drizzle-orm/pg-core";
-import { and, asc, count, eq, isNotNull } from "drizzle-orm";
+import { and, asc, eq, sql } from "drizzle-orm";
 
 import type { GroupModel } from "../models/group";
 import type { BelongingDto, GroupWithMemberCountDto } from "../dtos/group";
@@ -40,7 +40,10 @@ export class GroupRepository {
         id: schema.groups.id,
         name: schema.groups.name,
         image: schema.groups.image,
-        memberCount: count(countedBelongings.userId),
+        memberCount: sql<number>`count(*) filter (where ${countedBelongings.acceptedAt} is not null)`,
+        invitedCount: sql<number>`count(*) filter (where ${countedBelongings.acceptedAt} is null)`,
+        // innerJoin で絞った「本人の所属レコード」が未承諾かどうかを集計（1件想定だが bool_or で安全に）
+        isInvited: sql<boolean>`bool_or(${schema.userGroupBelongings.acceptedAt} is null)`,
       })
       .from(schema.groups)
       // ユーザーが所属(承諾済み)しているグループに絞り込み
@@ -49,17 +52,10 @@ export class GroupRepository {
         and(
           eq(schema.userGroupBelongings.groupId, schema.groups.id),
           eq(schema.userGroupBelongings.userId, userId),
-          isNotNull(schema.userGroupBelongings.acceptedAt),
         ),
       )
-      // メンバー数をカウントするために acceptedAt が null でないものだけを対象
-      .leftJoin(
-        countedBelongings,
-        and(
-          eq(countedBelongings.groupId, schema.groups.id),
-          isNotNull(countedBelongings.acceptedAt),
-        ),
-      )
+      // グループの人数をカウントするための結合
+      .leftJoin(countedBelongings, eq(countedBelongings.groupId, schema.groups.id))
       .groupBy(schema.groups.id, schema.groups.name, schema.groups.image)
       .orderBy(asc(schema.groups.createdAt));
 
@@ -68,6 +64,8 @@ export class GroupRepository {
       name: row.name,
       image: row.image,
       memberCount: Number(row.memberCount),
+      invitedCount: Number(row.invitedCount),
+      isInvited: row.isInvited,
     }));
   }
 

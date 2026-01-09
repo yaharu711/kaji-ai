@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { UserPlus } from "lucide-react";
+import { HousePlus } from "lucide-react";
 import PageCard from "../../../components/PageCard";
 import Button from "../../../components/Button";
 import { useGroupsQuery } from "../hooks/useGroupsQuery";
@@ -53,7 +53,12 @@ function GroupsSection() {
     return (
       <div className={styles.list}>
         {groups.map((group) => (
-          <GroupCard key={group.id} name={group.name} memberCount={group.member_count} />
+          <GroupCard
+            key={group.id}
+            name={group.name}
+            memberCount={group.member_count}
+            invitedCount={group.invited_count}
+          />
         ))}
       </div>
     );
@@ -61,15 +66,15 @@ function GroupsSection() {
 
   return (
     <PageCard>
-      <div className={styles.groupsContent} aria-label="グループ一覧">
+      <section className={styles.groupsContent} aria-labelledby="groups-heading">
         <div className={styles.sectionHeader}>
-          <h2>あなたのグループ</h2>
+          <h2 id="groups-heading">あなたのグループ</h2>
           <Button
             variant="primary"
             radius="pill"
             size="md"
             fullWidth
-            icon={<UserPlus aria-hidden size={16} />}
+            icon={<HousePlus aria-hidden size={18} />}
             onClick={() => {
               setIsModalOpen(true);
             }}
@@ -88,7 +93,7 @@ function GroupsSection() {
           }}
           isSubmitting={isCreating}
         />
-      </div>
+      </section>
     </PageCard>
   );
 }

@@ -161,7 +161,16 @@ describe("findAllWithMemberCount", () => {
 
     const result = await repository.findAllWithMemberCount("owner-1");
 
-    expect(result).toEqual([{ id: "group-1", name: "Group1", image: null, memberCount: 2 }]);
+    expect(result).toEqual([
+      {
+        id: "group-1",
+        name: "Group1",
+        image: null,
+        memberCount: 2,
+        invitedCount: 1,
+        isInvited: false,
+      },
+    ]);
   });
 
   it("ユーザーが所属する複数グループをすべて返す", async () => {
@@ -197,8 +206,74 @@ describe("findAllWithMemberCount", () => {
     const result = await repository.findAllWithMemberCount("owner-1");
 
     expect(result).toEqual([
-      { id: "group-a", name: "GroupA", image: null, memberCount: 2 },
-      { id: "group-b", name: "GroupB", image: null, memberCount: 1 },
+      {
+        id: "group-a",
+        name: "GroupA",
+        image: null,
+        memberCount: 2,
+        invitedCount: 0,
+        isInvited: false,
+      },
+      {
+        id: "group-b",
+        name: "GroupB",
+        image: null,
+        memberCount: 1,
+        invitedCount: 0,
+        isInvited: false,
+      },
+    ]);
+  });
+  it("自分が招待中であるグループの時、isInvitedがtrueになっていること", async () => {
+    // グループのオーナーを作成
+    await insertOwner("owner-1");
+    const date1 = new Date("2024-01-01T00:00:00Z");
+    const date2 = new Date("2024-01-02T00:00:00Z");
+
+    // メンバーを作成
+    await db.insert(schema.users).values([
+      { id: "member-1", name: "Member 1" },
+      { id: "member-2", name: "Member 2" },
+      { id: "pending", name: "Pending" },
+    ]);
+
+    // グループ作成
+    await repository.create({
+      id: "group-1",
+      name: "Group1",
+      ownerId: "owner-1",
+      image: null,
+      createdAt: date1,
+      updatedAt: date1,
+    });
+    await repository.create({
+      id: "group-2",
+      name: "Group2",
+      ownerId: "owner-1",
+      image: "img",
+      createdAt: date2,
+      updatedAt: date2,
+    });
+
+    // メンバーシップを作成、一部承諾済み、一部未承諾
+    await db.insert(schema.userGroupBelongings).values([
+      { groupId: "group-1", userId: "owner-1", acceptedAt: date1 },
+      { groupId: "group-1", userId: "member-1", acceptedAt: date1 },
+      { groupId: "group-1", userId: "pending", acceptedAt: null },
+      { groupId: "group-2", userId: "member-2", acceptedAt: null },
+    ]);
+
+    const result = await repository.findAllWithMemberCount("pending");
+
+    expect(result).toEqual([
+      {
+        id: "group-1",
+        name: "Group1",
+        image: null,
+        memberCount: 2,
+        invitedCount: 1,
+        isInvited: true,
+      },
     ]);
   });
 });
