@@ -162,13 +162,13 @@ describe("GET /api/groups/:groupId/search/users", () => {
           name: invitedUser.name,
           email: invitedUser.email,
           image_url: null,
-          is_invited: true,
+          is_invited_or_belonging: true,
         },
       ],
     });
   });
 
-  it("メール一致するが承諾済みの場合は is_invited=false", async () => {
+  it("メール一致するが承諾済みの場合も is_invited=true で返す", async () => {
     const groupId = "group-2";
     const member = {
       id: "user-2",
@@ -206,7 +206,7 @@ describe("GET /api/groups/:groupId/search/users", () => {
           name: member.name,
           email: member.email,
           image_url: null,
-          is_invited: false,
+          is_invited_or_belonging: true,
         },
       ],
     });

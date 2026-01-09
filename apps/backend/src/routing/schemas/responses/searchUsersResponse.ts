@@ -5,7 +5,7 @@ export const searchUserSchema = z.object({
   name: z.string().nullable(),
   email: z.string().nullable(),
   image_url: z.string().nullable(),
-  is_invited: z.boolean(),
+  is_invited_or_belonging: z.boolean(),
 });
 
 export const searchUsersSuccessSchema = z.object({

@@ -57,7 +57,7 @@ const app = new Hono()
 
     const belongings = await groupRepository.findUsersByGroupId(groupId);
     const belonging = belongings.find((member) => member.id === user.id);
-    const isInvited = belonging ? belonging.acceptedAt === null : false;
+    const isInvited = belonging !== undefined && belonging.acceptedAt === null;
 
     const body = searchUsersSuccessSchema.parse({
       users: [
@@ -66,7 +66,7 @@ const app = new Hono()
           name: user.name ?? null,
           email: user.email ?? null,
           image_url: user.image ?? null,
-          is_invited: isInvited,
+          is_invited_or_belonging: isInvited || belonging !== undefined,
         },
       ],
     });
