@@ -1,6 +1,6 @@
 .card {
   border-radius: 18px;
-  background: linear-gradient(180deg, rgba(255, 232, 246, 0.85), rgba(255, 249, 253, 0.92));
+  background: linear-gradient(180deg, var(--color-group-card-from), var(--color-group-card-to));
   border: 1px solid var(--color-card-border);
   box-shadow: var(--shadow-card);
   padding: 16px 18px 14px;
@@ -37,7 +37,12 @@
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background: radial-gradient(circle at 30% 30%, #ffe6ff, #f3e0ff, #d9c5ff);
+  background: radial-gradient(
+    circle at 30% 30%,
+    var(--color-group-avatar-from),
+    var(--color-group-avatar-mid),
+    var(--color-group-avatar-to)
+  );
   display: inline-flex;
   align-items: center;
   justify-content: center;
