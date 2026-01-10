@@ -36,6 +36,17 @@ export const createUser = async ({
   await db.insert(schema.users).values({ id, name, email, image });
 };
 
+export const createUsers = async (users: CreateUserParams[]) => {
+  if (users.length === 0) return;
+  const values = users.map(({ id, name = null, email = null, image = null }) => ({
+    id,
+    name,
+    email,
+    image,
+  }));
+  await db.insert(schema.users).values(values);
+};
+
 export const createGroup = async ({
   id,
   name = "Group",
@@ -54,6 +65,28 @@ export const createGroup = async ({
   });
 };
 
+export const createGroups = async (groups: CreateGroupParams[]) => {
+  if (groups.length === 0) return;
+  const values = groups.map(
+    ({
+      id,
+      name = "Group",
+      ownerId,
+      image = null,
+      createdAt = new Date(),
+      updatedAt = createdAt,
+    }) => ({
+      id,
+      name,
+      ownerId,
+      image,
+      createdAt,
+      updatedAt,
+    }),
+  );
+  await db.insert(schema.groups).values(values);
+};
+
 export const createBelonging = async ({
   groupId,
   userId,
@@ -66,6 +99,19 @@ export const createBelonging = async ({
     createdAt,
     acceptedAt,
   });
+};
+
+export const createBelongings = async (belongings: CreateBelongingParams[]) => {
+  if (belongings.length === 0) return;
+  const values = belongings.map(
+    ({ groupId, userId, createdAt = new Date(), acceptedAt = null }) => ({
+      groupId,
+      userId,
+      createdAt,
+      acceptedAt,
+    }),
+  );
+  await db.insert(schema.userGroupBelongings).values(values);
 };
 
 export const findBelongingsByGroupId = async (groupId: string) =>

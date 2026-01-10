@@ -2,11 +2,19 @@ import { beforeEach, describe, expect, it } from "vitest";
 import { sql } from "drizzle-orm";
 import { testClient } from "hono/testing";
 
-import "../helpers/mockAuth";
+import { AUTH_USER } from "../helpers/mockAuth";
 import app, { RoutingApp } from "../../src/routing/index";
 import { getDb } from "../../src/db/client";
 import * as schema from "../../src/db/schema";
-import { createBelonging, createGroup, createUser, findBelongingsByGroupId } from "../helpers/db";
+import {
+  createBelonging,
+  createGroup,
+  createUser,
+  createBelongings,
+  createGroups,
+  createUsers,
+  findBelongingsByGroupId,
+} from "../helpers/db";
 
 const client = testClient<RoutingApp>(app);
 const db = getDb();
@@ -15,8 +23,8 @@ beforeEach(async () => {
   await db.execute(sql`TRUNCATE TABLE "user_group_belongings" CASCADE`);
   await db.execute(sql`TRUNCATE TABLE "groups" CASCADE`);
   await db.execute(sql`TRUNCATE TABLE "user" CASCADE`);
-  // mockAuth で userId を test-user に固定しているため、外部キー整合性のためにユーザーを挿入
-  await createUser({ id: "test-user", name: "Test User" });
+  // mockAuth のユーザーを外部キー整合性のために挿入
+  await createUser({ id: AUTH_USER.id, name: AUTH_USER.name });
 });
 
 describe("POST /api/groups", () => {
@@ -32,7 +40,7 @@ describe("POST /api/groups", () => {
     expect(rows).toHaveLength(1);
     expect(rows[0]).toMatchObject({
       name: "家族グループ",
-      ownerId: "test-user",
+      ownerId: AUTH_USER.id,
       image: null,
     });
     // 所属情報も作成されていることを確認
@@ -40,7 +48,7 @@ describe("POST /api/groups", () => {
     expect(belongings).toHaveLength(1);
     expect(belongings[0]).toMatchObject({
       groupId: rows[0].id,
-      userId: "test-user",
+      userId: AUTH_USER.id,
     });
   });
 
@@ -76,27 +84,33 @@ describe("GET /api/groups", () => {
   it("所属グループの一覧を返し、必要なプロパティが含まれる", async () => {
     const now = new Date("2024-01-01T00:00:00Z");
 
-    await createUser({ id: "other-user", name: "Other User" });
-    await createUser({ id: "pending-user", name: "Pending User" });
+    await createUsers([
+      { id: "other-user", name: "Other User" },
+      { id: "pending-user", name: "Pending User" },
+    ]);
 
-    await createGroup({
-      id: "group-1",
-      name: "Group One",
-      ownerId: "test-user",
-      createdAt: now,
-      updatedAt: now,
-    });
-    await createGroup({
-      id: "group-2",
-      name: "Group Two",
-      ownerId: "test-user",
-      createdAt: new Date("2024-01-02T00:00:00Z"),
-      updatedAt: new Date("2024-01-02T00:00:00Z"),
-    });
+    await createGroups([
+      {
+        id: "group-1",
+        name: "Group One",
+        ownerId: AUTH_USER.id,
+        createdAt: now,
+        updatedAt: now,
+      },
+      {
+        id: "group-2",
+        name: "Group Two",
+        ownerId: AUTH_USER.id,
+        createdAt: new Date("2024-01-02T00:00:00Z"),
+        updatedAt: new Date("2024-01-02T00:00:00Z"),
+      },
+    ]);
 
-    await createBelonging({ groupId: "group-1", userId: "test-user", acceptedAt: now });
-    await createBelonging({ groupId: "group-1", userId: "other-user", acceptedAt: now });
-    await createBelonging({ groupId: "group-1", userId: "pending-user", acceptedAt: null });
+    await createBelongings([
+      { groupId: "group-1", userId: AUTH_USER.id, acceptedAt: now },
+      { groupId: "group-1", userId: "other-user", acceptedAt: now },
+      { groupId: "group-1", userId: "pending-user", acceptedAt: null },
+    ]);
 
     const res = await client.api.groups.$get();
 
@@ -129,7 +143,7 @@ describe("GET /api/groups/:groupId/search/users", () => {
     await createGroup({
       id: groupId,
       name: "Test Group",
-      ownerId: "test-user",
+      ownerId: AUTH_USER.id,
       createdAt: now,
       updatedAt: now,
     });
@@ -172,7 +186,7 @@ describe("GET /api/groups/:groupId/search/users", () => {
     await createGroup({
       id: groupId,
       name: "Accepted Group",
-      ownerId: "test-user",
+      ownerId: AUTH_USER.id,
       createdAt: now,
       updatedAt: now,
     });
@@ -223,9 +237,15 @@ describe("POST /api/groups/:groupId/invite", () => {
     await createGroup({
       id: groupId,
       name: "Invite Group",
-      ownerId: "test-user",
+      ownerId: AUTH_USER.id,
       createdAt: now,
       updatedAt: now,
+    });
+    await createBelonging({
+      groupId,
+      userId: AUTH_USER.id,
+      createdAt: now,
+      acceptedAt: now,
     });
     await createUser({ id: targetUserId, name: "Invite User" });
 
@@ -238,7 +258,8 @@ describe("POST /api/groups/:groupId/invite", () => {
     expect(await res.json()).toEqual({ status: 201 });
 
     const belongings = await findBelongingsByGroupId(groupId);
-    expect(belongings).toHaveLength(1);
+    // リクエストしているユーザーと招待ユーザーの2件が存在すること
+    expect(belongings).toHaveLength(2);
     expect(belongings[0]).toMatchObject({
       groupId,
       userId: targetUserId,
@@ -254,9 +275,15 @@ describe("POST /api/groups/:groupId/invite", () => {
     await createGroup({
       id: groupId,
       name: "Invite Group 2",
-      ownerId: "test-user",
+      ownerId: AUTH_USER.id,
       createdAt: now,
       updatedAt: now,
+    });
+    await createBelonging({
+      groupId,
+      userId: AUTH_USER.id,
+      createdAt: now,
+      acceptedAt: now,
     });
     await createUser({ id: targetUserId, name: "Invite User 2" });
     await createBelonging({
@@ -280,6 +307,40 @@ describe("POST /api/groups/:groupId/invite", () => {
           message: expect.any(String),
         },
       ],
+    });
+  });
+
+  it("リクエストユーザーがグループに所属していない場合は403を返す", async () => {
+    const groupId = "group-invite-3";
+    const ownerId = "owner-3";
+    const targetUserId = "invite-user-3";
+    const now = new Date("2025-01-05T00:00:00Z");
+
+    await createUser({ id: ownerId, name: "Owner 3" });
+    await createGroup({
+      id: groupId,
+      name: "Invite Group 3",
+      ownerId,
+      createdAt: now,
+      updatedAt: now,
+    });
+    await createBelonging({
+      groupId,
+      userId: ownerId,
+      createdAt: now,
+      acceptedAt: now,
+    });
+    await createUser({ id: targetUserId, name: "Invite User 3" });
+
+    const res = await client.api.groups[":groupId"].invite.$post({
+      param: { groupId },
+      json: { user_id: targetUserId },
+    });
+
+    expect(res.status).toBe(403);
+    expect(await res.json()).toEqual({
+      status: 403,
+      message: expect.any(String),
     });
   });
 });

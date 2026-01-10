@@ -5,7 +5,14 @@ import type { NeonHttpDatabase } from "drizzle-orm/neon-http";
 import { getDb } from "../../src/db/client";
 import * as schema from "../../src/db/schema";
 import { GroupRepository } from "../../src/repositories/group.repository";
-import { createBelonging, createGroup, createUser } from "../helpers/db";
+import {
+  createBelonging,
+  createBelongings,
+  createGroup,
+  createGroups,
+  createUser,
+  createUsers,
+} from "../helpers/db";
 
 type Database = NeonHttpDatabase<typeof schema>;
 
@@ -124,33 +131,39 @@ describe("findAllWithMemberCount", () => {
     const date2 = new Date("2024-01-02T00:00:00Z");
 
     // メンバーを作成
-    await createUser({ id: "member-1", name: "Member 1" });
-    await createUser({ id: "member-2", name: "Member 2" });
-    await createUser({ id: "pending", name: "Pending" });
+    await createUsers([
+      { id: "member-1", name: "Member 1" },
+      { id: "member-2", name: "Member 2" },
+      { id: "pending", name: "Pending" },
+    ]);
 
     // グループ作成
-    await createGroup({
-      id: "group-1",
-      name: "Group1",
-      ownerId: "owner-1",
-      image: null,
-      createdAt: date1,
-      updatedAt: date1,
-    });
-    await createGroup({
-      id: "group-2",
-      name: "Group2",
-      ownerId: "owner-1",
-      image: "img",
-      createdAt: date2,
-      updatedAt: date2,
-    });
+    await createGroups([
+      {
+        id: "group-1",
+        name: "Group1",
+        ownerId: "owner-1",
+        image: null,
+        createdAt: date1,
+        updatedAt: date1,
+      },
+      {
+        id: "group-2",
+        name: "Group2",
+        ownerId: "owner-1",
+        image: "img",
+        createdAt: date2,
+        updatedAt: date2,
+      },
+    ]);
 
     // メンバーシップを作成、一部承諾済み、一部未承諾
-    await createBelonging({ groupId: "group-1", userId: "owner-1", acceptedAt: date1 });
-    await createBelonging({ groupId: "group-1", userId: "member-1", acceptedAt: date1 });
-    await createBelonging({ groupId: "group-1", userId: "pending", acceptedAt: null });
-    await createBelonging({ groupId: "group-2", userId: "member-2", acceptedAt: null });
+    await createBelongings([
+      { groupId: "group-1", userId: "owner-1", acceptedAt: date1 },
+      { groupId: "group-1", userId: "member-1", acceptedAt: date1 },
+      { groupId: "group-1", userId: "pending", acceptedAt: null },
+      { groupId: "group-2", userId: "member-2", acceptedAt: null },
+    ]);
 
     const result = await repository.findAllWithMemberCount("owner-1");
 
@@ -167,32 +180,38 @@ describe("findAllWithMemberCount", () => {
   });
 
   it("ユーザーが所属する複数グループをすべて返す", async () => {
-    await createUser({ id: "owner-1", name: "Owner" });
-    await createUser({ id: "member-1", name: "Member 1" });
+    await createUsers([
+      { id: "owner-1", name: "Owner" },
+      { id: "member-1", name: "Member 1" },
+    ]);
 
     const date1 = new Date("2024-01-01T00:00:00Z");
     const date2 = new Date("2024-01-02T00:00:00Z");
 
-    await createGroup({
-      id: "group-a",
-      name: "GroupA",
-      ownerId: "owner-1",
-      image: null,
-      createdAt: date1,
-      updatedAt: date1,
-    });
-    await createGroup({
-      id: "group-b",
-      name: "GroupB",
-      ownerId: "owner-1",
-      image: null,
-      createdAt: date2,
-      updatedAt: date2,
-    });
+    await createGroups([
+      {
+        id: "group-a",
+        name: "GroupA",
+        ownerId: "owner-1",
+        image: null,
+        createdAt: date1,
+        updatedAt: date1,
+      },
+      {
+        id: "group-b",
+        name: "GroupB",
+        ownerId: "owner-1",
+        image: null,
+        createdAt: date2,
+        updatedAt: date2,
+      },
+    ]);
 
-    await createBelonging({ groupId: "group-a", userId: "owner-1", acceptedAt: date1 });
-    await createBelonging({ groupId: "group-a", userId: "member-1", acceptedAt: date1 });
-    await createBelonging({ groupId: "group-b", userId: "owner-1", acceptedAt: date2 });
+    await createBelongings([
+      { groupId: "group-a", userId: "owner-1", acceptedAt: date1 },
+      { groupId: "group-a", userId: "member-1", acceptedAt: date1 },
+      { groupId: "group-b", userId: "owner-1", acceptedAt: date2 },
+    ]);
 
     const result = await repository.findAllWithMemberCount("owner-1");
 
@@ -222,33 +241,39 @@ describe("findAllWithMemberCount", () => {
     const date2 = new Date("2024-01-02T00:00:00Z");
 
     // メンバーを作成
-    await createUser({ id: "member-1", name: "Member 1" });
-    await createUser({ id: "member-2", name: "Member 2" });
-    await createUser({ id: "pending", name: "Pending" });
+    await createUsers([
+      { id: "member-1", name: "Member 1" },
+      { id: "member-2", name: "Member 2" },
+      { id: "pending", name: "Pending" },
+    ]);
 
     // グループ作成
-    await createGroup({
-      id: "group-1",
-      name: "Group1",
-      ownerId: "owner-1",
-      image: null,
-      createdAt: date1,
-      updatedAt: date1,
-    });
-    await createGroup({
-      id: "group-2",
-      name: "Group2",
-      ownerId: "owner-1",
-      image: "img",
-      createdAt: date2,
-      updatedAt: date2,
-    });
+    await createGroups([
+      {
+        id: "group-1",
+        name: "Group1",
+        ownerId: "owner-1",
+        image: null,
+        createdAt: date1,
+        updatedAt: date1,
+      },
+      {
+        id: "group-2",
+        name: "Group2",
+        ownerId: "owner-1",
+        image: "img",
+        createdAt: date2,
+        updatedAt: date2,
+      },
+    ]);
 
     // メンバーシップを作成、一部承諾済み、一部未承諾
-    await createBelonging({ groupId: "group-1", userId: "owner-1", acceptedAt: date1 });
-    await createBelonging({ groupId: "group-1", userId: "member-1", acceptedAt: date1 });
-    await createBelonging({ groupId: "group-1", userId: "pending", acceptedAt: null });
-    await createBelonging({ groupId: "group-2", userId: "member-2", acceptedAt: null });
+    await createBelongings([
+      { groupId: "group-1", userId: "owner-1", acceptedAt: date1 },
+      { groupId: "group-1", userId: "member-1", acceptedAt: date1 },
+      { groupId: "group-1", userId: "pending", acceptedAt: null },
+      { groupId: "group-2", userId: "member-2", acceptedAt: null },
+    ]);
 
     const result = await repository.findAllWithMemberCount("pending");
 
@@ -273,9 +298,11 @@ describe("findUsersByGroupId", () => {
     const pendingId = "pending-1";
 
     // ユーザーとグループ作成
-    await createUser({ id: ownerId, name: "Owner" });
-    await createUser({ id: memberId, name: "Member One", email: "member1@example.com" });
-    await createUser({ id: pendingId, name: "Pending User", email: "pending@example.com" });
+    await createUsers([
+      { id: ownerId, name: "Owner" },
+      { id: memberId, name: "Member One", email: "member1@example.com" },
+      { id: pendingId, name: "Pending User", email: "pending@example.com" },
+    ]);
 
     const createdAt = new Date("2025-01-01T00:00:00Z");
     await createGroup({
@@ -292,24 +319,26 @@ describe("findUsersByGroupId", () => {
     const belongingCreated3 = new Date("2025-01-04T00:00:00Z");
 
     // 所属レコード（acceptedAt の有無を混在させる）
-    await createBelonging({
-      groupId,
-      userId: ownerId,
-      createdAt: belongingCreated1,
-      acceptedAt: belongingCreated1,
-    });
-    await createBelonging({
-      groupId,
-      userId: pendingId,
-      createdAt: belongingCreated2,
-      acceptedAt: null,
-    });
-    await createBelonging({
-      groupId,
-      userId: memberId,
-      createdAt: belongingCreated3,
-      acceptedAt: belongingCreated3,
-    });
+    await createBelongings([
+      {
+        groupId,
+        userId: ownerId,
+        createdAt: belongingCreated1,
+        acceptedAt: belongingCreated1,
+      },
+      {
+        groupId,
+        userId: pendingId,
+        createdAt: belongingCreated2,
+        acceptedAt: null,
+      },
+      {
+        groupId,
+        userId: memberId,
+        createdAt: belongingCreated3,
+        acceptedAt: belongingCreated3,
+      },
+    ]);
 
     const result = await repository.findUsersByGroupId(groupId);
 

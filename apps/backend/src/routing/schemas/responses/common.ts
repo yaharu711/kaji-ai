@@ -20,7 +20,13 @@ export const unauthorizedSchema = z.object({
   message: z.string(),
 });
 
+export const forbiddenSchema = z.object({
+  status: z.literal(403),
+  message: z.string(),
+});
+
 export type ErrorDetail = z.infer<typeof errorDetailSchema>;
 export type BadRequestResponse = z.infer<typeof badRequestSchema>;
 export type UnprocessableEntityResponse = z.infer<typeof unprocessableEntitySchema>;
 export type UnauthorizedResponse = z.infer<typeof unauthorizedSchema>;
+export type ForbiddenResponse = z.infer<typeof forbiddenSchema>;

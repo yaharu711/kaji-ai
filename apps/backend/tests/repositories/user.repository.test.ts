@@ -5,7 +5,7 @@ import type { NeonHttpDatabase } from "drizzle-orm/neon-http";
 import { getDb } from "../../src/db/client";
 import * as schema from "../../src/db/schema";
 import { UserRepository } from "../../src/repositories/user.repository";
-import { createUser } from "../helpers/db";
+import { createUser, createUsers } from "../helpers/db";
 
 type Database = NeonHttpDatabase<typeof schema>;
 
@@ -27,8 +27,10 @@ beforeEach(async () => {
 
 describe("findByEmail", () => {
   it("メールアドレスでユーザーを取得できること", async () => {
-    await createUser({ id: "user-1", name: "Alice", email: "alice@example.com" });
-    await createUser({ id: "user-2", name: "Bob", email: "bob@example.com" });
+    await createUsers([
+      { id: "user-1", name: "Alice", email: "alice@example.com" },
+      { id: "user-2", name: "Bob", email: "bob@example.com" },
+    ]);
 
     const expectedUser = {
       id: "user-2",
