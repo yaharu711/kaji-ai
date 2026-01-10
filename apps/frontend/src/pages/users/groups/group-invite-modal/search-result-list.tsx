@@ -49,8 +49,19 @@ function SearchResultList({ results, onInvite }: SearchResultListProps) {
 
           return (
             <li key={user.id} className={styles.card}>
-              <div className={styles.avatar} aria-hidden="true">
-                <span className={styles.avatarInitial}>{getInitial(user.name ?? "")}</span>
+              <div className={styles.avatar}>
+                {user.image_url ? (
+                  <img
+                    src={user.image_url}
+                    alt={`${user.name ?? "ユーザー"}のアイコン`}
+                    className={styles.avatarImage}
+                    referrerPolicy="no-referrer"
+                  />
+                ) : (
+                  <span className={styles.avatarInitial} aria-hidden="true">
+                    {getInitial(user.name ?? "")}
+                  </span>
+                )}
               </div>
               <div className={styles.meta}>
                 <p className={styles.name}>{user.name ?? ""}</p>
