@@ -19,6 +19,11 @@ vi.mock("../../src/util/env", () => ({
  * 認証ミドルウェアの verifyAuth をモックして常に通過させる。
  * 他のエクスポートは実装そのままを利用する。
  */
+export const AUTH_USER = {
+  id: "test-user",
+  name: "Test User",
+} as const;
+
 vi.mock("@hono/auth-js", async () => {
   const actual = await vi.importActual<typeof import("@hono/auth-js")>("@hono/auth-js");
 
@@ -26,7 +31,7 @@ vi.mock("@hono/auth-js", async () => {
     ...actual,
     verifyAuth: () => (c, next) => {
       c.set("authUser", {
-        session: { user: { id: "test-user", name: "Test User" } },
+        session: { user: AUTH_USER },
       });
       return next();
     },

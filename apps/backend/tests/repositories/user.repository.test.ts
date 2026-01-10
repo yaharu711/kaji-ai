@@ -5,6 +5,7 @@ import type { NeonHttpDatabase } from "drizzle-orm/neon-http";
 import { getDb } from "../../src/db/client";
 import * as schema from "../../src/db/schema";
 import { UserRepository } from "../../src/repositories/user.repository";
+import { createUser, createUsers } from "../helpers/db";
 
 type Database = NeonHttpDatabase<typeof schema>;
 
@@ -26,7 +27,7 @@ beforeEach(async () => {
 
 describe("findByEmail", () => {
   it("メールアドレスでユーザーを取得できること", async () => {
-    await db.insert(schema.users).values([
+    await createUsers([
       { id: "user-1", name: "Alice", email: "alice@example.com" },
       { id: "user-2", name: "Bob", email: "bob@example.com" },
     ]);
@@ -43,9 +44,7 @@ describe("findByEmail", () => {
   });
 
   it("存在しないメールアドレスの場合は null を返すこと", async () => {
-    await db
-      .insert(schema.users)
-      .values([{ id: "user-1", name: "Alice", email: "alice@example.com" }]);
+    await createUser({ id: "user-1", name: "Alice", email: "alice@example.com" });
 
     const result = await repository.findByEmail("notfound@example.com");
 

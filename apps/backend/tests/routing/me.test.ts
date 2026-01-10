@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { testClient } from "hono/testing";
 
-import "../helpers/mockAuth";
+import { AUTH_USER } from "../helpers/mockAuth";
 import app, { RoutingApp } from "../../src/routing/index";
 
 describe("ログイン中ユーザーの情報取得ができること", () => {
@@ -13,8 +13,8 @@ describe("ログイン中ユーザーの情報取得ができること", () => {
     expect(res.status).toBe(200);
     expect(await res.json()).toEqual({
       user: {
-        id: "test-user",
-        name: "Test User",
+        id: AUTH_USER.id,
+        name: AUTH_USER.name,
       },
     });
   });
