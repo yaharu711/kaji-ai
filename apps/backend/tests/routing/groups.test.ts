@@ -222,3 +222,78 @@ describe("GET /api/groups/:groupId/search/users", () => {
     expect(await res.json()).toEqual({ users: [] });
   });
 });
+
+describe("POST /api/groups/:groupId/invite", () => {
+  it("未所属のユーザーを招待すると201が返り、招待レコードが作成される", async () => {
+    const groupId = "group-invite-1";
+    const targetUserId = "invite-user-1";
+    const now = new Date("2025-01-03T00:00:00Z");
+
+    await db.insert(schema.groups).values({
+      id: groupId,
+      name: "Invite Group",
+      ownerId: "test-user",
+      image: null,
+      createdAt: now,
+      updatedAt: now,
+    });
+    await db.insert(schema.users).values({ id: targetUserId, name: "Invite User" });
+
+    const res = await client.api.groups[":groupId"].invite.$post({
+      param: { groupId },
+      json: { user_id: targetUserId },
+    });
+
+    expect(res.status).toBe(201);
+    expect(await res.json()).toEqual({ status: 201 });
+
+    const belongings = await db
+      .select()
+      .from(schema.userGroupBelongings)
+      .where(sql`${schema.userGroupBelongings.groupId} = ${groupId}`);
+    expect(belongings).toHaveLength(1);
+    expect(belongings[0]).toMatchObject({
+      groupId,
+      userId: targetUserId,
+      acceptedAt: null,
+    });
+  });
+
+  it("既に所属/招待済みのユーザーには422を返す", async () => {
+    const groupId = "group-invite-2";
+    const targetUserId = "invite-user-2";
+    const now = new Date("2025-01-04T00:00:00Z");
+
+    await db.insert(schema.groups).values({
+      id: groupId,
+      name: "Invite Group 2",
+      ownerId: "test-user",
+      image: null,
+      createdAt: now,
+      updatedAt: now,
+    });
+    await db.insert(schema.users).values({ id: targetUserId, name: "Invite User 2" });
+    await db.insert(schema.userGroupBelongings).values({
+      groupId,
+      userId: targetUserId,
+      createdAt: now,
+      acceptedAt: null,
+    });
+
+    const res = await client.api.groups[":groupId"].invite.$post({
+      param: { groupId },
+      json: { user_id: targetUserId },
+    });
+
+    expect(res.status).toBe(422);
+    expect(await res.json()).toEqual({
+      status: 422,
+      errors: [
+        {
+          field: "user_id",
+          message: expect.any(String),
+        },
+      ],
+    });
+  });
+});
