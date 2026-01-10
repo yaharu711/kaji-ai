@@ -6,6 +6,7 @@ import "../helpers/mockAuth";
 import app, { RoutingApp } from "../../src/routing/index";
 import { getDb } from "../../src/db/client";
 import * as schema from "../../src/db/schema";
+import { createBelonging, createGroup, createUser, findBelongingsByGroupId } from "../helpers/db";
 
 const client = testClient<RoutingApp>(app);
 const db = getDb();
@@ -15,7 +16,7 @@ beforeEach(async () => {
   await db.execute(sql`TRUNCATE TABLE "groups" CASCADE`);
   await db.execute(sql`TRUNCATE TABLE "user" CASCADE`);
   // mockAuth で userId を test-user に固定しているため、外部キー整合性のためにユーザーを挿入
-  await db.insert(schema.users).values({ id: "test-user", name: "Test User" });
+  await createUser({ id: "test-user", name: "Test User" });
 });
 
 describe("POST /api/groups", () => {
@@ -35,7 +36,7 @@ describe("POST /api/groups", () => {
       image: null,
     });
     // 所属情報も作成されていることを確認
-    const belongings = await db.select().from(schema.userGroupBelongings);
+    const belongings = await findBelongingsByGroupId(rows[0].id);
     expect(belongings).toHaveLength(1);
     expect(belongings[0]).toMatchObject({
       groupId: rows[0].id,
@@ -75,35 +76,27 @@ describe("GET /api/groups", () => {
   it("所属グループの一覧を返し、必要なプロパティが含まれる", async () => {
     const now = new Date("2024-01-01T00:00:00Z");
 
-    await db.insert(schema.users).values([
-      { id: "other-user", name: "Other User" },
-      { id: "pending-user", name: "Pending User" },
-    ]);
+    await createUser({ id: "other-user", name: "Other User" });
+    await createUser({ id: "pending-user", name: "Pending User" });
 
-    await db.insert(schema.groups).values([
-      {
-        id: "group-1",
-        name: "Group One",
-        ownerId: "test-user",
-        image: null,
-        createdAt: now,
-        updatedAt: now,
-      },
-      {
-        id: "group-2",
-        name: "Group Two",
-        ownerId: "test-user",
-        image: null,
-        createdAt: new Date("2024-01-02T00:00:00Z"),
-        updatedAt: new Date("2024-01-02T00:00:00Z"),
-      },
-    ]);
+    await createGroup({
+      id: "group-1",
+      name: "Group One",
+      ownerId: "test-user",
+      createdAt: now,
+      updatedAt: now,
+    });
+    await createGroup({
+      id: "group-2",
+      name: "Group Two",
+      ownerId: "test-user",
+      createdAt: new Date("2024-01-02T00:00:00Z"),
+      updatedAt: new Date("2024-01-02T00:00:00Z"),
+    });
 
-    await db.insert(schema.userGroupBelongings).values([
-      { groupId: "group-1", userId: "test-user", acceptedAt: now },
-      { groupId: "group-1", userId: "other-user", acceptedAt: now },
-      { groupId: "group-1", userId: "pending-user", acceptedAt: null },
-    ]);
+    await createBelonging({ groupId: "group-1", userId: "test-user", acceptedAt: now });
+    await createBelonging({ groupId: "group-1", userId: "other-user", acceptedAt: now });
+    await createBelonging({ groupId: "group-1", userId: "pending-user", acceptedAt: null });
 
     const res = await client.api.groups.$get();
 
@@ -133,16 +126,15 @@ describe("GET /api/groups/:groupId/search/users", () => {
     };
     const now = new Date("2025-01-01T00:00:00Z");
 
-    await db.insert(schema.groups).values({
+    await createGroup({
       id: groupId,
       name: "Test Group",
       ownerId: "test-user",
-      image: null,
       createdAt: now,
       updatedAt: now,
     });
-    await db.insert(schema.users).values({ ...invitedUser, image: null });
-    await db.insert(schema.userGroupBelongings).values({
+    await createUser({ ...invitedUser, image: null });
+    await createBelonging({
       groupId,
       userId: invitedUser.id,
       createdAt: now,
@@ -177,16 +169,15 @@ describe("GET /api/groups/:groupId/search/users", () => {
     };
     const now = new Date("2025-01-02T00:00:00Z");
 
-    await db.insert(schema.groups).values({
+    await createGroup({
       id: groupId,
       name: "Accepted Group",
       ownerId: "test-user",
-      image: null,
       createdAt: now,
       updatedAt: now,
     });
-    await db.insert(schema.users).values({ ...member, image: null });
-    await db.insert(schema.userGroupBelongings).values({
+    await createUser({ ...member, image: null });
+    await createBelonging({
       groupId,
       userId: member.id,
       createdAt: now,
@@ -229,15 +220,14 @@ describe("POST /api/groups/:groupId/invite", () => {
     const targetUserId = "invite-user-1";
     const now = new Date("2025-01-03T00:00:00Z");
 
-    await db.insert(schema.groups).values({
+    await createGroup({
       id: groupId,
       name: "Invite Group",
       ownerId: "test-user",
-      image: null,
       createdAt: now,
       updatedAt: now,
     });
-    await db.insert(schema.users).values({ id: targetUserId, name: "Invite User" });
+    await createUser({ id: targetUserId, name: "Invite User" });
 
     const res = await client.api.groups[":groupId"].invite.$post({
       param: { groupId },
@@ -247,10 +237,7 @@ describe("POST /api/groups/:groupId/invite", () => {
     expect(res.status).toBe(201);
     expect(await res.json()).toEqual({ status: 201 });
 
-    const belongings = await db
-      .select()
-      .from(schema.userGroupBelongings)
-      .where(sql`${schema.userGroupBelongings.groupId} = ${groupId}`);
+    const belongings = await findBelongingsByGroupId(groupId);
     expect(belongings).toHaveLength(1);
     expect(belongings[0]).toMatchObject({
       groupId,
@@ -264,16 +251,15 @@ describe("POST /api/groups/:groupId/invite", () => {
     const targetUserId = "invite-user-2";
     const now = new Date("2025-01-04T00:00:00Z");
 
-    await db.insert(schema.groups).values({
+    await createGroup({
       id: groupId,
       name: "Invite Group 2",
       ownerId: "test-user",
-      image: null,
       createdAt: now,
       updatedAt: now,
     });
-    await db.insert(schema.users).values({ id: targetUserId, name: "Invite User 2" });
-    await db.insert(schema.userGroupBelongings).values({
+    await createUser({ id: targetUserId, name: "Invite User 2" });
+    await createBelonging({
       groupId,
       userId: targetUserId,
       createdAt: now,
