@@ -82,17 +82,18 @@
 }
 
 .actions {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
   gap: 12px;
+  flex-wrap: wrap;
+}
+
+.actions > button {
+  /* 文字数によらずコンテナ幅を均等に振り分けるスタイル */
+  flex: 1 1 0;
 }
 
 @media (max-width: 520px) {
   .card {
     padding: 14px 14px 12px;
-  }
-
-  .actions {
-    grid-template-columns: 1fr;
   }
 }

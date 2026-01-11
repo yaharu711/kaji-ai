@@ -55,9 +55,8 @@ function GroupInviteCard({
         <Button
           type="button"
           size="md"
-          radius="pill"
+          radius="lg"
           variant="primary"
-          fullWidth
           onClick={handleAccept}
           disabled={disabled}
           icon={<Check size={18} strokeWidth={2.4} aria-hidden />}
@@ -68,9 +67,8 @@ function GroupInviteCard({
         <Button
           type="button"
           size="md"
-          radius="pill"
+          radius="lg"
           variant="outline"
-          fullWidth
           onClick={handleDecline}
           disabled={disabled}
           icon={<X size={18} strokeWidth={2.4} aria-hidden />}
