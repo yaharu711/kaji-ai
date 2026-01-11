@@ -5,6 +5,7 @@ import Button from "../../../components/Button";
 import { useGroupsQuery } from "../hooks/useGroupsQuery";
 import { useCreateGroupMutation } from "../hooks/useCreateGroupMutation";
 import { useSearchGroupUsers } from "../hooks/useSearchGroupUsers";
+import { useInviteGroupMutation } from "../hooks/useInviteGroupMutation";
 import GroupCreateModal from "./group-create-modal";
 import GroupCard from "./group-card";
 import GroupInviteCard from "./invite-card";
@@ -19,6 +20,7 @@ function GroupsSection() {
   );
   const { data, isLoading, isError } = useGroupsQuery();
   const { mutateAsync: createGroup, isPending: isCreating } = useCreateGroupMutation();
+  const { mutateAsync: inviteGroupUser, isPending: isInviting } = useInviteGroupMutation();
   const {
     mutateAsync: searchGroupUsers,
     isPending: isSearching,
@@ -58,6 +60,16 @@ function GroupsSection() {
 
     try {
       await searchGroupUsers({ groupId: inviteModalGroup.id, email: keyword });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleInvite = async (userId: string) => {
+    if (!inviteModalGroup) return;
+
+    try {
+      await inviteGroupUser({ groupId: inviteModalGroup.id, userId });
     } catch (error) {
       console.error(error);
     }
@@ -155,9 +167,13 @@ function GroupsSection() {
           void handleSearch(keyword);
         }}
         isSearching={isSearching}
+        isInviting={isInviting}
         searchResults={searchUsersResult?.users ?? []}
         searchError={searchError}
         onClearSearchError={clearErrorMessage}
+        onInvite={(user) => {
+          void handleInvite(user.id);
+        }}
       />
     </PageCard>
   );

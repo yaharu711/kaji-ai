@@ -7,17 +7,7 @@ import { useErrorModal } from "../../../components/ErrorModalProvider/useErrorMo
 
 export const useSearchGroupUsers = () => {
   const [errorMessage, setErrorMessage] = useState("");
-  const { showError, closeError } = useErrorModal();
-
-  const getModalMessage = (status?: number) => {
-    if (status === 401 || status === 403) {
-      return "認証に失敗しました。再ログインしてください。";
-    }
-    if (status && status >= 500) {
-      return "サーバーでエラーが発生しました。時間をおいて再度お試しください。";
-    }
-    return "予期しないエラーが発生しました。時間をおいて再度お試しください。";
-  };
+  const { showError, closeError, getModalMessage } = useErrorModal();
 
   const mutation = useMutation({
     mutationFn: ({ groupId, email }: { groupId: string; email: string }) =>

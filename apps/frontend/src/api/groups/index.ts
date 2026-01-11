@@ -2,6 +2,8 @@ import type {
   CreateGroupRequest,
   CreateGroupResponse,
   GetGroupsResponse,
+  InviteGroupRequest,
+  InviteGroupResponse,
   SearchUsersResponse,
   UnprocessableEntityResponse,
 } from "@kaiji-ai/backend/contracts";
@@ -55,6 +57,31 @@ export const createGroup = async ({ name }: CreateGroupRequest): Promise<CreateG
 
   if (!res.ok) {
     throw new Error("グループの作成に失敗しました");
+  }
+
+  return res.json();
+};
+
+export const inviteGroupUser = async ({
+  groupId,
+  user_id,
+}: InviteGroupRequest & { groupId: string }): Promise<InviteGroupResponse> => {
+  const res = await groupsApi[":groupId"].invite.$post({
+    param: { groupId },
+    json: { user_id },
+  });
+
+  if (res.status === 422) {
+    const body = (await res.json()) as UnprocessableEntityResponse;
+    const message = body.errors
+      .map((error) => error.message)
+      .filter(Boolean)
+      .join(" / ");
+    throw new ApiError(422, message || "入力内容を確認してください");
+  }
+
+  if (!res.ok) {
+    throw new ApiError(res.status, "ユーザー招待に失敗しました");
   }
 
   return res.json();
