@@ -21,7 +21,7 @@
 
 .card {
   display: grid;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: 50px minmax(0, 1fr) max-content;
   align-items: center;
   gap: 14px;
   padding: 14px 14px 14px 16px;
@@ -33,8 +33,8 @@
 }
 
 .avatar {
-  width: 46px;
-  height: 46px;
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
   background: radial-gradient(
     circle at 30% 30%,
@@ -64,38 +64,33 @@
 .meta {
   display: grid;
   gap: 4px;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .name {
   margin: 0;
-  font-weight: 800;
   color: var(--color-text-strong);
   font-size: 16px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
 }
 
-.email {
-  margin: 0;
-  color: var(--color-text-muted);
-  font-size: 14px;
+.card button {
+  justify-self: end;
 }
 
 @media (max-width: 520px) {
   .card {
-    grid-template-columns: 1fr;
+    grid-template-columns: auto 1fr auto;
     gap: 10px;
-    text-align: center;
-    justify-items: center;
+    text-align: left;
+    justify-items: start;
   }
 
   .meta {
-    justify-items: center;
-  }
-
-  .avatar {
-    margin-bottom: 2px;
-  }
-
-  .card button {
-    width: 100%;
+    justify-items: start;
   }
 }

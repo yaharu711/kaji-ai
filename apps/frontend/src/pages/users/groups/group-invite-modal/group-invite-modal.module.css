@@ -13,7 +13,9 @@
   padding: 24px 18px;
   min-height: 160px;
   display: grid;
-  place-items: center;
+  align-items: center;
+  /* 横幅いっぱいに広がるために指定 */
+  justify-items: stretch;
 }
 
 .emptyContainer {
@@ -43,5 +45,9 @@
 @media (max-width: 520px) {
   .searchForm {
     grid-template-columns: 1fr;
+  }
+
+  .resultArea {
+    padding: 20px 12px;
   }
 }

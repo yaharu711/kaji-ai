@@ -9,6 +9,16 @@ const noopSearch = (keyword: string) => {
   void keyword;
 };
 
+const noopInvite = (user: {
+  id: string;
+  name: string | null;
+  email: string | null;
+  image_url: string | null;
+  is_invited_or_belonging: boolean;
+}) => {
+  void user;
+};
+
 const meta = {
   component: GroupInviteModal,
   parameters: {
@@ -20,9 +30,11 @@ const meta = {
     onOpenChange: noopOpenChange,
     onSearch: noopSearch,
     isSearching: false,
+    isInviting: false,
     searchResults: [],
     searchError: "",
     onClearSearchError: () => undefined,
+    onInvite: noopInvite,
   },
 } satisfies Meta<typeof GroupInviteModal>;
 
@@ -80,6 +92,20 @@ export const AlreadyJoined: Story = {
         email: "hanako@example.com",
         image_url: null,
         is_invited_or_belonging: true,
+      },
+    ],
+  },
+};
+
+export const LongName: Story = {
+  args: {
+    searchResults: [
+      {
+        id: "long-1",
+        name: "とても長い名前のユーザーです表示が崩れないか確認用",
+        email: "longname@example.com",
+        image_url: null,
+        is_invited_or_belonging: false,
       },
     ],
   },

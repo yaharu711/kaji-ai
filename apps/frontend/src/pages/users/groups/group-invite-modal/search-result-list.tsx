@@ -5,12 +5,13 @@ import styles from "./search-result-list.module.css";
 
 interface SearchResultListProps {
   results: SearchUser[];
-  onInvite?: (user: SearchUser) => void;
+  onInvite: (user: SearchUser) => void;
+  isInviting: boolean;
 }
 
-function SearchResultList({ results, onInvite }: SearchResultListProps) {
+function SearchResultList({ results, onInvite, isInviting }: SearchResultListProps) {
   const handleInvite = (user: SearchUser) => {
-    if (!onInvite) return;
+    if (isInviting) return;
     onInvite(user);
   };
 
@@ -33,7 +34,7 @@ function SearchResultList({ results, onInvite }: SearchResultListProps) {
           const { label, disabled, icon, variant } = (() => {
             if (isUnavailable) {
               return {
-                label: "参加/招待済み",
+                label: "招待済み",
                 disabled: true,
                 icon: <Check size={18} strokeWidth={2.2} />,
                 variant: "secondary" as const,
@@ -46,6 +47,8 @@ function SearchResultList({ results, onInvite }: SearchResultListProps) {
               variant: "primary" as const,
             };
           })();
+
+          const isDisabled = disabled || isInviting;
 
           return (
             <li key={user.id} className={styles.card}>
@@ -65,7 +68,6 @@ function SearchResultList({ results, onInvite }: SearchResultListProps) {
               </div>
               <div className={styles.meta}>
                 <p className={styles.name}>{user.name ?? ""}</p>
-                <p className={styles.email}>{user.email ?? ""}</p>
               </div>
               <Button
                 size="md"
@@ -75,7 +77,7 @@ function SearchResultList({ results, onInvite }: SearchResultListProps) {
                 onClick={() => {
                   handleInvite(user);
                 }}
-                disabled={disabled}
+                disabled={isDisabled}
               >
                 {label}
               </Button>

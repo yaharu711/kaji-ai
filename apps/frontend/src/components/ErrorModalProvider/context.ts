@@ -10,6 +10,7 @@ export interface ErrorModalOptions {
 export interface ErrorModalContextValue {
   showError: (options: ErrorModalOptions) => void;
   closeError: () => void;
+  getModalMessage: (status?: number) => string;
 }
 
 export const ErrorModalContext = createContext<ErrorModalContextValue | undefined>(undefined);
