@@ -5,6 +5,7 @@ import { cors } from "hono/cors";
 import authConfig from "../auth.config";
 import env from "../util/env";
 import groups from "./groups";
+import { requireRequester } from "./middlewares/requester";
 
 const frontendOrigin = env("FRONTEND_ORIGIN");
 const app = new Hono()
@@ -24,6 +25,7 @@ const app = new Hono()
   )
   .use("/api/auth/*", authHandler())
   .use("/api/*", verifyAuth())
+  .use("/api/*", requireRequester())
   .route("/api/groups", groups)
   .get("/api/me", (c) => {
     const auth = c.get("authUser");

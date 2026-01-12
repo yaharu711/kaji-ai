@@ -5,11 +5,7 @@ import { GroupRepository } from "../repositories/group.repository";
 import { UserRepository } from "../repositories/user.repository";
 import { createGroupRequestSchema } from "./schemas/requests/createGroupRequest";
 import { inviteGroupRequestSchema, searchUsersRequestSchema } from "./schemas/requests";
-import {
-  forbiddenSchema,
-  unauthorizedSchema,
-  unprocessableEntitySchema,
-} from "./schemas/responses/common";
+import { forbiddenSchema, unprocessableEntitySchema } from "./schemas/responses/common";
 import { createGroupSuccessSchema } from "./schemas/responses/createGroupResponse";
 import { getGroupsSuccessSchema } from "./schemas/responses/getGroupsResponse";
 import { inviteGroupSuccessSchema } from "./schemas/responses/inviteGroupResponse";
@@ -22,14 +18,8 @@ const userRepository = new UserRepository(db);
 
 const app = new Hono()
   .get("/", async (c) => {
-    const auth = c.get("authUser");
-    const userId = auth?.session?.user?.id;
-    if (!userId) {
-      const body = unauthorizedSchema.parse({ status: 401, message: "Unauthorized" });
-      return c.json(body, 401);
-    }
-
-    const groups = await groupRepository.findAllWithMemberCount(userId);
+    const requesterId = c.var.requesterId;
+    const groups = await groupRepository.findAllWithMemberCount(requesterId);
 
     const response = getGroupsSuccessSchema.parse({
       groups: groups.map((group) => ({
@@ -45,13 +35,6 @@ const app = new Hono()
     return c.json(response, 200);
   })
   .get("/:groupId/search/users", validateQuery(searchUsersRequestSchema), async (c) => {
-    const auth = c.get("authUser");
-    const requesterId = auth?.session?.user?.id;
-    if (!requesterId) {
-      const body = unauthorizedSchema.parse({ status: 401, message: "Unauthorized" });
-      return c.json(body, 401);
-    }
-
     const { email } = c.req.valid("query");
     const { groupId } = c.req.param();
 
@@ -80,13 +63,7 @@ const app = new Hono()
     return c.json(body, 200);
   })
   .post("/:groupId/invitations", validateJson(inviteGroupRequestSchema), async (c) => {
-    const auth = c.get("authUser");
-    const requesterId = auth?.session?.user?.id;
-    if (!requesterId) {
-      const body = unauthorizedSchema.parse({ status: 401, message: "Unauthorized" });
-      return c.json(body, 401);
-    }
-
+    const requesterId = c.var.requesterId;
     const now = new Date();
     const { groupId } = c.req.param();
     const { user_id } = c.req.valid("json");
@@ -117,13 +94,7 @@ const app = new Hono()
     return c.body(null, 204);
   })
   .post("/:groupId/invitations/accept", async (c) => {
-    const auth = c.get("authUser");
-    const userId = auth?.session?.user?.id;
-    if (!userId) {
-      const body = unauthorizedSchema.parse({ status: 401, message: "Unauthorized" });
-      return c.json(body, 401);
-    }
-
+    const userId = c.var.requesterId;
     const now = new Date();
     const { groupId } = c.req.param();
     const belongings = await groupRepository.findUsersByGroupId(groupId);
@@ -147,13 +118,7 @@ const app = new Hono()
     return c.body(null, 204);
   })
   .post("/:groupId/invitations/deny", async (c) => {
-    const auth = c.get("authUser");
-    const userId = auth?.session?.user?.id;
-    if (!userId) {
-      const body = unauthorizedSchema.parse({ status: 401, message: "Unauthorized" });
-      return c.json(body, 401);
-    }
-
+    const userId = c.var.requesterId;
     const { groupId } = c.req.param();
     const belongings = await groupRepository.findUsersByGroupId(groupId);
     const belonging = belongings.find((member) => member.id === userId);
@@ -174,14 +139,7 @@ const app = new Hono()
     const now = new Date();
 
     const { name } = c.req.valid("json");
-    const auth = c.get("authUser");
-
-    // verifyAuth ミドルウェアを通過しているので基本は存在する想定だが、安全のためチェック
-    const userId = auth?.session?.user?.id;
-    if (!userId) {
-      const body = unauthorizedSchema.parse({ status: 401, message: "Unauthorized" });
-      return c.json(body, 401);
-    }
+    const userId = c.var.requesterId;
 
     const groupId = crypto.randomUUID();
     const group = {
