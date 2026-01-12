@@ -117,6 +117,61 @@ const app = new Hono()
     const response = inviteGroupSuccessSchema.parse({ status: 201 });
     return c.json(response, 201);
   })
+  .post("/:groupId/invitations/accept", async (c) => {
+    const auth = c.get("authUser");
+    const userId = auth?.session?.user?.id;
+    if (!userId) {
+      const body = unauthorizedSchema.parse({ status: 401, message: "Unauthorized" });
+      return c.json(body, 401);
+    }
+
+    const now = new Date();
+    const { groupId } = c.req.param();
+    const belongings = await groupRepository.findUsersByGroupId(groupId);
+    const belonging = belongings.find((member) => member.id === userId);
+    // 他のユーザーがリクエストしてきている場合でも422を返す仕様（手抜き）
+    if (!belonging || belonging.acceptedAt !== null) {
+      const body = unprocessableEntitySchema.parse({
+        status: 422,
+        errors: [{ field: "group_id", message: "招待が存在しません" }],
+      });
+      return c.json(body, 422);
+    }
+
+    await groupRepository.updateBelonging({
+      groupId,
+      userId,
+      createdAt: now,
+      acceptedAt: now,
+    });
+
+    const response = inviteGroupSuccessSchema.parse({ status: 201 });
+    return c.json(response, 201);
+  })
+  .post("/:groupId/invitations/deny", async (c) => {
+    const auth = c.get("authUser");
+    const userId = auth?.session?.user?.id;
+    if (!userId) {
+      const body = unauthorizedSchema.parse({ status: 401, message: "Unauthorized" });
+      return c.json(body, 401);
+    }
+
+    const { groupId } = c.req.param();
+    const belongings = await groupRepository.findUsersByGroupId(groupId);
+    const belonging = belongings.find((member) => member.id === userId);
+    if (!belonging || belonging.acceptedAt !== null) {
+      const body = unprocessableEntitySchema.parse({
+        status: 422,
+        errors: [{ field: "group_id", message: "招待が存在しません" }],
+      });
+      return c.json(body, 422);
+    }
+
+    await groupRepository.deleteBelonging(userId, groupId);
+
+    const response = inviteGroupSuccessSchema.parse({ status: 201 });
+    return c.json(response, 201);
+  })
   .post("/", validateJson(createGroupRequestSchema), async (c) => {
     const now = new Date();
 

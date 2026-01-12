@@ -28,6 +28,30 @@ export class GroupRepository {
     await this.db.insert(schema.userGroupBelongings).values(params);
   }
 
+  async updateBelonging(params: BelongingDto): Promise<void> {
+    const { groupId, userId, acceptedAt } = params;
+    await this.db
+      .update(schema.userGroupBelongings)
+      .set({ acceptedAt })
+      .where(
+        and(
+          eq(schema.userGroupBelongings.groupId, groupId),
+          eq(schema.userGroupBelongings.userId, userId),
+        ),
+      );
+  }
+
+  async deleteBelonging(userId: string, groupId: string): Promise<void> {
+    await this.db
+      .delete(schema.userGroupBelongings)
+      .where(
+        and(
+          eq(schema.userGroupBelongings.groupId, groupId),
+          eq(schema.userGroupBelongings.userId, userId),
+        ),
+      );
+  }
+
   async deleteById(id: string): Promise<void> {
     await this.db.delete(schema.groups).where(eq(schema.groups.id, id));
   }
