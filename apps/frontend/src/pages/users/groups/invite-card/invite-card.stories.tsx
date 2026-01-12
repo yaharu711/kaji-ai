@@ -15,6 +15,12 @@ export const Default: Story = {
   args: {
     groupName: "山田家",
     inviterName: "山田 太郎",
+    onAccept: () => {
+      console.log("accept click");
+    },
+    onDecline: () => {
+      console.log("decline click");
+    },
   },
 };
 
@@ -23,5 +29,11 @@ export const Disabled: Story = {
     groupName: "佐藤家",
     inviterName: "佐藤 花子",
     disabled: true,
+    onAccept: () => {
+      console.log("accept click");
+    },
+    onDecline: () => {
+      console.log("decline click");
+    },
   },
 };

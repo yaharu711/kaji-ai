@@ -2,6 +2,7 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 
 import LoginPage from "./pages/login";
 import UserPage from "./pages/users";
+import GroupPage from "./pages/groups";
 import ProtectedLayout from "./pages/common/protected-layout";
 import NotFoundPage from "./pages/not-found";
 
@@ -13,6 +14,7 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route element={<ProtectedLayout />}>
           <Route path="/users/:userId" element={<UserPage />} />
+          <Route path="/groups/:groupId" element={<GroupPage />} />
         </Route>
         <Route path="*" element={<NotFoundPage />} />
       </Routes>

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { HousePlus } from "lucide-react";
 import PageCard from "../../../components/PageCard";
 import Button from "../../../components/Button";
@@ -6,7 +7,10 @@ import { useGroupsQuery } from "../hooks/useGroupsQuery";
 import { useCreateGroupMutation } from "../hooks/useCreateGroupMutation";
 import { useSearchGroupUsers } from "../hooks/useSearchGroupUsers";
 import { useInviteGroupMutation } from "../hooks/useInviteGroupMutation";
+import { useAcceptGroupInvitationMutation } from "../hooks/useAcceptGroupInvitationMutation";
+import { useDenyGroupInvitationMutation } from "../hooks/useDenyGroupInvitationMutation";
 import GroupCreateModal from "./group-create-modal";
+import GroupDenyModal from "./group-deny-modal";
 import GroupCard from "./group-card";
 import GroupInviteCard from "./invite-card";
 import GroupInviteModal from "./group-invite-modal";
@@ -14,13 +18,22 @@ import styles from "./groups.module.css";
 import { LoaderCircle } from "../../../components";
 
 function GroupsSection() {
+  const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [inviteModalGroup, setInviteModalGroup] = useState<{ id: string; name: string } | null>(
     null,
   );
+  const [denyModalGroup, setDenyModalGroup] = useState<{ id: string; name: string } | null>(null);
   const { data, isLoading, isError } = useGroupsQuery();
   const { mutateAsync: createGroup, isPending: isCreating } = useCreateGroupMutation();
   const { mutateAsync: inviteGroupUser, isPending: isInviting } = useInviteGroupMutation();
+  const { mutateAsync: acceptInvitation, isPending: isAccepting } =
+    useAcceptGroupInvitationMutation({
+      onSuccess: (groupId) => {
+        void navigate(`/groups/${groupId}`);
+      },
+    });
+  const { mutateAsync: denyInvitation, isPending: isDenying } = useDenyGroupInvitationMutation();
   const {
     mutateAsync: searchGroupUsers,
     isPending: isSearching,
@@ -55,6 +68,14 @@ function GroupsSection() {
     resetSearchResult();
   };
 
+  const openDenyModal = (groupId: string, groupName: string) => {
+    setDenyModalGroup({ id: groupId, name: groupName });
+  };
+
+  const closeDenyModal = () => {
+    setDenyModalGroup(null);
+  };
+
   const handleSearch = async (keyword: string) => {
     if (!inviteModalGroup) return;
 
@@ -70,6 +91,25 @@ function GroupsSection() {
 
     try {
       await inviteGroupUser({ groupId: inviteModalGroup.id, userId });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleAcceptInvitation = async (groupId: string) => {
+    try {
+      await acceptInvitation({ groupId });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleConfirmDenyInvitation = async () => {
+    if (!denyModalGroup) return;
+
+    try {
+      await denyInvitation({ groupId: denyModalGroup.id });
+      closeDenyModal();
     } catch (error) {
       console.error(error);
     }
@@ -105,6 +145,13 @@ function GroupsSection() {
             key={`invite-${group.id}`}
             groupName={group.name}
             inviterName={undefined}
+            disabled={isAccepting || isDenying}
+            onAccept={() => {
+              void handleAcceptInvitation(group.id);
+            }}
+            onDecline={() => {
+              openDenyModal(group.id, group.name);
+            }}
           />
         ))}
 
@@ -118,7 +165,7 @@ function GroupsSection() {
               handleInviteClick(group.id, group.name);
             }}
             onOpenClick={() => {
-              console.log(`Open group ${group.id}`);
+              void navigate(`/groups/${group.id}`);
             }}
           />
         ))}
@@ -174,6 +221,19 @@ function GroupsSection() {
         onInvite={(user) => {
           void handleInvite(user.id);
         }}
+      />
+
+      <GroupDenyModal
+        open={Boolean(denyModalGroup)}
+        groupName={denyModalGroup?.name}
+        onOpenChange={(open) => {
+          if (!open) closeDenyModal();
+        }}
+        onCancel={closeDenyModal}
+        onConfirm={() => {
+          void handleConfirmDenyInvitation();
+        }}
+        isSubmitting={isDenying}
       />
     </PageCard>
   );
