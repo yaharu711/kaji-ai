@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { HousePlus } from "lucide-react";
 import PageCard from "../../../components/PageCard";
 import Button from "../../../components/Button";
+import Modal from "../../../components/Modal";
 import { useGroupsQuery } from "../hooks/useGroupsQuery";
 import { useCreateGroupMutation } from "../hooks/useCreateGroupMutation";
 import { useSearchGroupUsers } from "../hooks/useSearchGroupUsers";
@@ -22,6 +23,7 @@ function GroupsSection() {
   const [inviteModalGroup, setInviteModalGroup] = useState<{ id: string; name: string } | null>(
     null,
   );
+  const [denyModalGroup, setDenyModalGroup] = useState<{ id: string; name: string } | null>(null);
   const { data, isLoading, isError } = useGroupsQuery();
   const { mutateAsync: createGroup, isPending: isCreating } = useCreateGroupMutation();
   const { mutateAsync: inviteGroupUser, isPending: isInviting } = useInviteGroupMutation();
@@ -66,6 +68,14 @@ function GroupsSection() {
     resetSearchResult();
   };
 
+  const openDenyModal = (groupId: string, groupName: string) => {
+    setDenyModalGroup({ id: groupId, name: groupName });
+  };
+
+  const closeDenyModal = () => {
+    setDenyModalGroup(null);
+  };
+
   const handleSearch = async (keyword: string) => {
     if (!inviteModalGroup) return;
 
@@ -94,9 +104,12 @@ function GroupsSection() {
     }
   };
 
-  const handleDenyInvitation = async (groupId: string) => {
+  const handleConfirmDenyInvitation = async () => {
+    if (!denyModalGroup) return;
+
     try {
-      await denyInvitation({ groupId });
+      await denyInvitation({ groupId: denyModalGroup.id });
+      closeDenyModal();
     } catch (error) {
       console.error(error);
     }
@@ -137,7 +150,7 @@ function GroupsSection() {
               void handleAcceptInvitation(group.id);
             }}
             onDecline={() => {
-              void handleDenyInvitation(group.id);
+              openDenyModal(group.id, group.name);
             }}
           />
         ))}
@@ -209,6 +222,45 @@ function GroupsSection() {
           void handleInvite(user.id);
         }}
       />
+
+      <Modal
+        open={Boolean(denyModalGroup)}
+        onOpenChange={(open) => {
+          if (!open) closeDenyModal();
+        }}
+        title="招待を拒否します"
+        // description="拒否すると、このグループからの招待は取り消されます。"
+        footer={
+          <>
+            <Button
+              type="button"
+              variant="outline"
+              size="md"
+              radius="lg"
+              onClick={closeDenyModal}
+              disabled={isDenying}
+            >
+              キャンセル
+            </Button>
+            <Button
+              type="button"
+              variant="primary"
+              size="md"
+              radius="lg"
+              onClick={() => {
+                void handleConfirmDenyInvitation();
+              }}
+              disabled={isDenying}
+            >
+              拒否する
+            </Button>
+          </>
+        }
+      >
+        <p className={styles.helperText}>
+          「{denyModalGroup?.name ?? "グループ"}」への招待を本当に拒否しますか？
+        </p>
+      </Modal>
     </PageCard>
   );
 }
