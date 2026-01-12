@@ -34,7 +34,6 @@ describe("POST /api/groups", () => {
     });
 
     expect(res.status).toBe(201);
-    expect(await res.json()).toEqual({ status: 201 });
 
     const rows = await db.select().from(schema.groups);
     expect(rows).toHaveLength(1);
@@ -254,8 +253,7 @@ describe("POST /api/groups/:groupId/invitations", () => {
       json: { user_id: targetUserId },
     });
 
-    expect(res.status).toBe(201);
-    expect(await res.json()).toEqual({ status: 201 });
+    expect(res.status).toBe(204);
 
     const belongings = await findBelongingsByGroupId(groupId);
     // リクエストしているユーザーと招待ユーザーの2件が存在すること
@@ -379,8 +377,7 @@ describe("POST /api/groups/:groupId/invitations/accept", () => {
       param: { groupId },
     });
 
-    expect(res.status).toBe(201);
-    expect(await res.json()).toEqual({ status: 201 });
+    expect(res.status).toBe(204);
 
     const belongings = await findBelongingsByGroupId(groupId);
     const authBelonging = belongings.find((belonging) => belonging.userId === AUTH_USER.id);

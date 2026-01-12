@@ -114,8 +114,7 @@ const app = new Hono()
       acceptedAt: null,
     });
 
-    const response = inviteGroupSuccessSchema.parse({ status: 201 });
-    return c.json(response, 201);
+    return c.body(null, 204);
   })
   .post("/:groupId/invitations/accept", async (c) => {
     const auth = c.get("authUser");
@@ -145,8 +144,7 @@ const app = new Hono()
       acceptedAt: now,
     });
 
-    const response = inviteGroupSuccessSchema.parse({ status: 201 });
-    return c.json(response, 201);
+    return c.body(null, 204);
   })
   .post("/:groupId/invitations/deny", async (c) => {
     const auth = c.get("authUser");
