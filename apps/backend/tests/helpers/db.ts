@@ -1,6 +1,6 @@
 import { getDb } from "../../src/db/client";
 import * as schema from "../../src/db/schema";
-import { sql } from "drizzle-orm";
+import { and, asc, eq } from "drizzle-orm";
 
 const db = getDb();
 
@@ -114,8 +114,14 @@ export const createBelongings = async (belongings: CreateBelongingParams[]) => {
   await db.insert(schema.userGroupBelongings).values(values);
 };
 
-export const findBelongingsByGroupId = async (groupId: string) =>
-  db
+export const findBelongingsByGroupId = async (groupId: string, userId?: string) => {
+  const conditions = [eq(schema.userGroupBelongings.groupId, groupId)];
+  if (userId) {
+    conditions.push(eq(schema.userGroupBelongings.userId, userId));
+  }
+  return db
     .select()
     .from(schema.userGroupBelongings)
-    .where(sql`${schema.userGroupBelongings.groupId} = ${groupId}`);
+    .where(and(...conditions))
+    .orderBy(asc(schema.userGroupBelongings.createdAt), asc(schema.userGroupBelongings.userId));
+};

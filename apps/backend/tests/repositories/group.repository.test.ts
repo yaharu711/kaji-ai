@@ -123,6 +123,70 @@ describe("addBelonging", () => {
   });
 });
 
+describe("updateBelonging", () => {
+  it("所属レコードのacceptedAtを更新できること", async () => {
+    const ownerId = "owner-1";
+    const groupId = "group-1";
+    const createdAt = new Date("2025-01-01T00:00:00Z");
+    const acceptedAt = new Date("2025-01-02T00:00:00Z");
+
+    await createUser({ id: ownerId, name: "Owner" });
+    await createGroup({
+      id: groupId,
+      name: "Test Group",
+      ownerId,
+      image: null,
+      createdAt,
+      updatedAt: createdAt,
+    });
+    await createBelonging({
+      groupId,
+      userId: ownerId,
+      createdAt,
+      acceptedAt: null,
+    });
+
+    await repository.updateBelonging({
+      groupId,
+      userId: ownerId,
+      createdAt,
+      acceptedAt,
+    });
+
+    const belongings = await db.select().from(schema.userGroupBelongings);
+    expect(belongings[0].acceptedAt).toEqual(acceptedAt);
+  });
+});
+
+describe("deleteBelonging", () => {
+  it("所属レコードを削除できること", async () => {
+    const ownerId = "owner-1";
+    const groupId = "group-1";
+    const createdAt = new Date("2025-01-01T00:00:00Z");
+
+    await createUser({ id: ownerId, name: "Owner" });
+    await createGroup({
+      id: groupId,
+      name: "Test Group",
+      ownerId,
+      image: null,
+      createdAt,
+      updatedAt: createdAt,
+    });
+    await createBelonging({
+      groupId,
+      userId: ownerId,
+      createdAt,
+      acceptedAt: null,
+    });
+
+    await repository.deleteBelonging(ownerId, groupId);
+
+    const belongings = await db.select().from(schema.userGroupBelongings);
+    expect(belongings).toHaveLength(0);
+  });
+});
+
 describe("findAllWithMemberCount", () => {
   it("承諾済みのみをカウントし、作成日時昇順で返す", async () => {
     // グループのオーナーを作成

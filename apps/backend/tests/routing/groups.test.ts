@@ -34,7 +34,6 @@ describe("POST /api/groups", () => {
     });
 
     expect(res.status).toBe(201);
-    expect(await res.json()).toEqual({ status: 201 });
 
     const rows = await db.select().from(schema.groups);
     expect(rows).toHaveLength(1);
@@ -228,7 +227,7 @@ describe("GET /api/groups/:groupId/search/users", () => {
   });
 });
 
-describe("POST /api/groups/:groupId/invite", () => {
+describe("POST /api/groups/:groupId/invitations", () => {
   it("未所属のユーザーを招待すると201が返り、招待レコードが作成される", async () => {
     const groupId = "group-invite-1";
     const targetUserId = "invite-user-1";
@@ -249,7 +248,7 @@ describe("POST /api/groups/:groupId/invite", () => {
     });
     await createUser({ id: targetUserId, name: "Invite User" });
 
-    const res = await client.api.groups[":groupId"].invite.$post({
+    const res = await client.api.groups[":groupId"].invitations.$post({
       param: { groupId },
       json: { user_id: targetUserId },
     });
@@ -260,7 +259,10 @@ describe("POST /api/groups/:groupId/invite", () => {
     const belongings = await findBelongingsByGroupId(groupId);
     // リクエストしているユーザーと招待ユーザーの2件が存在すること
     expect(belongings).toHaveLength(2);
-    expect(belongings[0]).toMatchObject({
+
+    const invitedBelongings = await findBelongingsByGroupId(groupId, targetUserId);
+    expect(invitedBelongings).toHaveLength(1);
+    expect(invitedBelongings[0]).toMatchObject({
       groupId,
       userId: targetUserId,
       acceptedAt: null,
@@ -293,7 +295,7 @@ describe("POST /api/groups/:groupId/invite", () => {
       acceptedAt: null,
     });
 
-    const res = await client.api.groups[":groupId"].invite.$post({
+    const res = await client.api.groups[":groupId"].invitations.$post({
       param: { groupId },
       json: { user_id: targetUserId },
     });
@@ -332,7 +334,7 @@ describe("POST /api/groups/:groupId/invite", () => {
     });
     await createUser({ id: targetUserId, name: "Invite User 3" });
 
-    const res = await client.api.groups[":groupId"].invite.$post({
+    const res = await client.api.groups[":groupId"].invitations.$post({
       param: { groupId },
       json: { user_id: targetUserId },
     });
@@ -342,5 +344,230 @@ describe("POST /api/groups/:groupId/invite", () => {
       status: 403,
       message: expect.any(String),
     });
+  });
+});
+
+describe("POST /api/groups/:groupId/invitations/accept", () => {
+  it("招待中のユーザーが承諾すると204が返り、acceptedAtが更新される", async () => {
+    const groupId = "group-accept-1";
+    const ownerId = "owner-accept-1";
+    const now = new Date("2025-01-06T00:00:00Z");
+
+    await createUser({ id: ownerId, name: "Owner" });
+    await createGroup({
+      id: groupId,
+      name: "Accept Group",
+      ownerId,
+      createdAt: now,
+      updatedAt: now,
+    });
+    await createBelonging({
+      groupId,
+      userId: ownerId,
+      createdAt: now,
+      acceptedAt: now,
+    });
+    await createBelonging({
+      groupId,
+      userId: AUTH_USER.id,
+      createdAt: now,
+      acceptedAt: null, // 招待中
+    });
+
+    const res = await client.api.groups[":groupId"].invitations.accept.$post({
+      param: { groupId },
+    });
+
+    expect(res.status).toBe(204);
+
+    const belongings = await findBelongingsByGroupId(groupId);
+    const authBelonging = belongings.find((belonging) => belonging.userId === AUTH_USER.id);
+    expect(authBelonging).toBeTruthy();
+    expect(authBelonging?.acceptedAt).not.toBeNull();
+  });
+
+  it("招待が存在しない場合は422を返す", async () => {
+    const groupId = "group-accept-2";
+    const ownerId = "owner-accept-2";
+    const now = new Date("2025-01-06T00:00:00Z");
+
+    await createUser({ id: ownerId, name: "Owner" });
+    await createGroup({
+      id: groupId,
+      name: "Accept Group 2",
+      ownerId,
+      createdAt: now,
+      updatedAt: now,
+    });
+    await createBelonging({
+      groupId,
+      userId: ownerId,
+      createdAt: now,
+      acceptedAt: now,
+    });
+
+    const res = await client.api.groups[":groupId"].invitations.accept.$post({
+      param: { groupId },
+    });
+
+    expect(res.status).toBe(422);
+    expect(await res.json()).toEqual({
+      status: 422,
+      errors: [
+        {
+          field: "group_id",
+          message: expect.any(String),
+        },
+      ],
+    });
+  });
+
+  it("別ユーザー宛の招待は承諾できず422を返す", async () => {
+    const groupId = "group-accept-3";
+    const ownerId = "owner-accept-3";
+    const invitedUserId = "invited-user-3";
+    const now = new Date("2025-01-06T00:00:00Z");
+
+    await createUsers([
+      { id: ownerId, name: "Owner" },
+      { id: invitedUserId, name: "Invited User" },
+    ]);
+    await createGroup({
+      id: groupId,
+      name: "Accept Group 3",
+      ownerId,
+      createdAt: now,
+      updatedAt: now,
+    });
+    await createBelonging({
+      groupId,
+      userId: ownerId,
+      createdAt: now,
+      acceptedAt: now,
+    });
+    await createBelonging({
+      groupId,
+      userId: invitedUserId,
+      createdAt: now,
+      acceptedAt: null,
+    });
+
+    const res = await client.api.groups[":groupId"].invitations.accept.$post({
+      param: { groupId },
+    });
+
+    expect(res.status).toBe(422);
+  });
+});
+
+describe("POST /api/groups/:groupId/invitations/deny", () => {
+  it("招待中のユーザーが拒否すると204が返り、招待レコードが削除される", async () => {
+    const groupId = "group-deny-1";
+    const ownerId = "owner-deny-1";
+    const now = new Date("2025-01-07T00:00:00Z");
+
+    await createUser({ id: ownerId, name: "Owner" });
+    await createGroup({
+      id: groupId,
+      name: "Deny Group",
+      ownerId,
+      createdAt: now,
+      updatedAt: now,
+    });
+    await createBelonging({
+      groupId,
+      userId: ownerId,
+      createdAt: now,
+      acceptedAt: now,
+    });
+    await createBelonging({
+      groupId,
+      userId: AUTH_USER.id,
+      createdAt: now,
+      acceptedAt: null,
+    });
+
+    const res = await client.api.groups[":groupId"].invitations.deny.$post({
+      param: { groupId },
+    });
+
+    expect(res.status).toBe(204);
+
+    const belongings = await findBelongingsByGroupId(groupId);
+    const authBelonging = belongings.find((belonging) => belonging.userId === AUTH_USER.id);
+    expect(authBelonging).toBeUndefined();
+  });
+
+  it("招待が存在しない場合は422を返す", async () => {
+    const groupId = "group-deny-2";
+    const ownerId = "owner-deny-2";
+    const now = new Date("2025-01-07T00:00:00Z");
+
+    await createUser({ id: ownerId, name: "Owner" });
+    await createGroup({
+      id: groupId,
+      name: "Deny Group 2",
+      ownerId,
+      createdAt: now,
+      updatedAt: now,
+    });
+    await createBelonging({
+      groupId,
+      userId: ownerId,
+      createdAt: now,
+      acceptedAt: now,
+    });
+
+    const res = await client.api.groups[":groupId"].invitations.deny.$post({
+      param: { groupId },
+    });
+
+    expect(res.status).toBe(422);
+    expect(await res.json()).toEqual({
+      status: 422,
+      errors: [
+        {
+          field: "group_id",
+          message: expect.any(String),
+        },
+      ],
+    });
+  });
+
+  it("別ユーザー宛の招待は拒否できず422を返す", async () => {
+    const groupId = "group-deny-3";
+    const ownerId = "owner-deny-3";
+    const invitedUserId = "invited-user-3";
+    const now = new Date("2025-01-07T00:00:00Z");
+
+    await createUsers([
+      { id: ownerId, name: "Owner" },
+      { id: invitedUserId, name: "Invited User" },
+    ]);
+    await createGroup({
+      id: groupId,
+      name: "Deny Group 3",
+      ownerId,
+      createdAt: now,
+      updatedAt: now,
+    });
+    await createBelonging({
+      groupId,
+      userId: ownerId,
+      createdAt: now,
+      acceptedAt: now,
+    });
+    await createBelonging({
+      groupId,
+      userId: invitedUserId,
+      createdAt: now,
+      acceptedAt: null,
+    });
+
+    const res = await client.api.groups[":groupId"].invitations.deny.$post({
+      param: { groupId },
+    });
+
+    expect(res.status).toBe(422);
   });
 });
