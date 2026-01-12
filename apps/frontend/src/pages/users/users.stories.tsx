@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { http, HttpResponse } from "msw";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { MemoryRouter } from "react-router-dom";
 import type { GetGroupsResponse, AppSessionUser } from "@kaiji-ai/backend/contracts";
 import { SessionUserProvider } from "../../contexts/SessionUserContext";
 import ErrorModalProvider from "../../components/ErrorModalProvider";
@@ -62,13 +63,15 @@ const meta = {
         },
       });
       return (
-        <SessionUserProvider value={context.args.user}>
-          <QueryClientProvider client={queryClient}>
-            <ErrorModalProvider>
-              <Story />
-            </ErrorModalProvider>
-          </QueryClientProvider>
-        </SessionUserProvider>
+        <MemoryRouter initialEntries={["/users/mock-user"]}>
+          <SessionUserProvider value={context.args.user}>
+            <QueryClientProvider client={queryClient}>
+              <ErrorModalProvider>
+                <Story />
+              </ErrorModalProvider>
+            </QueryClientProvider>
+          </SessionUserProvider>
+        </MemoryRouter>
       );
     },
   ],
