@@ -165,7 +165,7 @@ function GroupsSection() {
               handleInviteClick(group.id, group.name);
             }}
             onOpenClick={() => {
-              console.log(`Open group ${group.id}`);
+              void navigate(`/groups/${group.id}`);
             }}
           />
         ))}
