@@ -66,7 +66,7 @@ export const inviteGroupUser = async ({
   groupId,
   user_id,
 }: InviteGroupRequest & { groupId: string }): Promise<InviteGroupResponse> => {
-  const res = await groupsApi[":groupId"].invite.$post({
+  const res = await groupsApi[":groupId"].invitations.$post({
     param: { groupId },
     json: { user_id },
   });

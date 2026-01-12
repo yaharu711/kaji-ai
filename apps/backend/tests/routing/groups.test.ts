@@ -228,7 +228,7 @@ describe("GET /api/groups/:groupId/search/users", () => {
   });
 });
 
-describe("POST /api/groups/:groupId/invite", () => {
+describe("POST /api/groups/:groupId/invitations", () => {
   it("未所属のユーザーを招待すると201が返り、招待レコードが作成される", async () => {
     const groupId = "group-invite-1";
     const targetUserId = "invite-user-1";
@@ -249,7 +249,7 @@ describe("POST /api/groups/:groupId/invite", () => {
     });
     await createUser({ id: targetUserId, name: "Invite User" });
 
-    const res = await client.api.groups[":groupId"].invite.$post({
+    const res = await client.api.groups[":groupId"].invitations.$post({
       param: { groupId },
       json: { user_id: targetUserId },
     });
@@ -293,7 +293,7 @@ describe("POST /api/groups/:groupId/invite", () => {
       acceptedAt: null,
     });
 
-    const res = await client.api.groups[":groupId"].invite.$post({
+    const res = await client.api.groups[":groupId"].invitations.$post({
       param: { groupId },
       json: { user_id: targetUserId },
     });
@@ -332,7 +332,7 @@ describe("POST /api/groups/:groupId/invite", () => {
     });
     await createUser({ id: targetUserId, name: "Invite User 3" });
 
-    const res = await client.api.groups[":groupId"].invite.$post({
+    const res = await client.api.groups[":groupId"].invitations.$post({
       param: { groupId },
       json: { user_id: targetUserId },
     });

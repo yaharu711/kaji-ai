@@ -79,7 +79,7 @@ const app = new Hono()
 
     return c.json(body, 200);
   })
-  .post("/:groupId/invite", validateJson(inviteGroupRequestSchema), async (c) => {
+  .post("/:groupId/invitations", validateJson(inviteGroupRequestSchema), async (c) => {
     const auth = c.get("authUser");
     const requesterId = auth?.session?.user?.id;
     if (!requesterId) {
