@@ -14,12 +14,13 @@ const groupsApi = honoClient.api.groups;
 
 export const fetchGroups = async (): Promise<GetGroupsResponse> => {
   const res = await groupsApi.$get();
+  const response = res as Response;
 
-  if (!res.ok) {
+  if (!response.ok) {
     throw new Error("グループ一覧の取得に失敗しました");
   }
 
-  return res.json();
+  return response.json() as Promise<GetGroupsResponse>;
 };
 
 export const searchGroupUsers = async ({
@@ -33,9 +34,10 @@ export const searchGroupUsers = async ({
     param: { groupId },
     query: { email },
   });
+  const response = res as Response;
 
-  if (res.status === 422) {
-    const body = (await res.json()) as UnprocessableEntityResponse;
+  if (response.status === 422) {
+    const body = (await response.json()) as UnprocessableEntityResponse;
     const message = body.errors
       .map((error) => error.message)
       .filter(Boolean)
@@ -43,23 +45,24 @@ export const searchGroupUsers = async ({
     throw new ApiError(422, message || "入力内容を確認してください");
   }
 
-  if (!res.ok) {
-    throw new ApiError(res.status, "ユーザー検索に失敗しました");
+  if (!response.ok) {
+    throw new ApiError(response.status, "ユーザー検索に失敗しました");
   }
 
-  return res.json();
+  return response.json() as Promise<SearchUsersResponse>;
 };
 
 export const createGroup = async ({ name }: CreateGroupRequest): Promise<CreateGroupResponse> => {
   const res = await groupsApi.$post({
     json: { name },
   });
+  const response = res as Response;
 
-  if (!res.ok) {
+  if (!response.ok) {
     throw new Error("グループの作成に失敗しました");
   }
 
-  return res.json();
+  return response.json() as Promise<CreateGroupResponse>;
 };
 
 export const inviteGroupUser = async ({
@@ -70,9 +73,10 @@ export const inviteGroupUser = async ({
     param: { groupId },
     json: { user_id },
   });
+  const response = res as Response;
 
-  if (res.status === 422) {
-    const body = (await res.json()) as UnprocessableEntityResponse;
+  if (response.status === 422) {
+    const body = (await response.json()) as UnprocessableEntityResponse;
     const message = body.errors
       .map((error) => error.message)
       .filter(Boolean)
@@ -80,9 +84,9 @@ export const inviteGroupUser = async ({
     throw new ApiError(422, message || "入力内容を確認してください");
   }
 
-  if (!res.ok) {
-    throw new ApiError(res.status, "ユーザー招待に失敗しました");
+  if (!response.ok) {
+    throw new ApiError(response.status, "ユーザー招待に失敗しました");
   }
 
-  return res.json();
+  return response.json() as Promise<InviteGroupResponse>;
 };
