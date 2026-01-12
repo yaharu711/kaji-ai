@@ -91,7 +91,8 @@ const app = new Hono()
       acceptedAt: null,
     });
 
-    return c.body(null, 204);
+    const response = inviteGroupSuccessSchema.parse({ status: 201 });
+    return c.json(response, 201);
   })
   .post("/:groupId/invitations/accept", async (c) => {
     const userId = c.var.requesterId;
@@ -132,8 +133,7 @@ const app = new Hono()
 
     await groupRepository.deleteBelonging(userId, groupId);
 
-    const response = inviteGroupSuccessSchema.parse({ status: 201 });
-    return c.json(response, 201);
+    return c.body(null, 204);
   })
   .post("/", validateJson(createGroupRequestSchema), async (c) => {
     const now = new Date();

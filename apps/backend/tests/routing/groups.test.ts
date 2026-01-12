@@ -253,7 +253,8 @@ describe("POST /api/groups/:groupId/invitations", () => {
       json: { user_id: targetUserId },
     });
 
-    expect(res.status).toBe(204);
+    expect(res.status).toBe(201);
+    expect(await res.json()).toEqual({ status: 201 });
 
     const belongings = await findBelongingsByGroupId(groupId);
     // リクエストしているユーザーと招待ユーザーの2件が存在すること
@@ -347,7 +348,7 @@ describe("POST /api/groups/:groupId/invitations", () => {
 });
 
 describe("POST /api/groups/:groupId/invitations/accept", () => {
-  it("招待中のユーザーが承諾すると201が返り、acceptedAtが更新される", async () => {
+  it("招待中のユーザーが承諾すると204が返り、acceptedAtが更新される", async () => {
     const groupId = "group-accept-1";
     const ownerId = "owner-accept-1";
     const now = new Date("2025-01-06T00:00:00Z");
@@ -460,7 +461,7 @@ describe("POST /api/groups/:groupId/invitations/accept", () => {
 });
 
 describe("POST /api/groups/:groupId/invitations/deny", () => {
-  it("招待中のユーザーが拒否すると201が返り、招待レコードが削除される", async () => {
+  it("招待中のユーザーが拒否すると204が返り、招待レコードが削除される", async () => {
     const groupId = "group-deny-1";
     const ownerId = "owner-deny-1";
     const now = new Date("2025-01-07T00:00:00Z");
@@ -490,8 +491,7 @@ describe("POST /api/groups/:groupId/invitations/deny", () => {
       param: { groupId },
     });
 
-    expect(res.status).toBe(201);
-    expect(await res.json()).toEqual({ status: 201 });
+    expect(res.status).toBe(204);
 
     const belongings = await findBelongingsByGroupId(groupId);
     const authBelonging = belongings.find((belonging) => belonging.userId === AUTH_USER.id);
