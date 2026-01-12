@@ -7,8 +7,8 @@ interface GroupInviteCardProps {
   groupName: string;
   inviterName?: string;
   disabled?: boolean;
-  onAccept?: () => void;
-  onDecline?: () => void;
+  onAccept: () => void;
+  onDecline: () => void;
 }
 
 function GroupInviteCard({
@@ -18,16 +18,6 @@ function GroupInviteCard({
   onAccept,
   onDecline,
 }: GroupInviteCardProps) {
-  const handleAccept = () => {
-    if (disabled) return;
-    onAccept?.();
-  };
-
-  const handleDecline = () => {
-    if (disabled) return;
-    onDecline?.();
-  };
-
   return (
     <article className={styles.card} aria-label={`${groupName} への招待カード`}>
       <div className={styles.summary}>
@@ -57,11 +47,11 @@ function GroupInviteCard({
           size="md"
           radius="lg"
           variant="primary"
-          onClick={handleAccept}
+          onClick={onAccept}
           disabled={disabled}
           icon={<Check size={18} strokeWidth={2.4} aria-hidden />}
         >
-          参加する
+          参加
         </Button>
 
         <Button
@@ -69,7 +59,7 @@ function GroupInviteCard({
           size="md"
           radius="lg"
           variant="outline"
-          onClick={handleDecline}
+          onClick={onDecline}
           disabled={disabled}
           icon={<X size={18} strokeWidth={2.4} aria-hidden />}
         >

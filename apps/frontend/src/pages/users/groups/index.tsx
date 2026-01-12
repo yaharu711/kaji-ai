@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { HousePlus } from "lucide-react";
 import PageCard from "../../../components/PageCard";
 import Button from "../../../components/Button";
@@ -16,6 +17,7 @@ import styles from "./groups.module.css";
 import { LoaderCircle } from "../../../components";
 
 function GroupsSection() {
+  const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [inviteModalGroup, setInviteModalGroup] = useState<{ id: string; name: string } | null>(
     null,
@@ -24,9 +26,12 @@ function GroupsSection() {
   const { mutateAsync: createGroup, isPending: isCreating } = useCreateGroupMutation();
   const { mutateAsync: inviteGroupUser, isPending: isInviting } = useInviteGroupMutation();
   const { mutateAsync: acceptInvitation, isPending: isAccepting } =
-    useAcceptGroupInvitationMutation();
-  const { mutateAsync: denyInvitation, isPending: isDenying } =
-    useDenyGroupInvitationMutation();
+    useAcceptGroupInvitationMutation({
+      onSuccess: (groupId) => {
+        void navigate(`/groups/${groupId}`);
+      },
+    });
+  const { mutateAsync: denyInvitation, isPending: isDenying } = useDenyGroupInvitationMutation();
   const {
     mutateAsync: searchGroupUsers,
     isPending: isSearching,
