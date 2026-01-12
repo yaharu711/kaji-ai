@@ -4,6 +4,7 @@ import type {
   GetGroupsResponse,
   InviteGroupRequest,
   InviteGroupResponse,
+  NoContentResponse,
   SearchUsersResponse,
   UnprocessableEntityResponse,
 } from "@kaiji-ai/backend/contracts";
@@ -89,4 +90,56 @@ export const inviteGroupUser = async ({
   }
 
   return response.json() as Promise<InviteGroupResponse>;
+};
+
+export const acceptGroupInvitation = async ({
+  groupId,
+}: {
+  groupId: string;
+}): Promise<NoContentResponse> => {
+  const res = await groupsApi[":groupId"].invitations.accept.$post({
+    param: { groupId },
+  });
+  const response = res as Response;
+
+  if (response.status === 422) {
+    const body = (await response.json()) as UnprocessableEntityResponse;
+    const message = body.errors
+      .map((error) => error.message)
+      .filter(Boolean)
+      .join(" / ");
+    throw new ApiError(422, message || "入力内容を確認してください");
+  }
+
+  if (!response.ok) {
+    throw new ApiError(response.status, "招待の承認に失敗しました");
+  }
+
+  return undefined;
+};
+
+export const denyGroupInvitation = async ({
+  groupId,
+}: {
+  groupId: string;
+}): Promise<NoContentResponse> => {
+  const res = await groupsApi[":groupId"].invitations.deny.$post({
+    param: { groupId },
+  });
+  const response = res as Response;
+
+  if (response.status === 422) {
+    const body = (await response.json()) as UnprocessableEntityResponse;
+    const message = body.errors
+      .map((error) => error.message)
+      .filter(Boolean)
+      .join(" / ");
+    throw new ApiError(422, message || "入力内容を確認してください");
+  }
+
+  if (!response.ok) {
+    throw new ApiError(response.status, "招待の拒否に失敗しました");
+  }
+
+  return undefined;
 };

@@ -6,6 +6,8 @@ import { useGroupsQuery } from "../hooks/useGroupsQuery";
 import { useCreateGroupMutation } from "../hooks/useCreateGroupMutation";
 import { useSearchGroupUsers } from "../hooks/useSearchGroupUsers";
 import { useInviteGroupMutation } from "../hooks/useInviteGroupMutation";
+import { useAcceptGroupInvitationMutation } from "../hooks/useAcceptGroupInvitationMutation";
+import { useDenyGroupInvitationMutation } from "../hooks/useDenyGroupInvitationMutation";
 import GroupCreateModal from "./group-create-modal";
 import GroupCard from "./group-card";
 import GroupInviteCard from "./invite-card";
@@ -21,6 +23,10 @@ function GroupsSection() {
   const { data, isLoading, isError } = useGroupsQuery();
   const { mutateAsync: createGroup, isPending: isCreating } = useCreateGroupMutation();
   const { mutateAsync: inviteGroupUser, isPending: isInviting } = useInviteGroupMutation();
+  const { mutateAsync: acceptInvitation, isPending: isAccepting } =
+    useAcceptGroupInvitationMutation();
+  const { mutateAsync: denyInvitation, isPending: isDenying } =
+    useDenyGroupInvitationMutation();
   const {
     mutateAsync: searchGroupUsers,
     isPending: isSearching,
@@ -75,6 +81,22 @@ function GroupsSection() {
     }
   };
 
+  const handleAcceptInvitation = async (groupId: string) => {
+    try {
+      await acceptInvitation({ groupId });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleDenyInvitation = async (groupId: string) => {
+    try {
+      await denyInvitation({ groupId });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const renderContent = () => {
     if (isLoading)
       return (
@@ -105,6 +127,13 @@ function GroupsSection() {
             key={`invite-${group.id}`}
             groupName={group.name}
             inviterName={undefined}
+            disabled={isAccepting || isDenying}
+            onAccept={() => {
+              void handleAcceptInvitation(group.id);
+            }}
+            onDecline={() => {
+              void handleDenyInvitation(group.id);
+            }}
           />
         ))}
 
