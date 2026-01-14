@@ -1,18 +1,13 @@
 import { z } from "zod";
 
+import { groupChoreIconCodes } from "../../../constants/chores";
+
+export { groupChoreIconCodes };
+
 export const groupChoreSchema = z.object({
   id: z.number(),
   name: z.string(),
-  icon_code: z.enum([
-    "dish-wash",
-    "cleaning",
-    "laundry",
-    "cooking",
-    "trash",
-    "shopping",
-    "bath-cleaning",
-    "toilet-cleaning",
-  ]),
+  icon_code: z.enum(groupChoreIconCodes),
 });
 
 export const getGroupChoresSuccessSchema = z.array(groupChoreSchema);

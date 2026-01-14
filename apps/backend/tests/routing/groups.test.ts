@@ -251,7 +251,7 @@ describe("GET /api/groups/:groupId/search/users", () => {
 });
 
 describe("GET /api/groups/:groupId/chores", () => {
-  it("deleted_at が null の家事一覧を返す", async () => {
+  it("削除されていない家事のみ一覧で返す", async () => {
     const groupId = "group-chores-1";
     const now = new Date("2025-01-01T00:00:00Z");
 

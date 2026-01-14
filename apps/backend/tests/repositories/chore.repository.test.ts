@@ -86,6 +86,42 @@ describe("findByGroupId", () => {
     const result = await repository.findByGroupId("group-1");
 
     expect(result).toHaveLength(1);
-    expect(result[0]).toMatchObject({ name: "食器洗い", iconCode: "dish-wash" });
+    expect(result[0]).toMatchObject({
+      groupId: "group-1",
+      name: "食器洗い",
+      iconCode: "dish-wash",
+    });
+  });
+
+  it("予期しない icon_code があっても例外にならず戻り値に含まれないこと", async () => {
+    await createUser({ id: "owner-1", name: "Owner" });
+    await createGroup({
+      id: "group-1",
+      name: "家族",
+      ownerId: "owner-1",
+      image: null,
+    });
+
+    await createGroupChore({
+      groupId: "group-1",
+      choreName: "食器洗い",
+      iconCode: "dish-wash",
+    });
+
+    // 型安全を迂回して不正な icon_code を作成
+    await createGroupChore({
+      groupId: "group-1",
+      choreName: "謎の家事",
+      iconCode: "unknown-icon" as unknown as "dish-wash",
+    });
+
+    const result = await repository.findByGroupId("group-1");
+
+    expect(result).toHaveLength(1);
+    expect(result[0]).toMatchObject({
+      groupId: "group-1",
+      name: "食器洗い",
+      iconCode: "dish-wash",
+    });
   });
 });
