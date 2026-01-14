@@ -8,6 +8,7 @@ import { createGroupRequestSchema } from "./schemas/requests/createGroupRequest"
 import { inviteGroupRequestSchema, searchUsersRequestSchema } from "./schemas/requests";
 import { forbiddenSchema, unprocessableEntitySchema } from "./schemas/responses/common";
 import { createGroupSuccessSchema } from "./schemas/responses/createGroupResponse";
+import { getGroupChoresSuccessSchema } from "./schemas/responses/getGroupChoresResponse";
 import { getGroupsSuccessSchema } from "./schemas/responses/getGroupsResponse";
 import { inviteGroupSuccessSchema } from "./schemas/responses/inviteGroupResponse";
 import { searchUsersSuccessSchema } from "./schemas/responses/searchUsersResponse";
@@ -33,6 +34,21 @@ const app = new Hono()
         is_invited: group.isInvited,
       })),
     });
+
+    return c.json(response, 200);
+  })
+  .get("/:groupId/chores", async (c) => {
+    const { groupId } = c.req.param();
+
+    const chores = await choreRepository.findByGroupId(groupId);
+
+    const response = getGroupChoresSuccessSchema.parse(
+      chores.map((chore) => ({
+        id: chore.id,
+        name: chore.name,
+        icon_code: chore.iconCode,
+      })),
+    );
 
     return c.json(response, 200);
   })
