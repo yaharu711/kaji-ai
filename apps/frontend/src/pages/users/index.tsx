@@ -10,7 +10,7 @@ function UserPage() {
   return (
     <div className={styles.page}>
       <main className={styles.shell}>
-        <Header />
+        <Header pageLabel="ホーム" />
         <ProfileSection user={user} />
         <GroupsSection />
         <p className={styles.footerNote}>さあ、今週も頑張りましょう！ ✨</p>

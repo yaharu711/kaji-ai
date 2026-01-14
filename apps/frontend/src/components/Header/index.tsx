@@ -3,9 +3,10 @@ import styles from "./Header.module.css";
 
 interface HeaderProps {
   onMenuClick?: () => void;
+  pageLabel?: string;
 }
 
-function Header({ onMenuClick }: HeaderProps) {
+function Header({ onMenuClick, pageLabel }: HeaderProps) {
   return (
     <header className={styles.header}>
       <div className={styles.brand}>
@@ -15,7 +16,10 @@ function Header({ onMenuClick }: HeaderProps) {
             alt="アプリのアイコン"
           />
         </span>
-        <span className={styles.appName}>カジアイ</span>
+        <div className={styles.brandText}>
+          <span className={styles.appName}>カジアイ</span>
+          {pageLabel ? <span className={styles.pageBadge}>{pageLabel}</span> : null}
+        </div>
       </div>
       <button
         type="button"
