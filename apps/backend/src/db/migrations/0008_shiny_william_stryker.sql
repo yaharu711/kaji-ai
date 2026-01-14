@@ -1,0 +1,1 @@
+ALTER TABLE "group_chores" ADD COLUMN "deleted_at" timestamp;

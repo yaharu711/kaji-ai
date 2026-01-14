@@ -10,6 +10,7 @@ export const groupChores = pgTable("group_chores", {
   choreName: text("chore_name").notNull(),
   iconCode: text("icon_code").notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
+  deletedAt: timestamp("deleted_at"),
 });
 
 export type GroupChoreRecord = typeof groupChores.$inferSelect;

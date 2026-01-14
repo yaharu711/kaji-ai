@@ -37,6 +37,7 @@ type CreateGroupChoreParams = {
   choreName: string;
   iconCode: string;
   createdAt?: Date;
+  deletedAt?: Date | null;
 };
 
 export const createUser = async ({
@@ -147,12 +148,14 @@ export const createGroupChore = async ({
   choreName,
   iconCode,
   createdAt = new Date(),
+  deletedAt = null,
 }: CreateGroupChoreParams) => {
   await db.insert(schema.groupChores).values({
     groupId,
     choreName,
     iconCode,
     createdAt,
+    deletedAt,
   });
 };
 

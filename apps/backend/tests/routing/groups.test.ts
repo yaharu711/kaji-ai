@@ -9,6 +9,7 @@ import * as schema from "../../src/db/schema";
 import {
   createBelonging,
   createGroup,
+  createGroupChore,
   createUser,
   createBelongings,
   createGroups,
@@ -246,6 +247,46 @@ describe("GET /api/groups/:groupId/search/users", () => {
 
     expect(res.status).toBe(200);
     expect(await res.json()).toEqual({ users: [] });
+  });
+});
+
+describe("GET /api/groups/:groupId/chores", () => {
+  it("deleted_at が null の家事一覧を返す", async () => {
+    const groupId = "group-chores-1";
+    const now = new Date("2025-01-01T00:00:00Z");
+
+    await createGroup({
+      id: groupId,
+      name: "Chores Group",
+      ownerId: AUTH_USER.id,
+      createdAt: now,
+      updatedAt: now,
+    });
+
+    await createGroupChore({
+      groupId,
+      choreName: "食器洗い",
+      iconCode: "dish-wash",
+    });
+    await createGroupChore({
+      groupId,
+      choreName: "掃除",
+      iconCode: "cleaning",
+      deletedAt: new Date("2025-01-02T00:00:00Z"),
+    });
+
+    const res = await client.api.groups[":groupId"].chores.$get({
+      param: { groupId },
+    });
+
+    expect(res.status).toBe(200);
+    expect(await res.json()).toEqual([
+      {
+        id: expect.any(Number),
+        name: "食器洗い",
+        icon_code: "dish-wash",
+      },
+    ]);
   });
 });
 
