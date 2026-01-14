@@ -20,6 +20,8 @@ let db: Database;
 let repository: GroupRepository;
 
 const truncateTables = async () => {
+  await db.execute(sql`TRUNCATE TABLE "group_chores" CASCADE`);
+  await db.execute(sql`TRUNCATE TABLE "master_chores" CASCADE`);
   await db.execute(sql`TRUNCATE TABLE "user_group_belongings" CASCADE`);
   await db.execute(sql`TRUNCATE TABLE "groups" CASCADE`);
   await db.execute(sql`TRUNCATE TABLE "user" CASCADE`);
