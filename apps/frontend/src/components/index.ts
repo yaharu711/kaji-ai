@@ -7,3 +7,4 @@ export { default as LinkButton } from "./LinkButton";
 export { default as ErrorModal } from "./ErrorModal";
 export { default as ErrorModalProvider } from "./ErrorModalProvider";
 export { useErrorModal } from "./ErrorModalProvider/useErrorModal";
+export { default as Header } from "./Header";

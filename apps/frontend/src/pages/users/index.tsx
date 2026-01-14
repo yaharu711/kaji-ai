@@ -1,7 +1,7 @@
 import { useSessionUser } from "../../contexts/SessionUserContext";
+import { Header } from "../../components";
 import styles from "./users.module.css";
 import GroupsSection from "./groups";
-import HeroSection from "./hero";
 import ProfileSection from "./profile";
 
 function UserPage() {
@@ -10,7 +10,7 @@ function UserPage() {
   return (
     <div className={styles.page}>
       <main className={styles.shell}>
-        <HeroSection />
+        <Header />
         <ProfileSection user={user} />
         <GroupsSection />
         <p className={styles.footerNote}>さあ、今週も頑張りましょう！ ✨</p>
