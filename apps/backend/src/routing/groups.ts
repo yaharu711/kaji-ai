@@ -2,6 +2,7 @@ import { Hono } from "hono";
 
 import { getDb } from "../db/client";
 import { GroupRepository } from "../repositories/group.repository";
+import { ChoreRepository } from "../repositories/chore.repository";
 import { UserRepository } from "../repositories/user.repository";
 import { createGroupRequestSchema } from "./schemas/requests/createGroupRequest";
 import { inviteGroupRequestSchema, searchUsersRequestSchema } from "./schemas/requests";
@@ -14,6 +15,7 @@ import { validateJson, validateQuery } from "./middlewares/validator";
 
 const db = getDb();
 const groupRepository = new GroupRepository(db);
+const choreRepository = new ChoreRepository(db);
 const userRepository = new UserRepository(db);
 
 const app = new Hono()
@@ -165,6 +167,8 @@ const app = new Hono()
       });
       throw error;
     }
+    // master_chores を元に初期家事を作成（グループ作成のトランザクションと同じとは言えないので、try-catchの外に書いている）
+    await choreRepository.addGroupChoresFromMaster(groupId);
 
     // POST 成功のみを伝える。ステータスを明示したレスポンスを返す。
     const response = createGroupSuccessSchema.parse({ status: 201 });

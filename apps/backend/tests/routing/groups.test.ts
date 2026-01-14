@@ -12,6 +12,7 @@ import {
   createUser,
   createBelongings,
   createGroups,
+  createMasterChores,
   createUsers,
   findBelongingsByGroupId,
 } from "../helpers/db";
@@ -20,11 +21,17 @@ const client = testClient<RoutingApp>(app);
 const db = getDb();
 
 beforeEach(async () => {
+  await db.execute(sql`TRUNCATE TABLE "group_chores" CASCADE`);
+  await db.execute(sql`TRUNCATE TABLE "master_chores" CASCADE`);
   await db.execute(sql`TRUNCATE TABLE "user_group_belongings" CASCADE`);
   await db.execute(sql`TRUNCATE TABLE "groups" CASCADE`);
   await db.execute(sql`TRUNCATE TABLE "user" CASCADE`);
   // mockAuth のユーザーを外部キー整合性のために挿入
   await createUser({ id: AUTH_USER.id, name: AUTH_USER.name });
+  await createMasterChores([
+    { choreName: "食器洗い", iconCode: "dish-wash" },
+    { choreName: "掃除", iconCode: "cleaning" },
+  ]);
 });
 
 describe("POST /api/groups", () => {
@@ -49,6 +56,21 @@ describe("POST /api/groups", () => {
       groupId: rows[0].id,
       userId: AUTH_USER.id,
     });
+
+    const groupChores = await db.select().from(schema.groupChores);
+    expect(groupChores).toHaveLength(2);
+    expect(groupChores).toEqual([
+      expect.objectContaining({
+        groupId: rows[0].id,
+        choreName: "食器洗い",
+        iconCode: "dish-wash",
+      }),
+      expect.objectContaining({
+        groupId: rows[0].id,
+        choreName: "掃除",
+        iconCode: "cleaning",
+      }),
+    ]);
   });
 
   it("name が101文字であれば422を返す", async () => {

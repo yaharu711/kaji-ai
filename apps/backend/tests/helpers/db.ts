@@ -27,6 +27,18 @@ type CreateBelongingParams = {
   acceptedAt?: Date | null;
 };
 
+type CreateMasterChoreParams = {
+  choreName: string;
+  iconCode: string;
+};
+
+type CreateGroupChoreParams = {
+  groupId: string;
+  choreName: string;
+  iconCode: string;
+  createdAt?: Date;
+};
+
 export const createUser = async ({
   id,
   name = null,
@@ -112,6 +124,36 @@ export const createBelongings = async (belongings: CreateBelongingParams[]) => {
     }),
   );
   await db.insert(schema.userGroupBelongings).values(values);
+};
+
+export const createMasterChore = async ({ choreName, iconCode }: CreateMasterChoreParams) => {
+  await db.insert(schema.masterChores).values({
+    choreName,
+    iconCode,
+  });
+};
+
+export const createMasterChores = async (chores: CreateMasterChoreParams[]) => {
+  if (chores.length === 0) return;
+  const values = chores.map(({ choreName, iconCode }) => ({
+    choreName,
+    iconCode,
+  }));
+  await db.insert(schema.masterChores).values(values);
+};
+
+export const createGroupChore = async ({
+  groupId,
+  choreName,
+  iconCode,
+  createdAt = new Date(),
+}: CreateGroupChoreParams) => {
+  await db.insert(schema.groupChores).values({
+    groupId,
+    choreName,
+    iconCode,
+    createdAt,
+  });
 };
 
 export const findBelongingsByGroupId = async (groupId: string, userId?: string) => {
