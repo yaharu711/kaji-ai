@@ -126,7 +126,7 @@ function Header({ navItems, groupName, userProfile, householdName, members }: He
                     .join(" ")
                 }
               >
-                <Icon size={16} />
+                <Icon size={17} />
                 {item.label}
               </NavLink>
             );

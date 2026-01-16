@@ -319,6 +319,12 @@
   .nav {
     gap: 6px;
     padding: 4px 0;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .nav::-webkit-scrollbar {
+    display: none;
   }
 
   .navItem {
