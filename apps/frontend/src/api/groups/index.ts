@@ -2,6 +2,7 @@ import type {
   CreateGroupRequest,
   CreateGroupResponse,
   GetGroupsResponse,
+  GetGroupUsersResponse,
   InviteGroupRequest,
   InviteGroupResponse,
   NoContentResponse,
@@ -51,6 +52,23 @@ export const searchGroupUsers = async ({
   }
 
   return response.json() as Promise<SearchUsersResponse>;
+};
+
+export const fetchGroupUsers = async ({
+  groupId,
+}: {
+  groupId: string;
+}): Promise<GetGroupUsersResponse> => {
+  const res = await groupsApi[":groupId"].users.$get({
+    param: { groupId },
+  });
+  const response = res as Response;
+
+  if (!response.ok) {
+    throw new ApiError(response.status, "グループメンバーの取得に失敗しました");
+  }
+
+  return response.json() as Promise<GetGroupUsersResponse>;
 };
 
 export const createGroup = async ({ name }: CreateGroupRequest): Promise<CreateGroupResponse> => {
