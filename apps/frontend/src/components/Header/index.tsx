@@ -40,11 +40,6 @@ function Header({ navItems, groupName, currentUser, members }: HeaderProps) {
             <span className={styles.appName}>カジアイ</span>
           </div>
         </div>
-        {groupName && !shouldShowUserPopover ? (
-          <div className={styles.groupBadgeTop} aria-label="グループ名">
-            <span className={styles.groupBadgeText}>{groupName}</span>
-          </div>
-        ) : null}
         <Popover
           trigger={
             <button
@@ -66,11 +61,6 @@ function Header({ navItems, groupName, currentUser, members }: HeaderProps) {
         />
       </div>
       <div className={styles.bottomRow}>
-        {groupName ? (
-          <div className={styles.groupBadge} aria-label="グループ名">
-            <span className={styles.groupBadgeText}>{groupName}</span>
-          </div>
-        ) : null}
         <nav className={styles.nav} aria-label="ページナビゲーション">
           {navItems.map((item) => {
             const Icon = item.icon;
