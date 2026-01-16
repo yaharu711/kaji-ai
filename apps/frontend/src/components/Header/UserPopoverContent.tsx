@@ -1,5 +1,6 @@
-import { Crown } from "lucide-react";
+import { Crown, User } from "lucide-react";
 import type { AppSessionUser } from "@kaiji-ai/backend/contracts";
+import { Link } from "react-router-dom";
 import styles from "./UserPopoverContent.module.css";
 
 export interface GroupMember {
@@ -22,20 +23,30 @@ function UserPopoverContent({ groupName, currentUser, members }: UserPopoverCont
   return (
     <div className={styles.userPopoverContent}>
       <div className={styles.userPopoverProfile}>
-        <div className={styles.userPopoverAvatar}>
-          {currentUser.image ? (
-            <img src={currentUser.image} alt={`${currentUser.name ?? ""}のアイコン`} />
-          ) : (
-            getMemberInitial(currentUser.name)
-          )}
-        </div>
-        <div className={styles.userPopoverText}>
-          <p className={styles.userPopoverName}>{currentUser.name ?? "未設定"}</p>
-          <div className={styles.userPopoverStatus}>
-            <span className={styles.userPopoverStatusDot} />
-            ログイン中
+        <div className={styles.userPopoverProfileMain}>
+          <div className={styles.userPopoverAvatar}>
+            {currentUser.image ? (
+              <img src={currentUser.image} alt={`${currentUser.name ?? ""}のアイコン`} />
+            ) : (
+              getMemberInitial(currentUser.name)
+            )}
+          </div>
+          <div className={styles.userPopoverText}>
+            <p className={styles.userPopoverName}>{currentUser.name ?? "未設定"}</p>
+            <div className={styles.userPopoverStatus}>
+              <span className={styles.userPopoverStatusDot} />
+              ログイン中
+            </div>
           </div>
         </div>
+        {currentUser.id ? (
+          <div className={styles.userPopoverAction}>
+            <Link to={`/users/${currentUser.id}`} className={styles.userPopoverActionLink}>
+              <User size={18} />
+              ダッシュボードに移動
+            </Link>
+          </div>
+        ) : null}
       </div>
       <div className={styles.userPopoverBody}>
         <p className={styles.userPopoverSection}>{`${groupName}のメンバー`}</p>

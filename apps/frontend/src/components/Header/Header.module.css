@@ -138,7 +138,7 @@
     background 0.12s ease;
 }
 
-.navItem:hover {
+.navItem:not(.navItemActive):hover {
   transform: translateY(-1px);
   color: var(--color-text-strong);
   background: rgba(236, 72, 153, 0.08);

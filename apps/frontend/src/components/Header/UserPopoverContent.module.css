@@ -5,7 +5,7 @@
 
 .userPopoverProfile {
   display: flex;
-  align-items: center;
+  flex-direction: column;
   gap: 16px;
   padding: 18px 20px;
   background: linear-gradient(
@@ -15,6 +15,39 @@
     var(--color-login-profile-to)
   );
   border-bottom: 1px solid var(--color-login-profile-border);
+}
+
+.userPopoverProfileMain {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.userPopoverActionLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: var(--color-surface);
+  border: 1px solid rgba(196, 181, 253, 0.5);
+  color: var(--color-accent-strong);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  box-shadow: 0 6px 12px rgba(148, 163, 184, 0.16);
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.userPopoverActionLink:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 16px rgba(148, 163, 184, 0.22);
+  border-color: rgba(167, 139, 250, 0.4);
 }
 
 .userPopoverAvatar {
@@ -40,7 +73,7 @@
 .userPopoverText {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
 }
 
 .userPopoverName {
