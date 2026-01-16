@@ -1,6 +1,6 @@
 import { Crown, User } from "lucide-react";
 import type { AppSessionUser } from "@kaiji-ai/backend/contracts";
-import { Link } from "react-router-dom";
+import ActionLink from "../ActionLink";
 import styles from "./UserPopoverContent.module.css";
 
 export interface GroupMember {
@@ -40,12 +40,11 @@ function UserPopoverContent({ groupName, currentUser, members }: UserPopoverCont
           </div>
         </div>
         {currentUser.id ? (
-          <div className={styles.userPopoverAction}>
-            <Link to={`/users/${currentUser.id}`} className={styles.userPopoverActionLink}>
-              <User size={18} />
-              ダッシュボードに移動
-            </Link>
-          </div>
+          <ActionLink
+            to={`/users/${currentUser.id}`}
+            icon={<User size={18} />}
+            pageName="ダッシュボード"
+          />
         ) : null}
       </div>
       <div className={styles.userPopoverBody}>
