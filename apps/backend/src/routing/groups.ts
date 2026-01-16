@@ -70,6 +70,7 @@ const app = new Hono()
         name: user.name ?? null,
         image_url: user.image ?? null,
         is_owner: user.isOwner,
+        is_invited: user.acceptedAt === null,
       })),
     );
 

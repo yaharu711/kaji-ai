@@ -5,6 +5,7 @@ export const groupUserSchema = z.object({
   name: z.string().nullable(),
   image_url: z.string().nullable(),
   is_owner: z.boolean(),
+  is_invited: z.boolean(),
 });
 
 export const getGroupUsersSuccessSchema = z.array(groupUserSchema);

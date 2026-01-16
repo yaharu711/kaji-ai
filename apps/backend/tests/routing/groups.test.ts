@@ -331,18 +331,21 @@ describe("GET /api/groups/:groupId/users", () => {
         name: AUTH_USER.name,
         image_url: null,
         is_owner: true,
+        is_invited: false,
       },
       {
         id: pendingId,
         name: "Pending User",
         image_url: null,
         is_owner: false,
+        is_invited: true,
       },
       {
         id: memberId,
         name: "Member User",
         image_url: "member.png",
         is_owner: false,
+        is_invited: false,
       },
     ]);
   });
@@ -365,6 +368,43 @@ describe("GET /api/groups/:groupId/users", () => {
       userId: ownerId,
       createdAt: now,
       acceptedAt: now,
+    });
+
+    const res = await client.api.groups[":groupId"].users.$get({
+      param: { groupId },
+    });
+
+    expect(res.status).toBe(403);
+    expect(await res.json()).toEqual({
+      status: 403,
+      message: expect.any(String),
+    });
+  });
+
+  it("招待中ユーザーの場合は403を返す", async () => {
+    const groupId = "group-users-3";
+    const ownerId = "owner-users-3";
+    const now = new Date("2025-01-12T00:00:00Z");
+
+    await createUser({ id: ownerId, name: "Owner User" });
+    await createGroup({
+      id: groupId,
+      name: "Users Group 3",
+      ownerId,
+      createdAt: now,
+      updatedAt: now,
+    });
+    await createBelonging({
+      groupId,
+      userId: ownerId,
+      createdAt: now,
+      acceptedAt: now,
+    });
+    await createBelonging({
+      groupId,
+      userId: AUTH_USER.id,
+      createdAt: now,
+      acceptedAt: null,
     });
 
     const res = await client.api.groups[":groupId"].users.$get({
