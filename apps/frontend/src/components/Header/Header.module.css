@@ -1,12 +1,18 @@
 .header {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
   gap: 12px;
   padding: 16px 18px;
   border-radius: 20px;
   background: rgba(255, 255, 255, 0.98);
   box-shadow: 0 10px 24px rgba(190, 24, 93, 0.08);
+}
+
+.topRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
 }
 
 .brand {
@@ -43,6 +49,49 @@
   font-size: 16px;
   font-weight: 700;
   color: var(--color-text-strong);
+}
+
+.userIcon {
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, rgba(244, 114, 182, 0.3), rgba(236, 72, 153, 0.18));
+  color: var(--color-text-strong);
+  box-shadow: 0 8px 18px rgba(190, 24, 93, 0.12);
+}
+
+.bottomRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.groupBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 13px;
+  color: var(--color-text-strong);
+  background: rgba(236, 72, 153, 0.12);
+  border: 1px solid rgba(236, 72, 153, 0.25);
+  white-space: nowrap;
+  max-width: 125px;
+}
+
+.groupBadgeTop {
+  composes: groupBadge;
+  display: none;
+}
+
+.groupBadgeText {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .nav {
@@ -110,6 +159,10 @@
     gap: 14px;
   }
 
+  .topRow {
+    align-items: center;
+  }
+
   .appName {
     font-size: 16px;
   }
@@ -128,5 +181,13 @@
   .navItem {
     font-size: 14px;
     padding: 6px 10px;
+  }
+
+  .groupBadge {
+    display: none;
+  }
+
+  .groupBadgeTop {
+    display: inline-flex;
   }
 }

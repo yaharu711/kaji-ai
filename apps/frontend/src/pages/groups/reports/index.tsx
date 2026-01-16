@@ -14,7 +14,7 @@ function GroupReportsPage() {
   return (
     <div className={styles.page}>
       <main className={styles.shell}>
-        <Header navItems={navItems} />
+        <Header navItems={navItems} groupName={groupId} />
         <PageCard align="center">
           <section className={styles.content} aria-labelledby="group-reports-heading">
             <p className={styles.badge}>レポート</p>

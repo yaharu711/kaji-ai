@@ -14,7 +14,7 @@ function GroupPage() {
   return (
     <div className={styles.page}>
       <main className={styles.shell}>
-        <Header navItems={navigateItems} />
+        <Header navItems={navigateItems} groupName={`永井家のみんなあ`} />
         <PageCard align="center">
           <section className={styles.content} aria-labelledby="group-heading">
             <p className={styles.badge}>グループ</p>
