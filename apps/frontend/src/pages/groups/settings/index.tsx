@@ -3,9 +3,13 @@ import PageCard from "../../../components/PageCard";
 import { Header } from "../../../components";
 import styles from "../groups.module.css";
 import { createGroupNavItems } from "../navItems";
+import { useGroupUsersQuery } from "../hooks/useGroupUsersQuery";
+import { useSessionUser } from "../../../contexts/SessionUserContext";
 
 function GroupSettingsPage() {
   const { groupId } = useParams<{ groupId: string }>();
+  const { data: members } = useGroupUsersQuery(groupId ?? "");
+  const sessionUser = useSessionUser();
   if (!groupId) {
     return null;
   }
@@ -17,13 +21,8 @@ function GroupSettingsPage() {
         <Header
           navItems={navItems}
           groupName={groupId}
-          userProfile={{ name: "田中 花子", status: "ログイン中", initial: "田" }}
-          householdName={groupId}
-          members={[
-            { id: "member-1", name: "山田 太郎", initial: "山", tone: "pink" },
-            { id: "member-2", name: "田中 花子", initial: "田", tone: "purple" },
-            { id: "member-3", name: "佐藤 次郎", initial: "佐", tone: "orange" },
-          ]}
+          currentUser={sessionUser}
+          members={members}
         />
         <PageCard align="center">
           <section className={styles.content} aria-labelledby="group-settings-heading">

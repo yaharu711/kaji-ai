@@ -3,9 +3,14 @@ import PageCard from "../../components/PageCard";
 import styles from "./groups.module.css";
 import { Header } from "../../components";
 import { createGroupNavItems } from "./navItems";
+import { useGroupUsersQuery } from "./hooks/useGroupUsersQuery";
+import { useSessionUser } from "../../contexts/SessionUserContext";
 
 function GroupPage() {
   const { groupId } = useParams<{ groupId: string }>();
+  // こういう時、どのように処理するのが良いのかな？確実にgroupIdはあるはずという前提で今みたいな手抜きでも良いかな
+  const { data: members } = useGroupUsersQuery(groupId ?? "");
+  const sessionUser = useSessionUser();
   if (!groupId) {
     return null;
   }
@@ -16,14 +21,9 @@ function GroupPage() {
       <main className={styles.shell}>
         <Header
           navItems={navigateItems}
-          groupName="永井家のみんなあ"
-          userProfile={{ name: "田中 花子", status: "ログイン中", initial: "田" }}
-          householdName="永井家"
-          members={[
-            { id: "member-1", name: "山田 太郎", initial: "山", tone: "pink" },
-            { id: "member-2", name: "田中 花子", initial: "田", tone: "purple" },
-            { id: "member-3", name: "佐藤 次郎", initial: "佐", tone: "orange" },
-          ]}
+          groupName="グループ"
+          currentUser={sessionUser}
+          members={members}
         />
         <PageCard align="center">
           <section className={styles.content} aria-labelledby="group-heading">

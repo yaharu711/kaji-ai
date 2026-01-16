@@ -85,4 +85,21 @@
   /* 招待バッジ専用の淡いラベンダー。デザイン指定色を共有できるように固定値で管理 */
   --color-invite-badge-bg: #e9d5ff;
   --color-invite-badge-text: #6b21a8;
+
+  /* Group members (owner highlight) */
+  --color-owner-row-from: #fffbeb;
+  --color-owner-row-mid: #fefce8;
+  --color-owner-row-to: #fdf2f8;
+  --color-owner-row-border: #fde68a;
+  --color-owner-ring: #fcd34d;
+  --color-owner-crown-from: #fbbf24;
+  --color-owner-crown-to: #eab308;
+  --color-owner-name: #78350f;
+  --color-owner-label: #d97706;
+
+  /* Login profile (popover header) */
+  --color-login-profile-from: #f3e8ff;
+  --color-login-profile-mid: #fce7f3;
+  --color-login-profile-to: #faf5ff;
+  --color-login-profile-border: rgba(196, 181, 253, 0.5);
 }
