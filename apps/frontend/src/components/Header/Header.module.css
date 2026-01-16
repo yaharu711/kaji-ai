@@ -181,8 +181,15 @@
 }
 
 .navItemActive {
-  color: var(--color-text-strong);
-  background-color: var(--color-secondary-bg);
+  color: #ffffff;
+  background: linear-gradient(
+    135deg,
+    var(--color-nav-active-from),
+    var(--color-nav-active-mid),
+    var(--color-nav-active-to)
+  );
+  box-shadow: 0 8px 18px var(--color-nav-active-shadow);
+  border: 1px solid var(--color-nav-active-ring);
 }
 
 @media (min-width: 640px) {

@@ -102,4 +102,11 @@
   --color-login-profile-mid: #fce7f3;
   --color-login-profile-to: #faf5ff;
   --color-login-profile-border: rgba(196, 181, 253, 0.5);
+
+  /* Navigation active */
+  --color-nav-active-from: var(--color-primary-from);
+  --color-nav-active-mid: var(--color-primary-to);
+  --color-nav-active-to: var(--color-primary-to);
+  --color-nav-active-shadow: rgba(236, 72, 153, 0.18);
+  --color-nav-active-ring: rgba(196, 181, 253, 0.35);
 }
