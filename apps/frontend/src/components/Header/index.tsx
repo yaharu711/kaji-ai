@@ -1,5 +1,6 @@
 import { Users, type LucideIcon } from "lucide-react";
 import { NavLink } from "react-router-dom";
+import Popover from "../Popover";
 import styles from "./Header.module.css";
 
 export interface HeaderNavItem {
@@ -12,9 +13,29 @@ export interface HeaderNavItem {
 interface HeaderProps {
   navItems: HeaderNavItem[];
   groupName?: string;
+  userProfile?: {
+    name: string;
+    status?: string;
+    initial: string;
+  };
+  householdName?: string;
+  members?: Array<{
+    id: string;
+    name: string;
+    initial: string;
+    tone?: "pink" | "purple" | "orange";
+  }>;
 }
 
-function Header({ navItems, groupName }: HeaderProps) {
+const MEMBER_TONE_CLASS = {
+  pink: styles.memberTonePink,
+  purple: styles.memberTonePurple,
+  orange: styles.memberToneOrange,
+} as const;
+
+function Header({ navItems, groupName, userProfile, householdName, members }: HeaderProps) {
+  const shouldShowUserPopover = userProfile && householdName && members && members.length > 0;
+
   return (
     <header className={styles.header}>
       <div className={styles.topRow}>
@@ -34,9 +55,57 @@ function Header({ navItems, groupName }: HeaderProps) {
             <span className={styles.groupBadgeText}>{groupName}</span>
           </div>
         ) : null}
-        <div className={styles.userIcon} aria-label="ユーザー">
-          <Users size={18} />
-        </div>
+        {shouldShowUserPopover ? (
+          <Popover
+            trigger={
+              <button type="button" className={styles.userTrigger} aria-label="ユーザー情報を開く">
+                <Users size={18} />
+              </button>
+            }
+            content={
+              <div className={styles.userPopoverContent}>
+                <div className={styles.userPopoverProfile}>
+                  <div className={styles.userPopoverAvatar}>{userProfile.initial}</div>
+                  <div className={styles.userPopoverText}>
+                    <p className={styles.userPopoverName}>{userProfile.name}</p>
+                    {userProfile.status ? (
+                      <p className={styles.userPopoverStatus}>{userProfile.status}</p>
+                    ) : null}
+                  </div>
+                </div>
+                <div className={styles.userPopoverBody}>
+                  <p className={styles.userPopoverSection}>{householdName}のメンバー</p>
+                  <ul className={styles.userPopoverMembers}>
+                    {members.map((member) => {
+                      const toneClass = MEMBER_TONE_CLASS[member.tone ?? "pink"];
+                      return (
+                        <li key={member.id} className={styles.userPopoverMember}>
+                          <span
+                            className={[styles.userPopoverMemberAvatar, toneClass]
+                              .filter(Boolean)
+                              .join(" ")}
+                          >
+                            {member.initial}
+                          </span>
+                          <span className={styles.userPopoverMemberName}>{member.name}</span>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+              </div>
+            }
+            size="md"
+            radius="xl"
+            variant="soft"
+            side="bottom"
+            align="end"
+          />
+        ) : (
+          <div className={styles.userIcon} aria-label="ユーザー">
+            <Users size={18} />
+          </div>
+        )}
       </div>
       <div className={styles.bottomRow}>
         {groupName ? (

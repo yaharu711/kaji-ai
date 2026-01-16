@@ -14,7 +14,17 @@ function GroupChoresPage() {
   return (
     <div className={styles.page}>
       <main className={styles.shell}>
-        <Header navItems={navItems} groupName={groupId} />
+        <Header
+          navItems={navItems}
+          groupName={groupId}
+          userProfile={{ name: "田中 花子", status: "ログイン中", initial: "田" }}
+          householdName={groupId ?? "家族"}
+          members={[
+            { id: "member-1", name: "山田 太郎", initial: "山", tone: "pink" },
+            { id: "member-2", name: "田中 花子", initial: "田", tone: "purple" },
+            { id: "member-3", name: "佐藤 次郎", initial: "佐", tone: "orange" },
+          ]}
+        />
         <PageCard align="center">
           <section className={styles.content} aria-labelledby="group-chores-heading">
             <p className={styles.badge}>家事</p>
