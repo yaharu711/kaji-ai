@@ -107,9 +107,11 @@ export class GroupRepository {
         email: schema.users.email,
         image: schema.users.image,
         acceptedAt: schema.userGroupBelongings.acceptedAt,
+        isOwner: sql<boolean>`${schema.groups.ownerId} = ${schema.users.id}`,
       })
       .from(schema.userGroupBelongings)
       .innerJoin(schema.users, eq(schema.userGroupBelongings.userId, schema.users.id))
+      .innerJoin(schema.groups, eq(schema.userGroupBelongings.groupId, schema.groups.id))
       .where(eq(schema.userGroupBelongings.groupId, groupId))
       .orderBy(asc(schema.userGroupBelongings.createdAt));
 
@@ -119,6 +121,7 @@ export class GroupRepository {
       email: row.email,
       image: row.image,
       acceptedAt: row.acceptedAt,
+      isOwner: row.isOwner,
     }));
   }
 

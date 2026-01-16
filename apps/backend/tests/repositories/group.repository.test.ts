@@ -415,6 +415,7 @@ describe("findUsersByGroupId", () => {
         email: null,
         image: null,
         acceptedAt: belongingCreated1,
+        isOwner: true,
       },
       {
         id: pendingId,
@@ -422,6 +423,7 @@ describe("findUsersByGroupId", () => {
         email: "pending@example.com",
         image: null,
         acceptedAt: null,
+        isOwner: false,
       },
       {
         id: memberId,
@@ -429,6 +431,7 @@ describe("findUsersByGroupId", () => {
         email: "member1@example.com",
         image: null,
         acceptedAt: belongingCreated3,
+        isOwner: false,
       },
     ]);
   });
