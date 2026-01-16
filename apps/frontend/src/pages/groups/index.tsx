@@ -9,7 +9,7 @@ function GroupPage() {
   return (
     <div className={styles.page}>
       <main className={styles.shell}>
-        <Header pageLabel={"ホーム"} />
+        <Header />
         <PageCard align="center">
           <section className={styles.content} aria-labelledby="group-heading">
             <p className={styles.badge}>グループ</p>

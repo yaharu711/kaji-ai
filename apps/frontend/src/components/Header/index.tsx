@@ -1,12 +1,15 @@
-import { Menu } from "lucide-react";
+import { BarChart3, ClipboardList, Home, Settings } from "lucide-react";
+import { NavLink } from "react-router-dom";
 import styles from "./Header.module.css";
 
-interface HeaderProps {
-  onMenuClick?: () => void;
-  pageLabel?: string;
-}
+const NAV_ITEMS = [
+  { label: "ホーム", to: "/users", icon: Home },
+  { label: "レポート", to: "/users/report", icon: BarChart3 },
+  { label: "家事", to: "/users/chores", icon: ClipboardList },
+  { label: "設定", to: "/users/settings", icon: Settings },
+] as const;
 
-function Header({ onMenuClick, pageLabel }: HeaderProps) {
+function Header() {
   return (
     <header className={styles.header}>
       <div className={styles.brand}>
@@ -18,17 +21,25 @@ function Header({ onMenuClick, pageLabel }: HeaderProps) {
         </span>
         <div className={styles.brandText}>
           <span className={styles.appName}>カジアイ</span>
-          {pageLabel ? <span className={styles.pageBadge}>{pageLabel}</span> : null}
         </div>
       </div>
-      <button
-        type="button"
-        className={styles.menuButton}
-        onClick={onMenuClick}
-        aria-label="メニューを開く"
-      >
-        <Menu size={20} />
-      </button>
+      <nav className={styles.nav} aria-label="ページナビゲーション">
+        {NAV_ITEMS.map((item) => {
+          const Icon = item.icon;
+          return (
+            <NavLink
+              key={item.to}
+              to={item.to}
+              className={({ isActive }) =>
+                [styles.navItem, isActive ? styles.navItemActive : ""].filter(Boolean).join(" ")
+              }
+            >
+              <Icon size={16} />
+              {item.label}
+            </NavLink>
+          );
+        })}
+      </nav>
     </header>
   );
 }
