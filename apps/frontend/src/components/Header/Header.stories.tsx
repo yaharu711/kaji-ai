@@ -31,12 +31,12 @@ export const Default: Story = {
       { label: "設定", to: "/groups/1/settings", icon: Settings },
     ],
     groupName: "永井家",
-    userProfile: { name: "田中 花子", status: "ログイン中", initial: "田" },
-    householdName: "永井家",
+    currentUser: { id: "user-1", name: "田中 花子", email: "hanako@example.com", image: null },
     members: [
-      { id: "member-1", name: "山田 太郎", initial: "山", tone: "pink" },
-      { id: "member-2", name: "田中 花子", initial: "田", tone: "purple" },
-      { id: "member-3", name: "佐藤 次郎", initial: "佐", tone: "orange" },
+      { id: "member-1", name: "山田 太郎", image_url: null, is_owner: true, is_invited: false },
+      { id: "member-2", name: "田中 花子", image_url: null, is_owner: false, is_invited: false },
+      { id: "member-3", name: "佐藤 次郎", image_url: null, is_owner: false, is_invited: false },
+      { id: "member-4", name: "test", image_url: null, is_owner: false, is_invited: true },
     ],
   },
 };
