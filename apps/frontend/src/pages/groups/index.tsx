@@ -2,7 +2,7 @@ import PageCard from "../../components/PageCard";
 import styles from "./groups.module.css";
 import { useGroupLayout } from "./GroupLayoutContext";
 
-function GroupPage() {
+function GroupHomePage() {
   const { groupId } = useGroupLayout();
 
   return (
@@ -19,4 +19,4 @@ function GroupPage() {
   );
 }
 
-export default GroupPage;
+export default GroupHomePage;

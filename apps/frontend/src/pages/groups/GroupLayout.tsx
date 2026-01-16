@@ -16,13 +16,14 @@ function GroupLayout() {
     return null;
   }
 
+  const groupName = (location.state as { groupName?: string } | null)?.groupName ?? groupId;
   const navItems = createGroupNavItems(groupId, location.pathname);
 
   return (
     <GroupLayoutProvider
       value={{
         groupId,
-        groupName: groupId,
+        groupName,
         navItems,
         members,
         currentUser: sessionUser,
@@ -32,7 +33,7 @@ function GroupLayout() {
         <main className={styles.shell}>
           <Header
             navItems={navItems}
-            groupName={groupId}
+            groupName={groupName}
             currentUser={sessionUser}
             members={members}
           />
