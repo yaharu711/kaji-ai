@@ -10,6 +10,7 @@ export interface HeaderNavItem {
   to: string;
   icon: LucideIcon;
   isActive?: boolean;
+  state?: unknown;
 }
 
 interface HeaderProps {
@@ -68,6 +69,7 @@ function Header({ navItems, groupName, currentUser, members }: HeaderProps) {
               <NavLink
                 key={item.to}
                 to={item.to}
+                state={item.state}
                 className={({ isActive }) =>
                   [styles.navItem, (item.isActive ?? isActive) ? styles.navItemActive : ""]
                     .filter(Boolean)

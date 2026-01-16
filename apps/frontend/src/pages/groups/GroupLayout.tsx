@@ -17,7 +17,7 @@ function GroupLayout() {
   }
 
   const groupName = (location.state as { groupName?: string } | null)?.groupName ?? groupId;
-  const navItems = createGroupNavItems(groupId, location.pathname);
+  const navItems = createGroupNavItems(groupId, groupName, location.pathname);
 
   return (
     <GroupLayoutProvider
