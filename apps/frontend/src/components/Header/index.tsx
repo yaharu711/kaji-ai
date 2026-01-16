@@ -1,15 +1,19 @@
-import { BarChart3, ClipboardList, Home, Settings } from "lucide-react";
+import { type LucideIcon } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import styles from "./Header.module.css";
 
-const NAV_ITEMS = [
-  { label: "ホーム", to: "/users", icon: Home },
-  { label: "レポート", to: "/users/report", icon: BarChart3 },
-  { label: "家事", to: "/users/chores", icon: ClipboardList },
-  { label: "設定", to: "/users/settings", icon: Settings },
-] as const;
+export interface HeaderNavItem {
+  label: string;
+  to: string;
+  icon: LucideIcon;
+  isActive?: boolean;
+}
 
-function Header() {
+interface HeaderProps {
+  navItems: HeaderNavItem[];
+}
+
+function Header({ navItems }: HeaderProps) {
   return (
     <header className={styles.header}>
       <div className={styles.brand}>
@@ -24,15 +28,15 @@ function Header() {
         </div>
       </div>
       <nav className={styles.nav} aria-label="ページナビゲーション">
-        {NAV_ITEMS.map((item) => {
+        {navItems.map((item) => {
           const Icon = item.icon;
           return (
             <NavLink
               key={item.to}
               to={item.to}
-              className={({ isActive }) =>
-                [styles.navItem, isActive ? styles.navItemActive : ""].filter(Boolean).join(" ")
-              }
+              className={[styles.navItem, item.isActive ? styles.navItemActive : ""]
+                .filter(Boolean)
+                .join(" ")}
             >
               <Icon size={16} />
               {item.label}
