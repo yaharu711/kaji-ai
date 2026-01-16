@@ -20,4 +20,5 @@ export type GroupUserDto = {
   email: string | null;
   image: string | null;
   acceptedAt: Date | null;
+  isOwner: boolean;
 };

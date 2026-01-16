@@ -290,6 +290,95 @@ describe("GET /api/groups/:groupId/chores", () => {
   });
 });
 
+describe("GET /api/groups/:groupId/users", () => {
+  it("所属・招待中ユーザーを返し、オーナーが誰か分かるレスポンスになる", async () => {
+    const groupId = "group-users-1";
+    const ownerId = AUTH_USER.id;
+    const memberId = "member-users-1";
+    const pendingId = "pending-users-1";
+    const now = new Date("2025-01-08T00:00:00Z");
+
+    await createUsers([
+      { id: memberId, name: "Member User", image: "member.png" },
+      { id: pendingId, name: "Pending User" },
+    ]);
+    await createGroup({
+      id: groupId,
+      name: "Users Group",
+      ownerId,
+      createdAt: now,
+      updatedAt: now,
+    });
+    await createBelongings([
+      { groupId, userId: ownerId, createdAt: now, acceptedAt: now },
+      { groupId, userId: pendingId, createdAt: new Date("2025-01-09T00:00:00Z"), acceptedAt: null },
+      {
+        groupId,
+        userId: memberId,
+        createdAt: new Date("2025-01-10T00:00:00Z"),
+        acceptedAt: new Date("2025-01-10T00:00:00Z"),
+      },
+    ]);
+
+    const res = await client.api.groups[":groupId"].users.$get({
+      param: { groupId },
+    });
+
+    expect(res.status).toBe(200);
+    expect(await res.json()).toEqual([
+      {
+        id: ownerId,
+        name: AUTH_USER.name,
+        image_url: null,
+        is_owner: true,
+      },
+      {
+        id: pendingId,
+        name: "Pending User",
+        image_url: null,
+        is_owner: false,
+      },
+      {
+        id: memberId,
+        name: "Member User",
+        image_url: "member.png",
+        is_owner: false,
+      },
+    ]);
+  });
+
+  it("リクエストユーザーが所属していない場合は403を返す", async () => {
+    const groupId = "group-users-2";
+    const ownerId = "owner-users-2";
+    const now = new Date("2025-01-11T00:00:00Z");
+
+    await createUser({ id: ownerId, name: "Owner User" });
+    await createGroup({
+      id: groupId,
+      name: "Users Group 2",
+      ownerId,
+      createdAt: now,
+      updatedAt: now,
+    });
+    await createBelonging({
+      groupId,
+      userId: ownerId,
+      createdAt: now,
+      acceptedAt: now,
+    });
+
+    const res = await client.api.groups[":groupId"].users.$get({
+      param: { groupId },
+    });
+
+    expect(res.status).toBe(403);
+    expect(await res.json()).toEqual({
+      status: 403,
+      message: expect.any(String),
+    });
+  });
+});
+
 describe("POST /api/groups/:groupId/invitations", () => {
   it("未所属のユーザーを招待すると201が返り、招待レコードが作成される", async () => {
     const groupId = "group-invite-1";

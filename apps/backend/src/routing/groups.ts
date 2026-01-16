@@ -9,6 +9,7 @@ import { inviteGroupRequestSchema, searchUsersRequestSchema } from "./schemas/re
 import { forbiddenSchema, unprocessableEntitySchema } from "./schemas/responses/common";
 import { createGroupSuccessSchema } from "./schemas/responses/createGroupResponse";
 import { getGroupChoresSuccessSchema } from "./schemas/responses/getGroupChoresResponse";
+import { getGroupUsersSuccessSchema } from "./schemas/responses/getGroupUsersResponse";
 import { getGroupsSuccessSchema } from "./schemas/responses/getGroupsResponse";
 import { inviteGroupSuccessSchema } from "./schemas/responses/inviteGroupResponse";
 import { searchUsersSuccessSchema } from "./schemas/responses/searchUsersResponse";
@@ -47,6 +48,28 @@ const app = new Hono()
         id: chore.id,
         name: chore.name,
         icon_code: chore.iconCode,
+      })),
+    );
+
+    return c.json(response, 200);
+  })
+  .get("/:groupId/users", async (c) => {
+    const requesterId = c.var.requesterId;
+    const { groupId } = c.req.param();
+
+    const users = await groupRepository.findUsersByGroupId(groupId);
+    const requesterBelonging = users.find((user) => user.id === requesterId);
+    if (!requesterBelonging || requesterBelonging.acceptedAt === null) {
+      const body = forbiddenSchema.parse({ status: 403, message: "Forbidden" });
+      return c.json(body, 403);
+    }
+
+    const response = getGroupUsersSuccessSchema.parse(
+      users.map((user) => ({
+        id: user.id,
+        name: user.name ?? null,
+        image_url: user.image ?? null,
+        is_owner: user.isOwner,
       })),
     );
 
