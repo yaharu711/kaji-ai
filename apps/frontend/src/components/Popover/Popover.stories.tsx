@@ -29,10 +29,18 @@ function DefaultStory() {
 }
 
 export const Default: Story = {
+  args: {
+    trigger: <button type="button">トリガー</button>,
+    content: <div style={{ padding: 16 }}>内容をここに渡します。</div>,
+  },
   render: () => <DefaultStory />,
 };
 
 export const Sizes: Story = {
+  args: {
+    trigger: <button type="button">サイズ</button>,
+    content: <div style={{ padding: 16 }}>サイズ</div>,
+  },
   render: () => (
     <div style={{ display: "flex", gap: 24 }}>
       <Popover
