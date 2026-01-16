@@ -31,6 +31,7 @@ interface PopoverProps {
   content: ReactNode;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
+  ariaLabel?: string;
   size?: Size;
   radius?: Radius;
   variant?: Variant;
@@ -45,6 +46,7 @@ function Popover({
   content,
   open,
   onOpenChange,
+  ariaLabel,
   size = "md",
   radius = "xl",
   variant = "default",
@@ -72,6 +74,7 @@ function Popover({
           align={align}
           sideOffset={sideOffset}
           alignOffset={alignOffset}
+          aria-label={ariaLabel}
         >
           {content}
         </RadixPopover.Content>

@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { LayoutGrid, ListChecks, Settings } from "lucide-react";
+import { MemoryRouter } from "react-router-dom";
 import Header from ".";
 import "../../theme.css";
 
@@ -9,6 +10,13 @@ const meta = {
   parameters: {
     layout: "centered",
   },
+  decorators: [
+    (Story) => (
+      <MemoryRouter initialEntries={["/groups/1"]}>
+        <Story />
+      </MemoryRouter>
+    ),
+  ],
 } satisfies Meta<typeof Header>;
 
 export default meta;

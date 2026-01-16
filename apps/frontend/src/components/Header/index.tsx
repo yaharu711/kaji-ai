@@ -62,6 +62,7 @@ function Header({ navItems, groupName, userProfile, householdName, members }: He
                 <Users size={18} />
               </button>
             }
+            ariaLabel="ユーザー情報"
             content={
               <div className={styles.userPopoverContent}>
                 <div className={styles.userPopoverProfile}>
