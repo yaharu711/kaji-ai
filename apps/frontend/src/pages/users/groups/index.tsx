@@ -30,7 +30,10 @@ function GroupsSection() {
   const { mutateAsync: acceptInvitation, isPending: isAccepting } =
     useAcceptGroupInvitationMutation({
       onSuccess: (groupId) => {
-        void navigate(`/groups/${groupId}`);
+        const groupName = groups.find((group) => group.id === groupId)?.name ?? groupId;
+        void navigate(`/groups/${groupId}`, {
+          state: { groupName },
+        });
       },
     });
   const { mutateAsync: denyInvitation, isPending: isDenying } = useDenyGroupInvitationMutation();
@@ -165,7 +168,9 @@ function GroupsSection() {
               handleInviteClick(group.id, group.name);
             }}
             onOpenClick={() => {
-              void navigate(`/groups/${group.id}`);
+              void navigate(`/groups/${group.id}`, {
+                state: { groupName: group.name },
+              });
             }}
           />
         ))}
