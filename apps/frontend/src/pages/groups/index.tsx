@@ -9,7 +9,7 @@ import { useSessionUser } from "../../contexts/SessionUserContext";
 function GroupPage() {
   const { groupId } = useParams<{ groupId: string }>();
   // こういう時、どのように処理するのが良いのかな？確実にgroupIdはあるはずという前提で今みたいな手抜きでも良いかな
-  const { data: members } = useGroupUsersQuery(groupId ?? "");
+  const { data: members } = useGroupUsersQuery(groupId);
   const sessionUser = useSessionUser();
   if (!groupId) {
     return null;

@@ -8,7 +8,7 @@ import { useSessionUser } from "../../../contexts/SessionUserContext";
 
 function GroupReportsPage() {
   const { groupId } = useParams<{ groupId: string }>();
-  const { data: members } = useGroupUsersQuery(groupId ?? "");
+  const { data: members } = useGroupUsersQuery(groupId);
   const sessionUser = useSessionUser();
   if (!groupId) {
     return null;
