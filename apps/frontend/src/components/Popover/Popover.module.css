@@ -1,0 +1,78 @@
+.popover {
+  background: var(--color-surface);
+  border: 1px solid var(--color-card-border);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+  z-index: 20;
+  max-width: calc(100vw - 32px);
+}
+
+.popover[data-state="open"] {
+  animation: popoverIn 160ms ease;
+}
+
+.popover[data-state="closed"] {
+  animation: popoverOut 120ms ease;
+}
+
+.sizeSm {
+  width: 260px;
+}
+
+.sizeMd {
+  width: 320px;
+}
+
+.sizeLg {
+  width: 360px;
+}
+
+.radiusMd {
+  border-radius: 18px;
+}
+
+.radiusLg {
+  border-radius: 22px;
+}
+
+.radiusXl {
+  border-radius: 26px;
+}
+
+.variantDefault {
+  background: var(--color-surface);
+}
+
+.variantSoft {
+  background: linear-gradient(180deg, var(--bg-grad-2), var(--color-surface));
+}
+
+@keyframes popoverIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes popoverOut {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.98);
+  }
+}
+
+@media (max-width: 480px) {
+  .sizeSm,
+  .sizeMd,
+  .sizeLg {
+    width: min(320px, calc(100vw - 32px));
+  }
+}
