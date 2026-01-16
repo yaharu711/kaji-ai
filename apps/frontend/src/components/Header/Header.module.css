@@ -193,6 +193,8 @@
   display: flex;
   align-items: center;
   gap: 10px;
+  padding-top: 12px;
+  border-top: 1px solid var(--color-card-border);
 }
 
 .groupBadge {
@@ -202,15 +204,25 @@
   padding: 6px 12px;
   border-radius: 999px;
   font-size: 13px;
-  color: var(--color-text-strong);
-  background: rgba(236, 72, 153, 0.12);
-  border: 1px solid rgba(236, 72, 153, 0.25);
+  color: var(--color-invite-badge-text);
+  background: var(--color-invite-badge-bg);
+  border: none;
   white-space: nowrap;
   max-width: 125px;
 }
 
 .groupBadgeTop {
   display: none;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 13px;
+  color: var(--color-invite-badge-text);
+  background: var(--color-invite-badge-bg);
+  border: none;
+  white-space: nowrap;
+  max-width: 125px;
 }
 
 .groupBadgeText {
@@ -267,8 +279,7 @@
 
 .navItemActive {
   color: var(--color-text-strong);
-  background: rgba(236, 72, 153, 0.12);
-  border-color: rgba(236, 72, 153, 0.2);
+  background-color: var(--color-secondary-bg);
 }
 
 @media (min-width: 640px) {
@@ -320,7 +331,7 @@
   }
 
   .groupBadgeTop {
-    display: inline-flex;
+    display: none;
   }
 
   .userPopoverProfile {

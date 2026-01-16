@@ -18,7 +18,7 @@ function GroupSettingsPage() {
           navItems={navItems}
           groupName={groupId}
           userProfile={{ name: "田中 花子", status: "ログイン中", initial: "田" }}
-          householdName={groupId ?? "家族"}
+          householdName={groupId}
           members={[
             { id: "member-1", name: "山田 太郎", initial: "山", tone: "pink" },
             { id: "member-2", name: "田中 花子", initial: "田", tone: "purple" },

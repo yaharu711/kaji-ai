@@ -19,12 +19,12 @@ interface HeaderProps {
     initial: string;
   };
   householdName?: string;
-  members?: Array<{
+  members?: {
     id: string;
     name: string;
     initial: string;
     tone?: "pink" | "purple" | "orange";
-  }>;
+  }[];
 }
 
 const MEMBER_TONE_CLASS = {
@@ -50,7 +50,7 @@ function Header({ navItems, groupName, userProfile, householdName, members }: He
             <span className={styles.appName}>カジアイ</span>
           </div>
         </div>
-        {groupName ? (
+        {groupName && !shouldShowUserPopover ? (
           <div className={styles.groupBadgeTop} aria-label="グループ名">
             <span className={styles.groupBadgeText}>{groupName}</span>
           </div>
@@ -69,12 +69,12 @@ function Header({ navItems, groupName, userProfile, householdName, members }: He
                   <div className={styles.userPopoverText}>
                     <p className={styles.userPopoverName}>{userProfile.name}</p>
                     {userProfile.status ? (
-                      <p className={styles.userPopoverStatus}>{userProfile.status}</p>
+                      <p className={styles.userPopoverStatus}>オーナー</p>
                     ) : null}
                   </div>
                 </div>
                 <div className={styles.userPopoverBody}>
-                  <p className={styles.userPopoverSection}>{householdName}のメンバー</p>
+                  <p className={styles.userPopoverSection}>{groupName && `${groupName}メンバー`}</p>
                   <ul className={styles.userPopoverMembers}>
                     {members.map((member) => {
                       const toneClass = MEMBER_TONE_CLASS[member.tone ?? "pink"];

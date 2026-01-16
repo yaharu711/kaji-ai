@@ -15,19 +15,21 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {
-  render: () => {
-    const [open, setOpen] = useState(true);
+function DefaultStory() {
+  const [open, setOpen] = useState(true);
 
-    return (
-      <Popover
-        open={open}
-        onOpenChange={setOpen}
-        trigger={<button type="button">トリガー</button>}
-        content={<div style={{ padding: 16 }}>内容をここに渡します。</div>}
-      />
-    );
-  },
+  return (
+    <Popover
+      open={open}
+      onOpenChange={setOpen}
+      trigger={<button type="button">トリガー</button>}
+      content={<div style={{ padding: 16 }}>内容をここに渡します。</div>}
+    />
+  );
+}
+
+export const Default: Story = {
+  render: () => <DefaultStory />,
 };
 
 export const Sizes: Story = {
