@@ -43,6 +43,7 @@ interface DropdownSelectProps {
   label?: string;
   helperText?: string;
   placeholder?: string;
+  emptyMessage?: string;
   options: DropdownOption[];
   value?: string;
   onChange: (value: string) => void;
@@ -57,6 +58,7 @@ function DropdownSelect({
   label,
   helperText,
   placeholder = "選択してください",
+  emptyMessage = "選択肢がありません",
   options,
   value,
   onChange,
@@ -72,22 +74,17 @@ function DropdownSelect({
   const descriptionId = helperText ? `${generatedId}-desc` : undefined;
   const triggerRef = useRef<HTMLButtonElement | null>(null);
 
-  const [internalOpen, setInternalOpen] = useState(false);
-  const isOpen = internalOpen;
+  const [isOpen, setIsOpen] = useState(false);
 
   const selectedIndex = options.findIndex((option) => option.value === value);
   const selectedOption = selectedIndex >= 0 ? options[selectedIndex] : undefined;
-
-  const updateOpen = (nextOpen: boolean) => {
-    setInternalOpen(nextOpen);
-  };
 
   const handleSelect = (nextValue: string) => {
     if (disabled) {
       return;
     }
     onChange(nextValue);
-    updateOpen(false);
+    setIsOpen(false);
     triggerRef.current?.focus();
   };
 
@@ -118,7 +115,7 @@ function DropdownSelect({
         </label>
       ) : null}
 
-      <DropdownMenu.Root open={isOpen} onOpenChange={updateOpen}>
+      <DropdownMenu.Root open={isOpen} onOpenChange={setIsOpen}>
         <DropdownMenu.Trigger asChild>
           <button
             id={dropdownId}
@@ -168,7 +165,7 @@ function DropdownSelect({
               onValueChange={handleSelect}
             >
               {options.length === 0 ? (
-                <div className={styles.empty}>選択肢がありません</div>
+                <div className={styles.empty}>{emptyMessage}</div>
               ) : (
                 options.map((option) => (
                   <DropdownMenu.RadioItem
