@@ -86,6 +86,8 @@ function DropdownSelect({
       return;
     }
 
+    // レイアウトや描画が整ったタイミングで処理を走らせるために、requestAnimationFrameを使用する
+    // アニメーションや今回のようなスクロールを動的に行う場合に適している
     const rafId = window.requestAnimationFrame(() => {
       selectedItemRef.current?.scrollIntoView({ block: "center" });
     });

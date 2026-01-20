@@ -166,10 +166,13 @@
   width: var(--radix-dropdown-menu-trigger-width, 100%);
   min-width: 220px;
   max-width: min(100vw - 32px, 520px);
+  /* Radixが用意してくれている表示領域内に収まる高さを計算した結果の変数 */
+  max-height: min(320px, var(--radix-dropdown-menu-content-available-height));
   border: 1px solid var(--dropdown-panel-border);
   background: var(--dropdown-panel-bg);
   box-shadow: var(--dropdown-panel-shadow);
   padding: 10px;
+  overflow-y: auto;
   z-index: var(--z-index-dropdown-modal);
 }
 
@@ -177,8 +180,8 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
-  max-height: min(320px, 40vh);
-  overflow-y: auto;
+  max-height: none;
+  overflow: visible;
   padding-right: 4px;
 }
 
