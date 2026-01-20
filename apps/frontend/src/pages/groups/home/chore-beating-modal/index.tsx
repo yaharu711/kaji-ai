@@ -8,34 +8,54 @@ interface ChoreBeatingModalProps {
   onOpenChange: (open: boolean) => void;
 }
 
+const formatHour = (hour: number) => `${String(hour)}時`;
+
 const timeOptions = Array.from({ length: 24 }, (_, hour) => {
-  const label = `${String(hour).padStart(2, "0")}:00`;
+  const start = formatHour(hour);
+  const end = formatHour((hour + 1) % 24);
+  const label = `${start}〜${end}`;
   return { value: label, label };
 });
 
+const getDefaultTimeRange = () => {
+  const now = new Date();
+  const hour = now.getHours();
+  const start = formatHour(hour);
+  const end = formatHour((hour + 1) % 24);
+  return `${start}〜${end}`;
+};
+
 function ChoreBeatingModal({ open, onOpenChange }: ChoreBeatingModalProps) {
   const [selectedChore, setSelectedChore] = useState<string | undefined>(undefined);
-  const [selectedTime, setSelectedTime] = useState<string>(() => {
-    const now = new Date();
-    return `${String(now.getHours()).padStart(2, "0")}:00`;
-  });
+  const [selectedTime, setSelectedTime] = useState<string>(getDefaultTimeRange);
 
   const today = new Date();
   const todayText = `${String(today.getMonth() + 1)}月${String(today.getDate())}日`;
 
+  const handleClose = () => {
+    setSelectedTime(getDefaultTimeRange());
+  };
+
+  const handleOpenChange = (nextOpen: boolean) => {
+    if (!nextOpen) {
+      handleClose();
+    }
+    onOpenChange(nextOpen);
+  };
+
   return (
     <HalfModal
       open={open}
-      onOpenChange={onOpenChange}
+      onOpenChange={handleOpenChange}
       title="家事を討伐する"
       headerIcon={<Swords size={20} />}
       primaryActionLabel="討伐完了"
       secondaryActionLabel="キャンセル"
       onPrimaryAction={() => {
-        onOpenChange(false);
+        handleOpenChange(false);
       }}
       onSecondaryAction={() => {
-        onOpenChange(false);
+        handleOpenChange(false);
       }}
     >
       <div className={styles.form}>
