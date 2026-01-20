@@ -153,6 +153,8 @@ function DropdownSelect({
             side="bottom"
             align="start"
             sideOffset={10}
+            // ドロップダウンが必ず下に出るよう、衝突回避の自動反転を無効化
+            avoidCollisions={false}
             onCloseAutoFocus={(event: Event) => {
               event.preventDefault();
               triggerRef.current?.focus();

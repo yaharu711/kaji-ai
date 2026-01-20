@@ -170,7 +170,7 @@
   background: var(--dropdown-panel-bg);
   box-shadow: var(--dropdown-panel-shadow);
   padding: 10px;
-  z-index: var(--z-index-popover);
+  z-index: var(--z-index-dropdown-modal);
 }
 
 .list {
