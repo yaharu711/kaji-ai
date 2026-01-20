@@ -71,11 +71,7 @@
     color-mix(in srgb, var(--bg-grad-2), var(--color-primary-to) 12%)
   );
   --half-modal-body-bg: var(--half-modal-header-bg);
-  --half-modal-footer-bg: linear-gradient(
-    180deg,
-    color-mix(in srgb, var(--bg-grad-1), var(--color-accent-strong) 14%),
-    color-mix(in srgb, var(--bg-grad-2), var(--color-primary-to) 12%)
-  );
+  --half-modal-footer-bg: var(--half-modal-header-bg);
   --half-modal-border: var(--color-nav-active-ring);
   --half-modal-divider: color-mix(in srgb, var(--color-nav-active-ring), var(--color-surface) 50%);
 }

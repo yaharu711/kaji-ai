@@ -26,21 +26,33 @@ type Size = keyof typeof SIZE_CLASS;
 type Radius = keyof typeof RADIUS_CLASS;
 type Height = keyof typeof HEIGHT_CLASS;
 
-interface HalfModalProps {
+type FooterActions =
+  | {
+      primaryActionLabel: string;
+      secondaryActionLabel: string;
+      onPrimaryAction?: () => void;
+      onSecondaryAction?: () => void;
+    }
+  | {
+      primaryActionLabel?: undefined;
+      secondaryActionLabel?: undefined;
+      onPrimaryAction?: undefined;
+      onSecondaryAction?: undefined;
+    };
+
+interface HalfModalBaseProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   title: string;
   description?: string;
   headerIcon?: ReactNode;
   children: ReactNode;
-  primaryActionLabel?: string;
-  secondaryActionLabel?: string;
-  onPrimaryAction?: () => void;
-  onSecondaryAction?: () => void;
   size?: Size;
   radius?: Radius;
   height?: Height;
 }
+
+type HalfModalProps = HalfModalBaseProps & FooterActions;
 
 function HalfModal({
   open,

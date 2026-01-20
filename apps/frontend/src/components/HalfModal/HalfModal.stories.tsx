@@ -123,3 +123,17 @@ export const HeightLarge: Story = {
     children: Content,
   },
 };
+
+export const WithoutFooter: Story = {
+  render: (args) => <HalfModal {...args}>{Content}</HalfModal>,
+  args: {
+    open: true,
+    onOpenChange: () => {
+      /* noop */
+    },
+    title: "家事を討伐する",
+    description: "討伐する家事を選択してください",
+    headerIcon: <Swords size={18} />,
+    children: Content,
+  },
+};
