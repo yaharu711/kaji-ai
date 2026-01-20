@@ -3,7 +3,7 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import LoginPage from "./pages/login";
 import UserPage from "./pages/users";
 import GroupLayout from "./pages/groups/GroupLayout";
-import GroupHomePage from "./pages/groups";
+import GroupHomePage from "./pages/groups/home";
 import GroupReportsPage from "./pages/groups/reports";
 import GroupChoresPage from "./pages/groups/chores";
 import GroupSettingsPage from "./pages/groups/settings";

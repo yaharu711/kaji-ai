@@ -1,5 +1,5 @@
 import PageCard from "../../../components/PageCard";
-import styles from "../groups.module.css";
+import styles from "../home/groups.module.css";
 import { useGroupLayout } from "../GroupLayoutContext";
 
 function GroupReportsPage() {

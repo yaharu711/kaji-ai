@@ -4,7 +4,7 @@ import { useSessionUser } from "../../contexts/SessionUserContext";
 import { useGroupUsersQuery } from "./hooks/useGroupUsersQuery";
 import { GroupLayoutProvider } from "./GroupLayoutContext";
 import { createGroupNavItems } from "./navItems";
-import styles from "./groups.module.css";
+import styles from "./group-layout.module.css";
 
 function GroupLayout() {
   const { groupId } = useParams<{ groupId: string }>();

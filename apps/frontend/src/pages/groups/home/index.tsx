@@ -1,7 +1,7 @@
 import { Swords } from "lucide-react";
-import PageCard from "../../components/PageCard";
+import PageCard from "../../../components/PageCard";
 import styles from "./groups.module.css";
-import { useGroupLayout } from "./GroupLayoutContext";
+import { useGroupLayout } from "../GroupLayoutContext";
 
 function GroupHomePage() {
   const { groupId } = useGroupLayout();
