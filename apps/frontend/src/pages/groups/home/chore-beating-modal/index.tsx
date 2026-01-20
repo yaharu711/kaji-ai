@@ -1,11 +1,13 @@
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { Clock3, Swords } from "lucide-react";
-import { DropdownSelect, HalfModal } from "../../../../components";
+import { DropdownSelect, HalfModal, LoaderCircle } from "../../../../components";
 import styles from "./ChoreBeatingModal.module.css";
 
 interface ChoreBeatingModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  choreOptions: Array<{ value: string; label: string; icon?: ReactNode }>;
+  choresLoading?: boolean;
 }
 
 const formatHour = (hour: number) => `${String(hour)}時`;
@@ -25,7 +27,12 @@ const getDefaultTimeRange = () => {
   return `${start}〜${end}`;
 };
 
-function ChoreBeatingModal({ open, onOpenChange }: ChoreBeatingModalProps) {
+function ChoreBeatingModal({
+  open,
+  onOpenChange,
+  choreOptions,
+  choresLoading = false,
+}: ChoreBeatingModalProps) {
   const [selectedChore, setSelectedChore] = useState<string | undefined>(undefined);
   const [selectedTime, setSelectedTime] = useState<string>(getDefaultTimeRange);
 
@@ -33,6 +40,7 @@ function ChoreBeatingModal({ open, onOpenChange }: ChoreBeatingModalProps) {
   const todayText = `${String(today.getMonth() + 1)}月${String(today.getDate())}日`;
 
   const handleClose = () => {
+    setSelectedChore(undefined);
     setSelectedTime(getDefaultTimeRange());
   };
 
@@ -66,10 +74,17 @@ function ChoreBeatingModal({ open, onOpenChange }: ChoreBeatingModalProps) {
           </div>
           <DropdownSelect
             placeholder="家事を選択しよう！"
-            emptyMessage="討伐する家事がありません、、！"
-            options={[]}
+            emptyMessage={
+              choresLoading ? (
+                <LoaderCircle size="md" ariaLabel="家事を読み込み中" />
+              ) : (
+                "討伐する家事がありません、、！"
+              )
+            }
+            options={choreOptions}
             value={selectedChore}
             onChange={setSelectedChore}
+            disabled={choresLoading}
           />
         </section>
 

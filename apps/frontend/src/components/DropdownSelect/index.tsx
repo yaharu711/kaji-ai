@@ -43,7 +43,7 @@ interface DropdownSelectProps {
   label?: string;
   helperText?: string;
   placeholder?: string;
-  emptyMessage?: string;
+  emptyMessage?: ReactNode;
   options: DropdownOption[];
   value?: string;
   onChange: (value: string) => void;
