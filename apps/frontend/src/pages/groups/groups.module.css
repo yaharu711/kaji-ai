@@ -55,3 +55,42 @@
   font-size: 12px;
   word-break: break-all;
 }
+
+.floatingAction {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  width: 66px;
+  height: 66px;
+  border-radius: 999px;
+  border: none;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, var(--color-accent), var(--color-primary-to));
+  color: var(--color-surface);
+  box-shadow: var(--shadow-primary);
+  cursor: pointer;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+  z-index: var(--z-index-floating-action);
+}
+
+.floatingAction:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-primary-hover);
+}
+
+.floatingAction:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-input-focus);
+}
+
+@media (max-width: 480px) {
+  .floatingAction {
+    right: 16px;
+    bottom: 16px;
+    width: 60px;
+    height: 60px;
+  }
+}
