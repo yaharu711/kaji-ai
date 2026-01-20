@@ -15,7 +15,7 @@ function HeroSection() {
           <h1 id="hero-heading" className={styles.heroTitle}>
             カジアイ
           </h1>
-          <p className={styles.heroEyebrow}>あなたのダッシュボード</p>
+          <p className={styles.heroEyebrow}>あなたのプロフィール</p>
         </div>
       </section>
     </PageCard>

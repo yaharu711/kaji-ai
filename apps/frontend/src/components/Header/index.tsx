@@ -50,6 +50,7 @@ function Header({ navItems, groupName, currentUser, members }: HeaderProps) {
               disabled={!shouldShowUserPopover}
             >
               <Users size={18} />
+              <span>メンバー</span>
             </button>
           }
           ariaLabel="ユーザー情報"
