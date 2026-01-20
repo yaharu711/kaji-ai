@@ -64,17 +64,19 @@
 }
 
 .userTrigger {
-  width: 40px;
   height: 40px;
   border-radius: 999px;
   border: none;
-  padding: 0;
-  display: grid;
-  place-items: center;
+  padding: 0 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
   background: linear-gradient(135deg, var(--color-accent), var(--color-primary-to));
-  color: #ffffff;
+  color: var(--color-surface);
   box-shadow: var(--shadow-primary);
   cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
   transition:
     transform 0.15s ease,
     box-shadow 0.15s ease;
@@ -186,8 +188,12 @@
 
   .userTrigger,
   .userIcon {
-    width: 38px;
     height: 38px;
+  }
+
+  .userTrigger {
+    padding: 0 10px;
+    font-size: 11px;
   }
 
   .nav {

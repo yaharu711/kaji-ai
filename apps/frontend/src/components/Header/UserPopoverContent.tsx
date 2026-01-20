@@ -43,7 +43,7 @@ function UserPopoverContent({ groupName, currentUser, members }: UserPopoverCont
           <ActionLink
             to={`/users/${currentUser.id}`}
             icon={<User size={18} />}
-            pageName="ダッシュボード"
+            pageName="プロフィール"
           />
         ) : null}
       </div>

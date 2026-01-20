@@ -109,4 +109,10 @@
   --color-nav-active-to: #c084fc;
   --color-nav-active-shadow: rgba(236, 72, 153, 0.18);
   --color-nav-active-ring: rgba(196, 181, 253, 0.35);
+
+  /* Z-index */
+  --z-index-popover: 20;
+  --z-index-floating-action: 30;
+  --z-index-overlay: 40;
+  --z-index-modal: 50;
 }
