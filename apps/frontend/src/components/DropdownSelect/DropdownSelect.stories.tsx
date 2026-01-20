@@ -12,8 +12,8 @@ const chores = [
 ];
 
 const manyChores = Array.from({ length: 18 }, (_, index) => ({
-  value: `chore-${index + 1}`,
-  label: `家事 ${index + 1}`,
+  value: `chore-${String(index + 1)}`,
+  label: `家事 ${String(index + 1)}`,
   icon: "✨",
 }));
 
@@ -153,6 +153,22 @@ const FullWidthStory = () => {
   );
 };
 
+const ScrollableStory = () => {
+  const [value, setValue] = useState(manyChores[0]?.value ?? "");
+  return (
+    <div style={{ width: 360 }}>
+      <DropdownSelect
+        label="家事をたくさん表示"
+        helperText="選択肢が多いとスクロールが出ます"
+        options={manyChores}
+        value={value}
+        onChange={setValue}
+        variant="soft"
+      />
+    </div>
+  );
+};
+
 export const Default: Story = {
   render: () => <DefaultStory />,
 };
@@ -198,19 +214,5 @@ export const Widths: Story = {
 };
 
 export const Scrollable: Story = {
-  render: () => {
-    const [value, setValue] = useState(manyChores[0]?.value ?? "");
-    return (
-      <div style={{ width: 360 }}>
-        <DropdownSelect
-          label="家事をたくさん表示"
-          helperText="選択肢が多いとスクロールが出ます"
-          options={manyChores}
-          value={value}
-          onChange={setValue}
-          variant="soft"
-        />
-      </div>
-    );
-  },
+  render: () => <ScrollableStory />,
 };
