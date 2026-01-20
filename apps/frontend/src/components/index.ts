@@ -10,3 +10,4 @@ export { default as ErrorModalProvider } from "./ErrorModalProvider";
 export { useErrorModal } from "./ErrorModalProvider/useErrorModal";
 export { default as Header } from "./Header";
 export { default as Popover } from "./Popover";
+export { default as DropdownSelect } from "./DropdownSelect";
