@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Swords } from "lucide-react";
 import PageCard from "../../../components/PageCard";
-import styles from "./groups.module.css";
+import styles from "./home.module.css";
 import { useGroupLayout } from "../GroupLayoutContext";
 import ChoreBeatingModal from "./chore-beating-modal";
 import { useGroupChoresQuery } from "../hooks/useGroupChoresQuery";
