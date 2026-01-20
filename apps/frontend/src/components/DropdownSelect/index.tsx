@@ -1,4 +1,4 @@
-import { useId, useRef, useState, type ReactNode } from "react";
+import { useEffect, useId, useRef, useState, type ReactNode } from "react";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { Check, ChevronDown } from "lucide-react";
 import styles from "./DropdownSelect.module.css";
@@ -73,11 +73,27 @@ function DropdownSelect({
   const labelId = label ? `${generatedId}-label` : undefined;
   const descriptionId = helperText ? `${generatedId}-desc` : undefined;
   const triggerRef = useRef<HTMLButtonElement | null>(null);
+  const selectedItemRef = useRef<HTMLDivElement | null>(null);
 
   const [isOpen, setIsOpen] = useState(false);
 
   const selectedIndex = options.findIndex((option) => option.value === value);
   const selectedOption = selectedIndex >= 0 ? options[selectedIndex] : undefined;
+  const hasSelectedOption = selectedIndex >= 0;
+
+  useEffect(() => {
+    if (!isOpen || !hasSelectedOption) {
+      return;
+    }
+
+    const rafId = window.requestAnimationFrame(() => {
+      selectedItemRef.current?.scrollIntoView({ block: "center" });
+    });
+
+    return () => {
+      window.cancelAnimationFrame(rafId);
+    };
+  }, [hasSelectedOption, isOpen]);
 
   const handleSelect = (nextValue: string) => {
     if (disabled) {
@@ -174,6 +190,7 @@ function DropdownSelect({
                     key={option.value}
                     className={styles.option}
                     value={option.value}
+                    ref={option.value === value ? selectedItemRef : null}
                   >
                     <span className={styles.optionContent}>
                       {option.icon ? (

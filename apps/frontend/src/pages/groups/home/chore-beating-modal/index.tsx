@@ -28,7 +28,7 @@ function ChoreBeatingModal({ open, onOpenChange }: ChoreBeatingModalProps) {
       open={open}
       onOpenChange={onOpenChange}
       title="家事を討伐する"
-      headerIcon={<Swords size={18} />}
+      headerIcon={<Swords size={20} />}
       primaryActionLabel="討伐完了"
       secondaryActionLabel="キャンセル"
       onPrimaryAction={() => {
