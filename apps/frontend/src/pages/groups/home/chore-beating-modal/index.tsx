@@ -1,12 +1,17 @@
-import { useState, type ReactNode } from "react";
+import { useState } from "react";
 import { Clock3, Swords } from "lucide-react";
-import { DropdownSelect, HalfModal, LoaderCircle } from "../../../../components";
+import {
+  DropdownSelect,
+  HalfModal,
+  LoaderCircle,
+  type DropdownOption,
+} from "../../../../components";
 import styles from "./ChoreBeatingModal.module.css";
 
 interface ChoreBeatingModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  choreOptions: Array<{ value: string; label: string; icon?: ReactNode }>;
+  choreOptions: DropdownOption[];
   choresLoading?: boolean;
 }
 

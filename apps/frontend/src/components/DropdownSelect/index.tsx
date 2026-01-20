@@ -33,7 +33,7 @@ type Radius = keyof typeof RADIUS_CLASS;
 type Variant = keyof typeof VARIANT_CLASS;
 type Width = keyof typeof WIDTH_CLASS;
 
-interface DropdownOption {
+export interface DropdownOption {
   value: string;
   label: string;
   icon?: ReactNode;

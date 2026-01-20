@@ -85,7 +85,7 @@
   place-items: center;
   width: 40px;
   height: 40px;
-  font-size: 18px;
+  font-size: 23px;
 }
 
 .triggerText {
@@ -176,7 +176,6 @@
 .list {
   display: flex;
   flex-direction: column;
-  gap: 8px;
   max-height: none;
   overflow: visible;
   padding-right: 4px;
@@ -189,7 +188,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  gap: 6px;
   padding: 12px 14px;
   border-radius: 14px;
   color: var(--color-text-strong);
@@ -237,7 +236,7 @@
 .optionContent {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
   min-width: 0;
 }
 
@@ -246,7 +245,7 @@
   place-items: center;
   width: 40px;
   height: 40px;
-  font-size: 18px;
+  font-size: 23px;
   flex-shrink: 0;
 }
 
