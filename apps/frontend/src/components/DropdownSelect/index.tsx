@@ -1,4 +1,4 @@
-import { useId, useRef, useState, type ReactNode } from "react";
+import { useEffect, useId, useRef, useState, type ReactNode } from "react";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { Check, ChevronDown } from "lucide-react";
 import styles from "./DropdownSelect.module.css";
@@ -33,7 +33,7 @@ type Radius = keyof typeof RADIUS_CLASS;
 type Variant = keyof typeof VARIANT_CLASS;
 type Width = keyof typeof WIDTH_CLASS;
 
-interface DropdownOption {
+export interface DropdownOption {
   value: string;
   label: string;
   icon?: ReactNode;
@@ -43,7 +43,7 @@ interface DropdownSelectProps {
   label?: string;
   helperText?: string;
   placeholder?: string;
-  emptyMessage?: string;
+  emptyMessage?: ReactNode;
   options: DropdownOption[];
   value?: string;
   onChange: (value: string) => void;
@@ -73,11 +73,29 @@ function DropdownSelect({
   const labelId = label ? `${generatedId}-label` : undefined;
   const descriptionId = helperText ? `${generatedId}-desc` : undefined;
   const triggerRef = useRef<HTMLButtonElement | null>(null);
+  const selectedItemRef = useRef<HTMLDivElement | null>(null);
 
   const [isOpen, setIsOpen] = useState(false);
 
   const selectedIndex = options.findIndex((option) => option.value === value);
   const selectedOption = selectedIndex >= 0 ? options[selectedIndex] : undefined;
+  const hasSelectedOption = selectedIndex >= 0;
+
+  useEffect(() => {
+    if (!isOpen || !hasSelectedOption) {
+      return;
+    }
+
+    // レイアウトや描画が整ったタイミングで処理を走らせるために、requestAnimationFrameを使用する
+    // アニメーションや今回のようなスクロールを動的に行う場合に適している
+    const rafId = window.requestAnimationFrame(() => {
+      selectedItemRef.current?.scrollIntoView({ block: "center" });
+    });
+
+    return () => {
+      window.cancelAnimationFrame(rafId);
+    };
+  }, [hasSelectedOption, isOpen]);
 
   const handleSelect = (nextValue: string) => {
     if (disabled) {
@@ -153,6 +171,8 @@ function DropdownSelect({
             side="bottom"
             align="start"
             sideOffset={10}
+            // ドロップダウンが必ず下に出るよう、衝突回避の自動反転を無効化
+            avoidCollisions={false}
             onCloseAutoFocus={(event: Event) => {
               event.preventDefault();
               triggerRef.current?.focus();
@@ -172,6 +192,7 @@ function DropdownSelect({
                     key={option.value}
                     className={styles.option}
                     value={option.value}
+                    ref={option.value === value ? selectedItemRef : null}
                   >
                     <span className={styles.optionContent}>
                       {option.icon ? (

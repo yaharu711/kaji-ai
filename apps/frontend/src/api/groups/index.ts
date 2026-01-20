@@ -1,6 +1,7 @@
 import type {
   CreateGroupRequest,
   CreateGroupResponse,
+  GetGroupChoresResponse,
   GetGroupsResponse,
   GetGroupUsersResponse,
   InviteGroupRequest,
@@ -23,6 +24,23 @@ export const fetchGroups = async (): Promise<GetGroupsResponse> => {
   }
 
   return response.json() as Promise<GetGroupsResponse>;
+};
+
+export const fetchGroupChores = async ({
+  groupId,
+}: {
+  groupId: string;
+}): Promise<GetGroupChoresResponse> => {
+  const res = await groupsApi[":groupId"].chores.$get({
+    param: { groupId },
+  });
+  const response = res as Response;
+
+  if (!response.ok) {
+    throw new ApiError(response.status, "家事一覧の取得に失敗しました");
+  }
+
+  return response.json() as Promise<GetGroupChoresResponse>;
 };
 
 export const searchGroupUsers = async ({
