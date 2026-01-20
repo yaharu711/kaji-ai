@@ -47,7 +47,6 @@ interface DropdownSelectProps {
   value?: string;
   onChange: (value: string) => void;
   disabled?: boolean;
-  fullWidth?: boolean;
   width?: Width;
   size?: Size;
   radius?: Radius;
@@ -62,7 +61,6 @@ function DropdownSelect({
   value,
   onChange,
   disabled = false,
-  fullWidth = false,
   width = "full",
   size = "md",
   radius = "lg",
@@ -93,9 +91,7 @@ function DropdownSelect({
     triggerRef.current?.focus();
   };
 
-  const rootClassName = [styles.root, fullWidth ? WIDTH_CLASS.full : WIDTH_CLASS[width]]
-    .filter(Boolean)
-    .join(" ");
+  const rootClassName = [styles.root, WIDTH_CLASS[width]].filter(Boolean).join(" ");
 
   const triggerClassName = [
     styles.trigger,
@@ -130,6 +126,7 @@ function DropdownSelect({
             type="button"
             className={triggerClassName}
             aria-labelledby={labelId}
+            aria-describedby={descriptionId}
             disabled={disabled}
           >
             <span className={styles.triggerContent}>

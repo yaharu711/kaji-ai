@@ -148,7 +148,13 @@ const FullWidthStory = () => {
   const [value, setValue] = useState("dishes");
   return (
     <div style={{ width: 480 }}>
-      <DropdownSelect label="フル幅" options={chores} value={value} onChange={setValue} fullWidth />
+      <DropdownSelect
+        label="フル幅"
+        options={chores}
+        value={value}
+        onChange={setValue}
+        width="full"
+      />
     </div>
   );
 };
