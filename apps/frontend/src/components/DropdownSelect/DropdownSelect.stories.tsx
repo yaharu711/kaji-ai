@@ -55,6 +55,7 @@ const HelperTextStory = () => {
       <DropdownSelect
         label="討伐する家事"
         helperText="1つ選択してください"
+        helperTextVariant="notice"
         options={chores}
         value={value}
         onChange={setValue}

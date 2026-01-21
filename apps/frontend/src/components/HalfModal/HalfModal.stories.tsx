@@ -137,3 +137,21 @@ export const WithoutFooter: Story = {
     children: Content,
   },
 };
+
+export const PrimaryDisabled: Story = {
+  render: (args) => <HalfModal {...args}>{Content}</HalfModal>,
+  args: {
+    open: true,
+    onOpenChange: () => {
+      /* noop */
+    },
+    title: "家事を討伐する",
+    description: "討伐する家事を選択してください",
+    headerIcon: <Swords size={18} />,
+    secondaryActionLabel: "キャンセル",
+    primaryActionLabel: "討伐完了",
+    primaryActionDisabled: true,
+    height: "md",
+    children: Content,
+  },
+};

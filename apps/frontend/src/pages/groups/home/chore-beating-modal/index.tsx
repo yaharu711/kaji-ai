@@ -13,9 +13,30 @@ interface ChoreBeatingModalProps {
   onOpenChange: (open: boolean) => void;
   choreOptions: DropdownOption[];
   choresLoading?: boolean;
+  isSubmitting?: boolean;
+  onSubmit: (payload: { choreId: number; startHour: number }) => Promise<void>;
 }
 
 const formatHour = (hour: number) => `${String(hour)}時`;
+
+const getJstDateParts = (date: Date) => {
+  const formatter = new Intl.DateTimeFormat("ja-JP", {
+    timeZone: "Asia/Tokyo",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    hour12: false,
+  });
+  const parts = formatter.formatToParts(date);
+  const getPart = (type: string) => parts.find((part) => part.type === type)?.value ?? "";
+  return {
+    year: getPart("year"),
+    month: getPart("month"),
+    day: getPart("day"),
+    hour: getPart("hour"),
+  };
+};
 
 const timeOptions = Array.from({ length: 24 }, (_, hour) => {
   const start = formatHour(hour);
@@ -26,10 +47,20 @@ const timeOptions = Array.from({ length: 24 }, (_, hour) => {
 
 const getDefaultTimeRange = () => {
   const now = new Date();
-  const hour = now.getHours();
-  const start = formatHour(hour);
-  const end = formatHour((hour + 1) % 24);
+  const hourText = getJstDateParts(now).hour;
+  const hour = Number(hourText);
+  const resolvedHour = Number.isNaN(hour) ? now.getHours() : hour;
+  const start = formatHour(resolvedHour);
+  const end = formatHour((resolvedHour + 1) % 24);
   return `${start}〜${end}`;
+};
+
+const parseStartHour = (value: string) => {
+  const match = /^(\d{1,2})時〜/.exec(value);
+  if (!match) return null;
+  const hour = Number(match[1]);
+  if (Number.isNaN(hour) || hour < 0 || hour > 23) return null;
+  return hour;
 };
 
 function ChoreBeatingModal({
@@ -37,12 +68,16 @@ function ChoreBeatingModal({
   onOpenChange,
   choreOptions,
   choresLoading = false,
+  isSubmitting = false,
+  onSubmit,
 }: ChoreBeatingModalProps) {
   const [selectedChore, setSelectedChore] = useState<string | undefined>(undefined);
   const [selectedTime, setSelectedTime] = useState<string>(getDefaultTimeRange);
+  const isPrimaryDisabled = !selectedChore || isSubmitting;
 
-  const today = new Date();
-  const todayText = `${String(today.getMonth() + 1)}月${String(today.getDate())}日`;
+  const todayParts = getJstDateParts(new Date());
+  const todayText = `${todayParts.month}月${todayParts.day}日`;
+  const timeHelperText = `本日 ${todayText}の討伐として記録されます！`;
 
   const handleClose = () => {
     setSelectedChore(undefined);
@@ -56,6 +91,18 @@ function ChoreBeatingModal({
     onOpenChange(nextOpen);
   };
 
+  const handleSubmit = async () => {
+    if (!selectedChore || isSubmitting) return;
+    const hour = parseStartHour(selectedTime);
+    if (hour === null) return;
+    try {
+      await onSubmit({ choreId: Number(selectedChore), startHour: hour });
+      handleOpenChange(false);
+    } catch {
+      // エラーモーダル側で扱うため、ここでは閉じない
+    }
+  };
+
   return (
     <HalfModal
       open={open}
@@ -64,8 +111,9 @@ function ChoreBeatingModal({
       headerIcon={<Swords size={20} />}
       primaryActionLabel="討伐完了"
       secondaryActionLabel="キャンセル"
+      primaryActionDisabled={isPrimaryDisabled}
       onPrimaryAction={() => {
-        handleOpenChange(false);
+        void handleSubmit();
       }}
       onSecondaryAction={() => {
         handleOpenChange(false);
@@ -102,7 +150,8 @@ function ChoreBeatingModal({
             options={timeOptions}
             value={selectedTime}
             onChange={setSelectedTime}
-            helperText={`本日 ${todayText}の討伐として記録されます！`}
+            helperText={timeHelperText}
+            helperTextVariant="notice"
           />
         </section>
       </div>

@@ -22,7 +22,7 @@
   border: 1px solid var(--half-modal-border);
   background: var(--half-modal-body-bg);
   box-shadow: var(--shadow-dialog);
-  z-index: var(--z-index-modal);
+  z-index: var(--z-index-harf-modal);
 }
 
 .sizeSm {

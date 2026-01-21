@@ -6,11 +6,14 @@ import { useGroupLayout } from "../GroupLayoutContext";
 import ChoreBeatingModal from "./chore-beating-modal";
 import { useGroupChoresQuery } from "../hooks/useGroupChoresQuery";
 import { getChoreIcon } from "../../../constants/chores";
+import { useCreateChoreBeatingMutation } from "../hooks/useCreateChoreBeatingMutation";
 
 function GroupHomePage() {
   const { groupId } = useGroupLayout();
   const [isBattleOpen, setIsBattleOpen] = useState(false);
   const { data: chores, isLoading: choresLoading } = useGroupChoresQuery(groupId);
+  const { mutateAsync: createBeating, isPending: isCreatingBeating } =
+    useCreateChoreBeatingMutation();
 
   const choreOptions =
     chores?.map((chore) => ({
@@ -26,6 +29,11 @@ function GroupHomePage() {
         onOpenChange={setIsBattleOpen}
         choreOptions={choreOptions}
         choresLoading={choresLoading}
+        isSubmitting={isCreatingBeating}
+        onSubmit={async ({ choreId, startHour }) => {
+          if (!groupId) return;
+          await createBeating({ groupId, choreId, startHour });
+        }}
       />
       <PageCard align="center">
         <section className={styles.content} aria-labelledby="group-heading">
