@@ -34,7 +34,7 @@ const app = new Hono()
     const requesterId = c.var.requesterId;
     const { groupId } = c.req.param();
     const { chore_id, beated_at } = c.req.valid("json");
-    return createChoreBeatingController(c, requesterId, groupId, chore_id, beated_at);
+    return createChoreBeatingController(c, requesterId, groupId, chore_id, new Date(beated_at));
   })
   .get("/:groupId/search/users", validateQuery(searchUsersRequestSchema), async (c) => {
     const { email } = c.req.valid("query");

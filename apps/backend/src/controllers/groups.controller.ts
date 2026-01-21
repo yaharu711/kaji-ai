@@ -13,7 +13,7 @@ import { getGroupsSuccessSchema } from "../routing/schemas/responses/getGroupsRe
 import { inviteGroupSuccessSchema } from "../routing/schemas/responses/inviteGroupResponse";
 import { searchUsersSuccessSchema } from "../routing/schemas/responses/searchUsersResponse";
 import { forbiddenSchema, unprocessableEntitySchema } from "../routing/schemas/responses/common";
-import { fromIsoJst, nowJst } from "../util/datetime";
+import { nowJst } from "../util/datetime";
 
 const db = getDb();
 const groupRepository = new GroupRepository(db);
@@ -225,7 +225,7 @@ export const createChoreBeatingController = async (
   requesterId: string,
   groupId: string,
   choreId: number,
-  beatedAt: string,
+  beatedAt: Date,
 ) => {
   const belongings = await groupRepository.findUsersByGroupId(groupId);
   const requesterBelonging = belongings.find((member) => member.id === requesterId);
@@ -234,24 +234,13 @@ export const createChoreBeatingController = async (
     return c.json(body, 403);
   }
 
-  const beatedAtJst = fromIsoJst(beatedAt);
-  if (!beatedAtJst) {
-    const body = unprocessableEntitySchema.parse({
-      status: 422,
-      errors: [
-        { field: "beated_at", message: "beated_at は ISO8601 の JST 形式で指定してください" },
-      ],
-    });
-    return c.json(body, 422);
-  }
-
   const now = nowJst();
   await choreBeatingsRepository.create({
     groupId,
     choreId,
     userId: requesterId,
     likeCount: 0,
-    beatedAt: beatedAtJst.toDate(),
+    beatedAt,
     createdAt: now.toDate(),
     updatedAt: now.toDate(),
   });
