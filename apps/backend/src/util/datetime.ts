@@ -20,3 +20,9 @@ export const fromDbTimestampJst = (value: string) => {
 };
 
 export const toIsoJst = (value: dayjs.Dayjs) => value.tz(JST_TIMEZONE).format();
+
+export const fromIsoJst = (value: string) => {
+  const parsed = dayjs(value);
+  if (!parsed.isValid()) return null;
+  return parsed.tz(JST_TIMEZONE);
+};
