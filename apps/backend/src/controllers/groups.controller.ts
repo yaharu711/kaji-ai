@@ -48,11 +48,7 @@ export const getGroupChoresController = async (c: Context, groupId: string) => {
   return c.json(response, 200);
 };
 
-export const getGroupUsersController = async (
-  c: Context,
-  requesterId: string,
-  groupId: string,
-) => {
+export const getGroupUsersController = async (c: Context, requesterId: string, groupId: string) => {
   const users = await groupRepository.findUsersByGroupId(groupId);
   const requesterBelonging = users.find((user) => user.id === requesterId);
   if (!requesterBelonging || requesterBelonging.acceptedAt === null) {
@@ -193,12 +189,12 @@ export const createGroupController = async (c: Context, requesterId: string, nam
     updatedAt: now,
   };
   // 作成者なので所属済みとして登録するためのデータ
-  const beloging = { groupId, userId: requesterId, createdAt: now, acceptedAt: now };
+  const belonging = { groupId, userId: requesterId, createdAt: now, acceptedAt: now };
 
   try {
     await groupRepository.create(group);
     // 作成者を所属済みとして登録
-    await groupRepository.addBelonging(beloging);
+    await groupRepository.addBelonging(belonging);
   } catch (error) {
     // neon-http ドライバはトランザクション非対応のため、失敗時は手動で作成済みグループを削除して整合性を保つ
     await groupRepository.deleteById(group.id).catch(() => {
