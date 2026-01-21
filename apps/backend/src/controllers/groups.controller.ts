@@ -11,6 +11,7 @@ import { getGroupsSuccessSchema } from "../routing/schemas/responses/getGroupsRe
 import { inviteGroupSuccessSchema } from "../routing/schemas/responses/inviteGroupResponse";
 import { searchUsersSuccessSchema } from "../routing/schemas/responses/searchUsersResponse";
 import { forbiddenSchema, unprocessableEntitySchema } from "../routing/schemas/responses/common";
+import { nowJst } from "../util/datetime";
 
 const db = getDb();
 const groupRepository = new GroupRepository(db);
@@ -101,7 +102,7 @@ export const inviteGroupController = async (
   groupId: string,
   userId: string,
 ) => {
-  const now = new Date();
+  const now = nowJst();
   const belongings = await groupRepository.findUsersByGroupId(groupId);
   // 招待リクエスト送信者がグループ所属者であることを確認(グループ所属者なら誰でも招待可能)
   const requesterBelonging = belongings.find((member) => member.id === requesterId);
@@ -121,7 +122,7 @@ export const inviteGroupController = async (
   await groupRepository.addBelonging({
     groupId,
     userId,
-    createdAt: now,
+    createdAt: now.toDate(),
     acceptedAt: null,
   });
 
@@ -134,7 +135,7 @@ export const acceptGroupInvitationController = async (
   userId: string,
   groupId: string,
 ) => {
-  const now = new Date();
+  const now = nowJst();
   const belongings = await groupRepository.findUsersByGroupId(groupId);
   const belonging = belongings.find((member) => member.id === userId);
   // 他のユーザーがリクエストしてきている場合でも422を返す仕様（手抜き）
@@ -149,8 +150,8 @@ export const acceptGroupInvitationController = async (
   await groupRepository.updateBelonging({
     groupId,
     userId,
-    createdAt: now,
-    acceptedAt: now,
+    createdAt: now.toDate(),
+    acceptedAt: now.toDate(),
   });
 
   return c.body(null, 204);
@@ -177,7 +178,7 @@ export const denyGroupInvitationController = async (
 };
 
 export const createGroupController = async (c: Context, requesterId: string, name: string) => {
-  const now = new Date();
+  const now = nowJst();
 
   const groupId = crypto.randomUUID();
   const group = {
@@ -185,11 +186,16 @@ export const createGroupController = async (c: Context, requesterId: string, nam
     name,
     ownerId: requesterId,
     image: null,
-    createdAt: now,
-    updatedAt: now,
+    createdAt: now.toDate(),
+    updatedAt: now.toDate(),
   };
   // 作成者なので所属済みとして登録するためのデータ
-  const belonging = { groupId, userId: requesterId, createdAt: now, acceptedAt: now };
+  const belonging = {
+    groupId,
+    userId: requesterId,
+    createdAt: now.toDate(),
+    acceptedAt: now.toDate(),
+  };
 
   try {
     await groupRepository.create(group);
