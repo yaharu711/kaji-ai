@@ -22,6 +22,7 @@ const client = testClient<RoutingApp>(app);
 const db = getDb();
 
 beforeEach(async () => {
+  await db.execute(sql`TRUNCATE TABLE "chore_beatings" CASCADE`);
   await db.execute(sql`TRUNCATE TABLE "group_chores" CASCADE`);
   await db.execute(sql`TRUNCATE TABLE "master_chores" CASCADE`);
   await db.execute(sql`TRUNCATE TABLE "user_group_belongings" CASCADE`);
@@ -146,6 +147,121 @@ describe("GET /api/groups", () => {
           member_count: 2,
           invited_count: 1,
           is_invited: false,
+        },
+      ],
+    });
+  });
+});
+
+describe("POST /api/groups/:groupId/beatings", () => {
+  it("所属メンバーであれば討伐記録を作成できる", async () => {
+    const groupId = "group-1";
+    const now = new Date("2026-01-21T00:00:00Z");
+
+    await createGroup({
+      id: groupId,
+      name: "Test Group",
+      ownerId: AUTH_USER.id,
+      createdAt: now,
+      updatedAt: now,
+    });
+    await createBelonging({
+      groupId,
+      userId: AUTH_USER.id,
+      createdAt: now,
+      acceptedAt: now,
+    });
+    await createGroupChore({
+      id: 123,
+      groupId,
+      choreName: "食器洗い",
+      iconCode: "dish-wash",
+    });
+
+    const beatedAtIso = "2026-01-21T10:00:00+09:00";
+    const res = await client.api.groups[":groupId"].beatings.$post({
+      param: { groupId },
+      json: { chore_id: 123, beated_at: beatedAtIso },
+    });
+
+    expect(res.status).toBe(201);
+
+    const rows = await db.select().from(schema.choreBeatings);
+    expect(rows).toHaveLength(1);
+    expect(rows[0]).toMatchObject({
+      groupId,
+      choreId: 123,
+      userId: AUTH_USER.id,
+      likeCount: 0,
+    });
+    expect(rows[0].beatedAt).toEqual(new Date(beatedAtIso));
+  });
+
+  it("所属メンバーでなければ403を返す", async () => {
+    const groupId = "group-2";
+    const ownerId = "owner-2";
+    const now = new Date("2026-01-21T00:00:00Z");
+
+    await createUser({ id: ownerId, name: "Owner" });
+    await createGroup({
+      id: groupId,
+      name: "Other Group",
+      ownerId,
+      createdAt: now,
+      updatedAt: now,
+    });
+    await createGroupChore({
+      id: 456,
+      groupId,
+      choreName: "掃除",
+      iconCode: "cleaning",
+    });
+
+    const res = await client.api.groups[":groupId"].beatings.$post({
+      param: { groupId },
+      json: { chore_id: 456, beated_at: "2026-01-21T10:00:00+09:00" },
+    });
+
+    expect(res.status).toBe(403);
+    expect(await res.json()).toEqual({ status: 403, message: "Forbidden" });
+  });
+
+  it("beated_at がJSTのISO8601でない場合は422を返す", async () => {
+    const groupId = "group-3";
+    const now = new Date("2026-01-21T00:00:00Z");
+
+    await createGroup({
+      id: groupId,
+      name: "Test Group",
+      ownerId: AUTH_USER.id,
+      createdAt: now,
+      updatedAt: now,
+    });
+    await createBelonging({
+      groupId,
+      userId: AUTH_USER.id,
+      createdAt: now,
+      acceptedAt: now,
+    });
+    await createGroupChore({
+      id: 789,
+      groupId,
+      choreName: "洗濯",
+      iconCode: "laundry",
+    });
+
+    const res = await client.api.groups[":groupId"].beatings.$post({
+      param: { groupId },
+      json: { chore_id: 789, beated_at: "2026-01-21T10:00:00Z" },
+    });
+
+    expect(res.status).toBe(422);
+    expect(await res.json()).toEqual({
+      status: 422,
+      errors: [
+        {
+          field: "beated_at",
+          message: expect.any(String),
         },
       ],
     });

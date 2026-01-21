@@ -2,6 +2,7 @@ import { Hono } from "hono";
 
 import {
   acceptGroupInvitationController,
+  createChoreBeatingController,
   createGroupController,
   denyGroupInvitationController,
   getGroupChoresController,
@@ -10,6 +11,7 @@ import {
   inviteGroupController,
   searchUsersController,
 } from "../controllers/groups.controller";
+import { createChoreBeatingRequestSchema } from "./schemas/requests/createChoreBeatingRequest";
 import { createGroupRequestSchema } from "./schemas/requests/createGroupRequest";
 import { inviteGroupRequestSchema, searchUsersRequestSchema } from "./schemas/requests";
 import { validateJson, validateQuery } from "./middlewares/validator";
@@ -27,6 +29,12 @@ const app = new Hono()
     const requesterId = c.var.requesterId;
     const { groupId } = c.req.param();
     return getGroupUsersController(c, requesterId, groupId);
+  })
+  .post("/:groupId/beatings", validateJson(createChoreBeatingRequestSchema), async (c) => {
+    const requesterId = c.var.requesterId;
+    const { groupId } = c.req.param();
+    const { chore_id, beated_at } = c.req.valid("json");
+    return createChoreBeatingController(c, requesterId, groupId, chore_id, beated_at);
   })
   .get("/:groupId/search/users", validateQuery(searchUsersRequestSchema), async (c) => {
     const { email } = c.req.valid("query");
