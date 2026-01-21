@@ -3,6 +3,7 @@ import { http, HttpResponse } from "msw";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import type { AppSessionUser, GetGroupChoresResponse } from "@kaiji-ai/backend/contracts";
 
+import ErrorModalProvider from "../../../components/ErrorModalProvider";
 import { GroupLayoutProvider } from "../GroupLayoutContext";
 import { createGroupNavItems } from "../navItems";
 import GroupHomePage from ".";
@@ -43,16 +44,18 @@ const meta = {
 
       return (
         <QueryClientProvider client={queryClient}>
-          <GroupLayoutProvider
-            value={{
-              groupId: mockGroupId,
-              groupName: mockGroupName,
-              navItems: createGroupNavItems(mockGroupId, mockGroupName),
-              currentUser: mockUser,
-            }}
-          >
-            <Story />
-          </GroupLayoutProvider>
+          <ErrorModalProvider>
+            <GroupLayoutProvider
+              value={{
+                groupId: mockGroupId,
+                groupName: mockGroupName,
+                navItems: createGroupNavItems(mockGroupId, mockGroupName),
+                currentUser: mockUser,
+              }}
+            >
+              <Story />
+            </GroupLayoutProvider>
+          </ErrorModalProvider>
         </QueryClientProvider>
       );
     },
