@@ -114,6 +114,8 @@
   --z-index-popover: 20;
   --z-index-floating-action: 30;
   --z-index-overlay: 40;
-  --z-index-modal: 50;
+  --z-index-harf-modal: 50;
   --z-index-dropdown-modal: 60;
+  --z-index-modal-overlay: 70;
+  --z-index-modal: 80;
 }
