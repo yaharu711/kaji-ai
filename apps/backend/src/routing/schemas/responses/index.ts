@@ -1,5 +1,6 @@
 export * from "./getGroupsResponse";
 export * from "./createGroupResponse";
+export * from "./createChoreBeatingResponse";
 export * from "./getGroupChoresResponse";
 export * from "./getGroupUsersResponse";
 export * from "./inviteGroupResponse";

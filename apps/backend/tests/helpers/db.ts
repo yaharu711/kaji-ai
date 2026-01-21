@@ -33,6 +33,7 @@ type CreateMasterChoreParams = {
 };
 
 type CreateGroupChoreParams = {
+  id?: number;
   groupId: string;
   choreName: string;
   iconCode: string;
@@ -144,19 +145,25 @@ export const createMasterChores = async (chores: CreateMasterChoreParams[]) => {
 };
 
 export const createGroupChore = async ({
+  id,
   groupId,
   choreName,
   iconCode,
   createdAt = new Date(),
   deletedAt = null,
 }: CreateGroupChoreParams) => {
-  await db.insert(schema.groupChores).values({
+  const values: typeof schema.groupChores.$inferInsert = {
     groupId,
     choreName,
     iconCode,
     createdAt,
     deletedAt,
-  });
+  };
+  if (id !== undefined) {
+    values.id = id;
+  }
+
+  await db.insert(schema.groupChores).values(values);
 };
 
 export const findBelongingsByGroupId = async (groupId: string, userId?: string) => {

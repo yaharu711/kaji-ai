@@ -2,8 +2,10 @@ import type { Context } from "hono";
 
 import { getDb } from "../db/client";
 import { ChoreRepository } from "../repositories/chore.repository";
+import { ChoreBeatingsRepository } from "../repositories/choreBeatings.repository";
 import { GroupRepository } from "../repositories/group.repository";
 import { UserRepository } from "../repositories/user.repository";
+import { createChoreBeatingSuccessSchema } from "../routing/schemas/responses/createChoreBeatingResponse";
 import { createGroupSuccessSchema } from "../routing/schemas/responses/createGroupResponse";
 import { getGroupChoresSuccessSchema } from "../routing/schemas/responses/getGroupChoresResponse";
 import { getGroupUsersSuccessSchema } from "../routing/schemas/responses/getGroupUsersResponse";
@@ -16,6 +18,7 @@ import { nowJst } from "../util/datetime";
 const db = getDb();
 const groupRepository = new GroupRepository(db);
 const choreRepository = new ChoreRepository(db);
+const choreBeatingsRepository = new ChoreBeatingsRepository(db);
 const userRepository = new UserRepository(db);
 
 export const getGroupsController = async (c: Context, requesterId: string) => {
@@ -214,5 +217,34 @@ export const createGroupController = async (c: Context, requesterId: string, nam
 
   // POST 成功のみを伝える。ステータスを明示したレスポンスを返す。
   const response = createGroupSuccessSchema.parse({ status: 201 });
+  return c.json(response, 201);
+};
+
+export const createChoreBeatingController = async (
+  c: Context,
+  requesterId: string,
+  groupId: string,
+  choreId: number,
+  beatedAt: Date,
+) => {
+  const belongings = await groupRepository.findUsersByGroupId(groupId);
+  const requesterBelonging = belongings.find((member) => member.id === requesterId);
+  if (!requesterBelonging || requesterBelonging.acceptedAt === null) {
+    const body = forbiddenSchema.parse({ status: 403, message: "Forbidden" });
+    return c.json(body, 403);
+  }
+
+  const now = nowJst();
+  await choreBeatingsRepository.create({
+    groupId,
+    choreId,
+    userId: requesterId,
+    likeCount: 0,
+    beatedAt,
+    createdAt: now.toDate(),
+    updatedAt: now.toDate(),
+  });
+
+  const response = createChoreBeatingSuccessSchema.parse({ status: 201 });
   return c.json(response, 201);
 };
