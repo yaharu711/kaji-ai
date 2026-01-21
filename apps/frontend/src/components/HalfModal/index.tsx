@@ -30,12 +30,14 @@ type FooterActions =
   | {
       primaryActionLabel: string;
       secondaryActionLabel: string;
+      primaryActionDisabled?: boolean;
       onPrimaryAction?: () => void;
       onSecondaryAction?: () => void;
     }
   | {
       primaryActionLabel?: undefined;
       secondaryActionLabel?: undefined;
+      primaryActionDisabled?: undefined;
       onPrimaryAction?: undefined;
       onSecondaryAction?: undefined;
     };
@@ -63,6 +65,7 @@ function HalfModal({
   children,
   primaryActionLabel,
   secondaryActionLabel,
+  primaryActionDisabled = false,
   onPrimaryAction,
   onSecondaryAction,
   size = "md",
@@ -120,7 +123,13 @@ function HalfModal({
                 </Button>
               ) : null}
               {primaryActionLabel ? (
-                <Button radius="pill" fullWidth size="sm" onClick={onPrimaryAction}>
+                <Button
+                  radius="pill"
+                  fullWidth
+                  size="sm"
+                  onClick={onPrimaryAction}
+                  disabled={primaryActionDisabled}
+                >
                   {primaryActionLabel}
                 </Button>
               ) : null}

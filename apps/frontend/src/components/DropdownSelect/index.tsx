@@ -1,6 +1,6 @@
 import { useEffect, useId, useRef, useState, type ReactNode } from "react";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
-import { Check, ChevronDown } from "lucide-react";
+import { AlertCircle, Check, ChevronDown } from "lucide-react";
 import styles from "./DropdownSelect.module.css";
 
 const SIZE_CLASS = {
@@ -28,10 +28,16 @@ const WIDTH_CLASS = {
   full: styles.widthFull,
 } as const;
 
+const HELPER_TEXT_CLASS = {
+  default: styles.helperTextDefault,
+  notice: styles.helperTextNotice,
+} as const;
+
 type Size = keyof typeof SIZE_CLASS;
 type Radius = keyof typeof RADIUS_CLASS;
 type Variant = keyof typeof VARIANT_CLASS;
 type Width = keyof typeof WIDTH_CLASS;
+type HelperTextVariant = keyof typeof HELPER_TEXT_CLASS;
 
 export interface DropdownOption {
   value: string;
@@ -42,6 +48,7 @@ export interface DropdownOption {
 interface DropdownSelectProps {
   label?: string;
   helperText?: string;
+  helperTextVariant?: HelperTextVariant;
   placeholder?: string;
   emptyMessage?: ReactNode;
   options: DropdownOption[];
@@ -57,6 +64,7 @@ interface DropdownSelectProps {
 function DropdownSelect({
   label,
   helperText,
+  helperTextVariant = "default",
   placeholder = "選択してください",
   emptyMessage = "選択肢がありません",
   options,
@@ -107,6 +115,9 @@ function DropdownSelect({
   };
 
   const rootClassName = [styles.root, WIDTH_CLASS[width]].filter(Boolean).join(" ");
+  const helperTextClassName = [styles.helperText, HELPER_TEXT_CLASS[helperTextVariant]]
+    .filter(Boolean)
+    .join(" ");
 
   const triggerClassName = [
     styles.trigger,
@@ -214,7 +225,12 @@ function DropdownSelect({
       </DropdownMenu.Root>
 
       {helperText ? (
-        <p id={descriptionId} className={styles.helperText}>
+        <p id={descriptionId} className={helperTextClassName}>
+          {helperTextVariant === "notice" ? (
+            <span className={styles.helperTextIcon}>
+              <AlertCircle size={16} aria-hidden />
+            </span>
+          ) : null}
           {helperText}
         </p>
       ) : null}

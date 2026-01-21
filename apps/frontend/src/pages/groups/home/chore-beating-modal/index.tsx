@@ -73,9 +73,11 @@ function ChoreBeatingModal({
 }: ChoreBeatingModalProps) {
   const [selectedChore, setSelectedChore] = useState<string | undefined>(undefined);
   const [selectedTime, setSelectedTime] = useState<string>(getDefaultTimeRange);
+  const isPrimaryDisabled = !selectedChore || isSubmitting;
 
   const todayParts = getJstDateParts(new Date());
   const todayText = `${todayParts.month}月${todayParts.day}日`;
+  const timeHelperText = `本日 ${todayText}の討伐として記録されます！`;
 
   const handleClose = () => {
     setSelectedChore(undefined);
@@ -109,6 +111,7 @@ function ChoreBeatingModal({
       headerIcon={<Swords size={20} />}
       primaryActionLabel="討伐完了"
       secondaryActionLabel="キャンセル"
+      primaryActionDisabled={isPrimaryDisabled}
       onPrimaryAction={() => {
         void handleSubmit();
       }}
@@ -147,7 +150,8 @@ function ChoreBeatingModal({
             options={timeOptions}
             value={selectedTime}
             onChange={setSelectedTime}
-            helperText={`本日 ${todayText}の討伐として記録されます！`}
+            helperText={timeHelperText}
+            helperTextVariant="notice"
           />
         </section>
       </div>
