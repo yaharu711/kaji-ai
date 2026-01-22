@@ -2,35 +2,20 @@ import { Swords } from "lucide-react";
 import PageCard from "../../../../components/PageCard";
 import SwordsHeaderIcon from "../../../../components/SwordsHeaderIcon";
 import BeatingCard from "./beating-card";
-import type { ChoreIconCode } from "../../../../constants/chores";
+import BeatingAccordion, { type BeatingLog } from "./beating-accordion";
 import styles from "./Timeline.module.css";
 
-interface BeatingLog {
-  id: string;
-  beatedAt: Date;
-  choreIconCode: ChoreIconCode;
-  choreName: string;
-  userName: string;
-  userImageUrl?: string | null;
-  likeCount?: number;
-  commentCount?: number;
-  userRoleLabel?: string;
+interface BeatingGroup {
+  timeLabel: string;
+  items: BeatingLog[];
 }
 
 interface GroupTimelineProps {
-  beatings?: BeatingLog[];
+  beatingGroups?: BeatingGroup[];
 }
 
-const formatBeatedTime = (date: Date) => {
-  return new Intl.DateTimeFormat("ja-JP", {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-  }).format(date);
-};
-
-function GroupTimeline({ beatings = [] }: GroupTimelineProps) {
-  const hasBeatings = beatings.length > 0;
+function GroupTimeline({ beatingGroups = [] }: GroupTimelineProps) {
+  const hasBeatings = beatingGroups.length > 0;
 
   return (
     <PageCard padding="md">
@@ -47,26 +32,40 @@ function GroupTimeline({ beatings = [] }: GroupTimelineProps) {
 
         {hasBeatings ? (
           <div className={styles.list}>
-            {beatings.map((beating) => (
-              <div key={beating.id} className={styles.item}>
-                <div
-                  className={styles.timeStamp}
-                  aria-label={`討伐時刻 ${formatBeatedTime(beating.beatedAt)}`}
-                >
-                  <span className={styles.timeText}>{formatBeatedTime(beating.beatedAt)}</span>
-                  <span className={styles.timeDot} aria-hidden />
+            {beatingGroups.map((group) => {
+              const hasMultiple = group.items.length > 1;
+
+              if (!hasMultiple) {
+                const beating = group.items[0];
+                return (
+                  <div key={beating.id} className={styles.item}>
+                    <div className={styles.timeStamp} aria-label={`討伐時刻 ${group.timeLabel}`}>
+                      <span className={styles.timeText}>{group.timeLabel}</span>
+                      <span className={styles.timeDot} aria-hidden />
+                    </div>
+                    <BeatingCard
+                      choreIconCode={beating.choreIconCode}
+                      choreName={beating.choreName}
+                      userName={beating.userName}
+                      userImageUrl={beating.userImageUrl}
+                      likeCount={beating.likeCount}
+                      commentCount={beating.commentCount}
+                      userRoleLabel={beating.userRoleLabel}
+                    />
+                  </div>
+                );
+              }
+
+              return (
+                <div key={group.timeLabel} className={styles.item}>
+                  <div className={styles.timeStamp} aria-label={`討伐時刻 ${group.timeLabel}`}>
+                    <span className={styles.timeText}>{group.timeLabel}</span>
+                    <span className={styles.timeDot} aria-hidden />
+                  </div>
+                  <BeatingAccordion timeLabel={group.timeLabel} items={group.items} />
                 </div>
-                <BeatingCard
-                  choreIconCode={beating.choreIconCode}
-                  choreName={beating.choreName}
-                  userName={beating.userName}
-                  userImageUrl={beating.userImageUrl}
-                  likeCount={beating.likeCount}
-                  commentCount={beating.commentCount}
-                  userRoleLabel={beating.userRoleLabel}
-                />
-              </div>
-            ))}
+              );
+            })}
           </div>
         ) : (
           <div className={styles.emptyState} role="status">
