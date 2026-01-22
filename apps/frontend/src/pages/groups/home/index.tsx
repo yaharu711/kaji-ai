@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { Swords } from "lucide-react";
-import PageCard from "../../../components/PageCard";
 import styles from "./home.module.css";
 import { useGroupLayout } from "../GroupLayoutContext";
 import ChoreBeatingModal from "./chore-beating-modal";
 import { useGroupChoresQuery } from "../hooks/useGroupChoresQuery";
 import { getChoreIcon } from "../../../constants/chores";
 import { useCreateChoreBeatingMutation } from "../hooks/useCreateChoreBeatingMutation";
+import GroupTimeline from "./timeline";
 
 function GroupHomePage() {
   const { groupId } = useGroupLayout();
@@ -35,16 +35,7 @@ function GroupHomePage() {
           await createBeating({ groupId, choreId, startHour });
         }}
       />
-      <PageCard align="center">
-        <section className={styles.content} aria-labelledby="group-heading">
-          <p className={styles.badge}>グループ</p>
-          <h1 id="group-heading" className={styles.title}>
-            to be continue...
-          </h1>
-          <p className={styles.description}>グループ画面は現在準備中です。</p>
-          {groupId ? <p className={styles.groupId}>groupId: {groupId}</p> : null}
-        </section>
-      </PageCard>
+      <GroupTimeline />
       <button
         type="button"
         className={styles.floatingAction}
@@ -54,7 +45,7 @@ function GroupHomePage() {
           setIsBattleOpen(true);
         }}
       >
-        <Swords size={29} />
+        <Swords size={30} />
       </button>
     </>
   );

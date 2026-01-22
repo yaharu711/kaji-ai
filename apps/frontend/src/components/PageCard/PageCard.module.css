@@ -3,10 +3,17 @@
   background: var(--color-surface);
   border: 1px solid var(--color-card-border);
   border-radius: 16px;
-  padding: 36px 32px;
   box-shadow: var(--shadow-card);
 }
 
 .alignCenter {
   text-align: center;
+}
+
+.paddingMd {
+  padding: 28px 24px;
+}
+
+.paddingLg {
+  padding: 36px 32px;
 }

@@ -6,6 +6,7 @@ import {
   LoaderCircle,
   type DropdownOption,
 } from "../../../../components";
+import SwordsHeaderIcon from "../../../../components/SwordsHeaderIcon";
 import styles from "./ChoreBeatingModal.module.css";
 
 interface ChoreBeatingModalProps {
@@ -108,7 +109,7 @@ function ChoreBeatingModal({
       open={open}
       onOpenChange={handleOpenChange}
       title="家事を討伐する"
-      headerIcon={<Swords size={20} />}
+      headerIcon={<SwordsHeaderIcon size="sm" aria-hidden />}
       primaryActionLabel="討伐完了"
       secondaryActionLabel="キャンセル"
       primaryActionDisabled={isPrimaryDisabled}

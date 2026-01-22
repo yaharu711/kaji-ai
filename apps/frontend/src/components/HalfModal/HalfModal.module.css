@@ -92,17 +92,6 @@
   gap: 12px;
 }
 
-.headerIcon {
-  display: grid;
-  place-items: center;
-  width: 32px;
-  height: 32px;
-  border-radius: 12px;
-  background: linear-gradient(135deg, var(--color-accent), var(--color-primary-to));
-  color: var(--color-surface);
-  box-shadow: var(--shadow-primary);
-}
-
 .titleGroup {
   display: flex;
   flex-direction: column;

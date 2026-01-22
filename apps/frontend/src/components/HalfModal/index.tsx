@@ -90,7 +90,7 @@ function HalfModal({
         <Dialog.Content className={contentClassName}>
           <div className={styles.header}>
             <div className={styles.heading}>
-              {headerIcon ? <span className={styles.headerIcon}>{headerIcon}</span> : null}
+              {headerIcon ?? null}
               <div className={styles.titleGroup}>
                 <Dialog.Title className={styles.title}>{title}</Dialog.Title>
                 {description ? (
