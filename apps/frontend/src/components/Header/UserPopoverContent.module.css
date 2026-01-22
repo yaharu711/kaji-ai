@@ -23,26 +23,6 @@
   gap: 16px;
 }
 
-.userPopoverAvatar {
-  width: 56px;
-  height: 56px;
-  border-radius: 999px;
-  display: grid;
-  place-items: center;
-  font-weight: 700;
-  font-size: 18px;
-  color: #ffffff;
-  background: linear-gradient(135deg, var(--color-accent), var(--color-primary-to));
-  box-shadow: var(--shadow-primary);
-}
-
-.userPopoverAvatar img {
-  width: 100%;
-  height: 100%;
-  border-radius: 999px;
-  object-fit: cover;
-}
-
 .userPopoverText {
   display: flex;
   flex-direction: column;
@@ -99,37 +79,6 @@
   padding: 10px 12px;
   width: 100%;
   box-sizing: border-box;
-}
-
-.userPopoverMemberAvatar {
-  position: relative;
-  width: 40px;
-  height: 40px;
-  border-radius: 999px;
-  display: grid;
-  place-items: center;
-  font-weight: 700;
-  font-size: 15px;
-  color: #ffffff;
-}
-
-.userPopoverMemberAvatar img {
-  width: 100%;
-  height: 100%;
-  border-radius: 999px;
-  object-fit: cover;
-}
-
-.memberTonePink {
-  background: linear-gradient(135deg, #f472b6, #ec4899);
-}
-
-.memberTonePurple {
-  background: linear-gradient(135deg, #c084fc, #a855f7);
-}
-
-.memberToneOrange {
-  background: linear-gradient(135deg, #fbbf24, #f97316);
 }
 
 .userPopoverMemberInfo {
@@ -201,7 +150,7 @@
   box-shadow: 0 6px 12px rgba(234, 179, 8, 0.35);
 }
 
-.userPopoverMemberOwner .userPopoverMemberAvatar {
+.userPopoverMemberOwner [data-user-profile-img] {
   box-shadow: 0 0 0 3px var(--color-owner-ring);
 }
 
@@ -216,12 +165,6 @@
 @media (max-width: 480px) {
   .userPopoverProfile {
     padding: 16px 18px;
-  }
-
-  .userPopoverAvatar {
-    width: 52px;
-    height: 52px;
-    font-size: 17px;
   }
 
   .userPopoverBody {

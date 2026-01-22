@@ -105,6 +105,17 @@
   --color-login-profile-to: #faf5ff;
   --color-login-profile-border: rgba(196, 181, 253, 0.5);
 
+  /* User profile image tones */
+  /* 汎用プロフィール画像のグラデーション。画面間でトーンを統一するためにトークン化 */
+  --color-user-avatar-primary-from: var(--color-accent);
+  --color-user-avatar-primary-to: var(--color-primary-to);
+  --color-user-avatar-pink-from: #f472b6;
+  --color-user-avatar-pink-to: #ec4899;
+  --color-user-avatar-purple-from: #c084fc;
+  --color-user-avatar-purple-to: #a855f7;
+  --color-user-avatar-orange-from: #fbbf24;
+  --color-user-avatar-orange-to: #f97316;
+
   /* Navigation active */
   --color-nav-active-from: #f472b6;
   --color-nav-active-mid: #e879f9;
