@@ -53,7 +53,7 @@
   border: 1px dashed color-mix(in srgb, var(--color-secondary-text), transparent 40%);
   background: var(--color-secondary-bg);
   font-weight: 600;
-  color: var(--color-text-accent);
+  color: var(--color-secondary-text);
 }
 
 .helperTextIcon {

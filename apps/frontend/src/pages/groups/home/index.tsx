@@ -55,7 +55,7 @@ function GroupHomePage() {
         },
       ],
     },
-  ];
+  ] as const;
 
   const choreOptions =
     chores?.map((chore) => ({

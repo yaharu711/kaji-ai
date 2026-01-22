@@ -30,13 +30,13 @@ function BeatingCard({
         <div className={styles.headerBody}>
           <p className={styles.choreName}>{choreName}</p>
           <div className={styles.reactions}>
-            <div className={styles.reactionItem} aria-label="ハート">
+            <div className={styles.reactionItem} role="group" aria-label="ハート">
               <span className={styles.reactionIcon} aria-hidden>
                 <Heart size={18} />
               </span>
               {likeCount > 0 ? <span className={styles.reactionCount}>{likeCount}</span> : null}
             </div>
-            <div className={styles.reactionItem} aria-label="メッセージ">
+            <div className={styles.reactionItem} role="group" aria-label="メッセージ">
               <span className={styles.reactionIcon} aria-hidden>
                 <MessageSquareHeart size={18} />
               </span>

@@ -48,6 +48,7 @@ function BeatingAccordion({ timeLabel, items }: BeatingAccordionProps) {
       <div className={styles.accordionBody}>
         {items.map((beating) => (
           <BeatingCard
+            key={beating.id}
             choreIconCode={beating.choreIconCode}
             choreName={beating.choreName}
             userName={beating.userName}

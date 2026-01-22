@@ -46,7 +46,7 @@
 .timeText {
   font-size: 17px;
   font-weight: 700;
-  color: var(--color-text-accent);
+  color: var(--color-secondary-text);
   letter-spacing: 0.02em;
 }
 

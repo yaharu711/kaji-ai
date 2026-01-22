@@ -7,11 +7,11 @@ import styles from "./Timeline.module.css";
 
 interface BeatingGroup {
   timeLabel: string;
-  items: BeatingLog[];
+  items: readonly BeatingLog[];
 }
 
 interface GroupTimelineProps {
-  beatingGroups?: BeatingGroup[];
+  beatingGroups?: readonly BeatingGroup[];
 }
 
 function GroupTimeline({ beatingGroups = [] }: GroupTimelineProps) {
