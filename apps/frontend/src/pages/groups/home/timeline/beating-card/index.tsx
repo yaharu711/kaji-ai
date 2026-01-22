@@ -1,6 +1,7 @@
-import { MessageSquareHeart, User } from "lucide-react";
+import { MessageSquareHeart } from "lucide-react";
 import { getChoreIcon, type ChoreIconCode } from "../../../../../constants/chores";
 import HeartIcon from "../../../../../components/HeartIcon";
+import UserProfileImg from "../../../../../components/UserProfileImg";
 import BeatingMessages, { type BeatingMessage } from "../beating-messages";
 import styles from "./BeatingCard.module.css";
 
@@ -55,9 +56,7 @@ function BeatingCard({
       <div className={styles.divider} aria-hidden />
       <div className={styles.footer}>
         <div className={styles.user}>
-          <div className={styles.avatar} aria-hidden>
-            {userImageUrl ? <img src={userImageUrl} alt="" /> : <User size={22} />}
-          </div>
+          <UserProfileImg name={userName} imageUrl={userImageUrl} size="md" tone="purple" />
           <div className={styles.userText}>
             <p className={styles.userName}>{userName}</p>
             <p className={styles.userRole}>{userRoleLabel}</p>
