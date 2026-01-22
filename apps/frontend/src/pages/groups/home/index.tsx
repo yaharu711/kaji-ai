@@ -27,6 +27,14 @@ function GroupHomePage() {
           likeCount: 0,
           commentCount: 0,
           userRoleLabel: "討伐者",
+          messages: [
+            {
+              userName: "山田 太郎",
+              userImageUrl: "https://placehold.co/64x64/png",
+              mainMessage: "いつも助かってます！",
+              describeMessage: "朝からありがとう！",
+            },
+          ],
         },
       ],
     },
@@ -42,6 +50,14 @@ function GroupHomePage() {
           likeCount: 12,
           commentCount: 3,
           userRoleLabel: "討伐者",
+          messages: [
+            {
+              userName: "佐藤 花子",
+              userImageUrl: null,
+              mainMessage: "ナイス討伐！",
+              describeMessage: "片付けが早く終わって助かったよ。",
+            },
+          ],
         },
         {
           id: "beating-3",
@@ -52,6 +68,14 @@ function GroupHomePage() {
           likeCount: 4,
           commentCount: 1,
           userRoleLabel: "討伐者",
+          messages: [
+            {
+              userName: "田中 花子",
+              userImageUrl: null,
+              mainMessage: "ありがとう！",
+              describeMessage: "おかげで夕飯の準備がスムーズでした。",
+            },
+          ],
         },
       ],
     },

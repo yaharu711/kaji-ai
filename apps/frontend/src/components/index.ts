@@ -12,3 +12,4 @@ export { default as Header } from "./Header";
 export { default as Popover } from "./Popover";
 export { default as DropdownSelect, type DropdownOption } from "./DropdownSelect";
 export { default as SwordsHeaderIcon } from "./SwordsHeaderIcon";
+export { default as HeartIcon } from "./HeartIcon";
