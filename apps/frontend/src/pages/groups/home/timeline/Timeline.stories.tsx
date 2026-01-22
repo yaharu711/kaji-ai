@@ -23,7 +23,7 @@ export const WithBeatings: Story = {
     beatings: [
       {
         id: "beating-1",
-        beatedAt: "2026-01-22T09:00:00+09:00",
+        beatedAt: new Date("2026-01-22T09:00:00+09:00"),
         choreIconCode: "laundry",
         choreName: "洗濯",
         userName: "山田 太郎",
@@ -34,7 +34,7 @@ export const WithBeatings: Story = {
       },
       {
         id: "beating-2",
-        beatedAt: "2026-01-22T10:00:00+09:00",
+        beatedAt: new Date("2026-01-22T10:00:00+09:00"),
         choreIconCode: "dish-wash",
         choreName: "食器洗い",
         userName: "佐藤 花子",

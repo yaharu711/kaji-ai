@@ -7,7 +7,7 @@ import styles from "./Timeline.module.css";
 
 interface BeatingLog {
   id: string;
-  beatedAt: string | Date;
+  beatedAt: Date;
   choreIconCode: ChoreIconCode;
   choreName: string;
   userName: string;
@@ -21,9 +21,7 @@ interface GroupTimelineProps {
   beatings?: BeatingLog[];
 }
 
-const formatBeatedTime = (value: string | Date) => {
-  const date = value instanceof Date ? value : new Date(value);
-  if (Number.isNaN(date.getTime())) return "--:--";
+const formatBeatedTime = (date: Date) => {
   return new Intl.DateTimeFormat("ja-JP", {
     hour: "2-digit",
     minute: "2-digit",
