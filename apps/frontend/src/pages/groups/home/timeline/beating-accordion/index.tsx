@@ -16,7 +16,7 @@ interface BeatingLog {
 
 interface BeatingAccordionProps {
   timeLabel: string;
-  items: BeatingLog[];
+  items: readonly BeatingLog[];
 }
 
 function BeatingAccordion({ timeLabel, items }: BeatingAccordionProps) {
