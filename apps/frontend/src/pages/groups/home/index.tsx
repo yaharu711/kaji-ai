@@ -29,12 +29,14 @@ function GroupHomePage() {
           userRoleLabel: "討伐者",
           messages: [
             {
+              id: "message-1",
               userName: "山田 太郎",
               userImageUrl: "https://placehold.co/64x64/png",
               mainMessage: "いつも助かってます！",
               describeMessage: "朝からありがとう！",
             },
             {
+              id: "message-2",
               userName: "佐藤 花子",
               userImageUrl: null,
               mainMessage: "助かったよ！",
@@ -58,6 +60,7 @@ function GroupHomePage() {
           userRoleLabel: "討伐者",
           messages: [
             {
+              id: "message-3",
               userName: "佐藤 花子",
               userImageUrl: null,
               mainMessage: "ナイス討伐！",
@@ -76,6 +79,7 @@ function GroupHomePage() {
           userRoleLabel: "討伐者",
           messages: [
             {
+              id: "message-4",
               userName: "田中 花子",
               userImageUrl: null,
               mainMessage: "ありがとう！",

@@ -3,6 +3,7 @@ import HeartIcon from "../../../../../components/HeartIcon";
 import styles from "./BeatingMessages.module.css";
 
 export interface BeatingMessage {
+  id: string;
   userName: string;
   userImageUrl?: string | null;
   mainMessage: string;
@@ -59,11 +60,8 @@ function BeatingMessages({ messages = [] }: BeatingMessagesProps) {
             </span>
           </summary>
           <div className={styles.gratitudeExtraList}>
-            {extraMessages.map((message, index) => (
-              <BeatingMessageItem
-                key={`${message.userName}-${message.mainMessage}-${String(index)}`}
-                message={message}
-              />
+            {extraMessages.map((message) => (
+              <BeatingMessageItem key={message.id} message={message} />
             ))}
           </div>
         </details>
