@@ -12,6 +12,12 @@ interface BeatingLog {
   likeCount?: number;
   commentCount?: number;
   userRoleLabel?: string;
+  messages?: readonly {
+    userName: string;
+    userImageUrl?: string | null;
+    mainMessage: string;
+    describeMessage?: string;
+  }[];
 }
 
 interface BeatingAccordionProps {
@@ -56,6 +62,7 @@ function BeatingAccordion({ timeLabel, items }: BeatingAccordionProps) {
             likeCount={beating.likeCount}
             commentCount={beating.commentCount}
             userRoleLabel={beating.userRoleLabel}
+            messages={beating.messages}
           />
         ))}
       </div>

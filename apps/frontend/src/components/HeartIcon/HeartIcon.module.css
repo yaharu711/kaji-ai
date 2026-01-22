@@ -1,0 +1,18 @@
+.root {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 0;
+}
+
+.toneAccent {
+  color: var(--color-accent);
+}
+
+.toneStrong {
+  color: var(--color-text-strong);
+}
+
+.toneMuted {
+  color: var(--color-text-muted);
+}

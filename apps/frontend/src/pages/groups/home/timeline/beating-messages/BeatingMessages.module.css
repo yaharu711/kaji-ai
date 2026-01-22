@@ -1,0 +1,133 @@
+.gratitudeList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.gratitudeAccordion {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.gratitudeAccordion[open] .gratitudeSummaryIcon {
+  transform: rotate(180deg);
+}
+
+.gratitudeSummary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--color-text-accent);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  list-style: none;
+}
+
+.gratitudeSummary::-webkit-details-marker {
+  display: none;
+}
+
+.gratitudeSummaryIcon {
+  display: inline-flex;
+  align-items: center;
+  transition: transform 0.2s ease;
+}
+
+.gratitudeSummaryText {
+  display: inline-flex;
+  align-items: center;
+}
+
+.gratitudeExtraList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.gratitudeItem {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px 18px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.72);
+  box-shadow: 0 10px 20px rgba(148, 163, 184, 0.2);
+}
+
+.gratitudeHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.gratitudeBadge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--color-secondary-bg);
+  color: var(--color-accent);
+  font-size: 10px;
+  box-shadow: 0 8px 16px rgba(236, 72, 153, 0.2);
+  border: 2px solid var(--color-surface);
+  z-index: 1;
+}
+
+.gratitudeAvatar {
+  position: relative;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, #f472b6, #c084fc);
+  color: var(--color-surface);
+  overflow: visible;
+}
+
+.gratitudeAvatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.gratitudeName {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-text-strong);
+}
+
+.gratitudeMain {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-text-strong);
+}
+
+.gratitudeDescribe {
+  margin: 0;
+  padding-left: 12px;
+  border-left: 3px solid #f472b6;
+  font-size: 14px;
+  color: var(--color-text-muted);
+}
+
+@media (max-width: 540px) {
+  .gratitudeItem {
+    padding: 14px 16px;
+  }
+
+  .gratitudeMain {
+    font-size: 14px;
+  }
+}

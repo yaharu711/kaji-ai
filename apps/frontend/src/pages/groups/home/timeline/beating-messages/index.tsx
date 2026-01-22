@@ -1,0 +1,75 @@
+import { ChevronDown, User } from "lucide-react";
+import HeartIcon from "../../../../../components/HeartIcon";
+import styles from "./BeatingMessages.module.css";
+
+export interface BeatingMessage {
+  userName: string;
+  userImageUrl?: string | null;
+  mainMessage: string;
+  describeMessage?: string;
+}
+
+interface BeatingMessagesProps {
+  messages?: readonly BeatingMessage[];
+}
+
+interface BeatingMessageItemProps {
+  message: BeatingMessage;
+}
+
+function BeatingMessageItem({ message }: BeatingMessageItemProps) {
+  return (
+    <div className={styles.gratitudeItem}>
+      <div className={styles.gratitudeHeader}>
+        <div className={styles.gratitudeAvatar} aria-hidden>
+          {message.userImageUrl ? <img src={message.userImageUrl} alt="" /> : <User size={16} />}
+          <span className={styles.gratitudeBadge} aria-hidden>
+            <HeartIcon size="sm" />
+          </span>
+        </div>
+        <p className={styles.gratitudeName}>{message.userName}</p>
+      </div>
+      <p className={styles.gratitudeMain}>{message.mainMessage}</p>
+      {message.describeMessage ? (
+        <p className={styles.gratitudeDescribe}>{message.describeMessage}</p>
+      ) : null}
+    </div>
+  );
+}
+
+function BeatingMessages({ messages = [] }: BeatingMessagesProps) {
+  if (messages.length === 0) {
+    return null;
+  }
+
+  const primaryMessage = messages[0];
+  const extraMessages = messages.slice(1);
+
+  return (
+    <div className={styles.gratitudeList} aria-label="感謝メッセージ">
+      <BeatingMessageItem message={primaryMessage} />
+      {extraMessages.length > 0 ? (
+        <details className={styles.gratitudeAccordion}>
+          <summary className={styles.gratitudeSummary}>
+            <span className={styles.gratitudeSummaryIcon} aria-hidden>
+              <ChevronDown size={16} />
+            </span>
+            <span className={styles.gratitudeSummaryText}>
+              他{extraMessages.length}件の感謝を見る
+            </span>
+          </summary>
+          <div className={styles.gratitudeExtraList}>
+            {extraMessages.map((message, index) => (
+              <BeatingMessageItem
+                key={`${message.userName}-${message.mainMessage}-${String(index)}`}
+                message={message}
+              />
+            ))}
+          </div>
+        </details>
+      ) : null}
+    </div>
+  );
+}
+
+export default BeatingMessages;

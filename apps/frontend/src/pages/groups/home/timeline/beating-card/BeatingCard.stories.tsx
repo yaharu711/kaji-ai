@@ -14,6 +14,14 @@ const meta = {
     likeCount: 0,
     commentCount: 0,
     userRoleLabel: "討伐者",
+    messages: [
+      {
+        userName: "山田 太郎",
+        userImageUrl: "https://placehold.co/64x64/png",
+        mainMessage: "いつも助かってます！",
+        describeMessage: "朝からありがとう！",
+      },
+    ],
   },
 } satisfies Meta<typeof BeatingCard>;
 
@@ -35,5 +43,32 @@ export const WithUserImage: Story = {
     userImageUrl: "https://placehold.co/96x96/png",
     likeCount: 4,
     commentCount: 1,
+    messages: [
+      {
+        userName: "佐藤 花子",
+        userImageUrl: "https://placehold.co/64x64/png",
+        mainMessage: "助かったよ！",
+        describeMessage: "片付けありがとう！",
+      },
+    ],
+  },
+};
+
+export const WithMultipleMessages: Story = {
+  args: {
+    messages: [
+      {
+        userName: "山田 太郎",
+        userImageUrl: "https://placehold.co/64x64/png",
+        mainMessage: "これやってくれるのほんと助かる！",
+        describeMessage: "いつもありがとう！",
+      },
+      {
+        userName: "佐藤 花子",
+        userImageUrl: null,
+        mainMessage: "ナイス討伐！",
+        describeMessage: "時間に余裕ができたよ。",
+      },
+    ],
   },
 };
