@@ -14,6 +14,48 @@ function GroupHomePage() {
   const { data: chores, isLoading: choresLoading } = useGroupChoresQuery(groupId);
   const { mutateAsync: createBeating, isPending: isCreatingBeating } =
     useCreateChoreBeatingMutation();
+  const sampleBeatingGroups = [
+    {
+      timeLabel: "09:00",
+      items: [
+        {
+          id: "beating-1",
+          choreIconCode: "laundry",
+          choreName: "洗濯",
+          userName: "山田 太郎",
+          userImageUrl: "https://placehold.co/96x96/png",
+          likeCount: 0,
+          commentCount: 0,
+          userRoleLabel: "討伐者",
+        },
+      ],
+    },
+    {
+      timeLabel: "10:00",
+      items: [
+        {
+          id: "beating-2",
+          choreIconCode: "dish-wash",
+          choreName: "食器洗い",
+          userName: "佐藤 花子",
+          userImageUrl: null,
+          likeCount: 12,
+          commentCount: 3,
+          userRoleLabel: "討伐者",
+        },
+        {
+          id: "beating-3",
+          choreIconCode: "shopping",
+          choreName: "買い物",
+          userName: "田中 花子",
+          userImageUrl: null,
+          likeCount: 4,
+          commentCount: 1,
+          userRoleLabel: "討伐者",
+        },
+      ],
+    },
+  ];
 
   const choreOptions =
     chores?.map((chore) => ({
@@ -35,7 +77,7 @@ function GroupHomePage() {
           await createBeating({ groupId, choreId, startHour });
         }}
       />
-      <GroupTimeline />
+      <GroupTimeline beatingGroups={sampleBeatingGroups} />
       <button
         type="button"
         className={styles.floatingAction}
