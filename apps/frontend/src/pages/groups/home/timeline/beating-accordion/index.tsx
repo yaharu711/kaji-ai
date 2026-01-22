@@ -12,7 +12,7 @@ interface BeatingLog {
   likeCount?: number;
   commentCount?: number;
   userRoleLabel?: string;
-  messages?: {
+  messages?: readonly {
     userName: string;
     userImageUrl?: string | null;
     mainMessage: string;

@@ -10,7 +10,7 @@ export interface BeatingMessage {
 }
 
 interface BeatingMessagesProps {
-  messages?: BeatingMessage[];
+  messages?: readonly BeatingMessage[];
 }
 
 interface BeatingMessageItemProps {

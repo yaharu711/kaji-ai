@@ -12,7 +12,7 @@ interface BeatingCardProps {
   likeCount?: number;
   commentCount?: number;
   userRoleLabel?: string;
-  messages?: BeatingMessage[];
+  messages?: readonly BeatingMessage[];
 }
 
 function BeatingCard({
