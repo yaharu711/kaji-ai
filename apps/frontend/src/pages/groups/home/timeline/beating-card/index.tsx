@@ -1,6 +1,7 @@
-import { Heart, MessageSquareHeart, User } from "lucide-react";
+import { MessageSquareHeart, User } from "lucide-react";
 import { getChoreIcon, type ChoreIconCode } from "../../../../../constants/chores";
 import HeartIcon from "../../../../../components/HeartIcon";
+import BeatingMessages, { type BeatingMessage } from "../beating-messages";
 import styles from "./BeatingCard.module.css";
 
 interface BeatingCardProps {
@@ -11,12 +12,7 @@ interface BeatingCardProps {
   likeCount?: number;
   commentCount?: number;
   userRoleLabel?: string;
-  messages?: {
-    userName: string;
-    userImageUrl?: string | null;
-    mainMessage: string;
-    describeMessage?: string;
-  }[];
+  messages?: BeatingMessage[];
 }
 
 function BeatingCard({
@@ -29,8 +25,6 @@ function BeatingCard({
   userRoleLabel = "討伐者",
   messages = [],
 }: BeatingCardProps) {
-  const hasMessages = messages.length > 0;
-
   return (
     <article className={styles.card} aria-label={`${userName}が${choreName}を討伐`}>
       <div className={styles.header}>
@@ -57,34 +51,7 @@ function BeatingCard({
           </div>
         </div>
       </div>
-      {hasMessages ? (
-        <div className={styles.gratitudeList} aria-label="感謝メッセージ">
-          {messages.map((message, index) => (
-            <div
-              key={`${message.userName}-${message.mainMessage}-${String(index)}`}
-              className={styles.gratitudeItem}
-            >
-              <div className={styles.gratitudeHeader}>
-                <div className={styles.gratitudeAvatar} aria-hidden>
-                  {message.userImageUrl ? (
-                    <img src={message.userImageUrl} alt="" />
-                  ) : (
-                    <User size={16} />
-                  )}
-                  <span className={styles.gratitudeBadge} aria-hidden>
-                    <HeartIcon size="sm" />
-                  </span>
-                </div>
-                <p className={styles.gratitudeName}>{message.userName}</p>
-              </div>
-              <p className={styles.gratitudeMain}>{message.mainMessage}</p>
-              {message.describeMessage ? (
-                <p className={styles.gratitudeDescribe}>{message.describeMessage}</p>
-              ) : null}
-            </div>
-          ))}
-        </div>
-      ) : null}
+      <BeatingMessages messages={messages} />
       <div className={styles.footer}>
         <div className={styles.user}>
           <div className={styles.avatar} aria-hidden>

@@ -34,6 +34,12 @@ function GroupHomePage() {
               mainMessage: "いつも助かってます！",
               describeMessage: "朝からありがとう！",
             },
+            {
+              userName: "佐藤 花子",
+              userImageUrl: null,
+              mainMessage: "助かったよ！",
+              describeMessage: "これで夕飯の準備がスムーズ。",
+            },
           ],
         },
       ],

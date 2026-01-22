@@ -53,3 +53,22 @@ export const WithUserImage: Story = {
     ],
   },
 };
+
+export const WithMultipleMessages: Story = {
+  args: {
+    messages: [
+      {
+        userName: "山田 太郎",
+        userImageUrl: "https://placehold.co/64x64/png",
+        mainMessage: "これやってくれるのほんと助かる！",
+        describeMessage: "いつもありがとう！",
+      },
+      {
+        userName: "佐藤 花子",
+        userImageUrl: null,
+        mainMessage: "ナイス討伐！",
+        describeMessage: "時間に余裕ができたよ。",
+      },
+    ],
+  },
+};
