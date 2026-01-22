@@ -9,7 +9,6 @@ interface BeatingCardProps {
   userImageUrl?: string | null;
   likeCount?: number;
   commentCount?: number;
-  emptyReactionMessage?: string;
   userRoleLabel?: string;
 }
 
@@ -20,11 +19,8 @@ function BeatingCard({
   userImageUrl,
   likeCount = 0,
   commentCount = 0,
-  emptyReactionMessage = "感謝を伝えてみよう！✨",
   userRoleLabel = "討伐者",
 }: BeatingCardProps) {
-  const hasReactions = likeCount > 0 || commentCount > 0;
-
   return (
     <article className={styles.card} aria-label={`${userName}が${choreName}を討伐`}>
       <div className={styles.header}>
@@ -48,9 +44,6 @@ function BeatingCard({
                 <span className={styles.reactionCount}>{commentCount}</span>
               ) : null}
             </div>
-            {!hasReactions ? (
-              <span className={styles.emptyMessage}>{emptyReactionMessage}</span>
-            ) : null}
           </div>
         </div>
       </div>

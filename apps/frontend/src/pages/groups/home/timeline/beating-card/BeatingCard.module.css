@@ -2,6 +2,8 @@
   display: flex;
   flex-direction: column;
   gap: 18px;
+  width: min(620px, 100%);
+  min-width: 280px;
   padding: 24px;
   border-radius: 22px;
   background: linear-gradient(135deg, #f9e9ff, #ffeef7 55%, #f2f7ff);
@@ -36,7 +38,7 @@
 
 .choreName {
   margin: 0;
-  font-size: 20px;
+  font-size: 16px;
   font-weight: 700;
   color: var(--color-text-strong);
 }
@@ -69,17 +71,6 @@
 .reactionCount {
   font-weight: 600;
   color: var(--color-text-strong);
-}
-
-.emptyMessage {
-  display: inline-flex;
-  align-items: center;
-  padding: 8px 18px;
-  border-radius: 999px;
-  font-weight: 700;
-  color: var(--color-accent-strong);
-  background: color-mix(in srgb, var(--color-surface), #fce7f3 65%);
-  box-shadow: 0 8px 18px rgba(236, 72, 153, 0.18);
 }
 
 .footer {
@@ -128,7 +119,7 @@
 .userRole {
   margin: 0;
   font-size: 13px;
-  color: var(--color-accent-strong);
+  color: var(--color-text-accent);
 }
 
 @media (max-width: 540px) {
@@ -137,8 +128,8 @@
   }
 
   .header {
-    flex-direction: column;
-    align-items: flex-start;
+    flex-direction: row;
+    align-items: center;
   }
 
   .choreIcon {
