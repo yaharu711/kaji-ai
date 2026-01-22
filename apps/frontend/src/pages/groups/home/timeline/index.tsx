@@ -33,6 +33,10 @@ function GroupTimeline({ beatingGroups = [] }: GroupTimelineProps) {
         {hasBeatings ? (
           <div className={styles.list}>
             {beatingGroups.map((group) => {
+              if (group.items.length === 0) {
+                return null;
+              }
+
               const hasMultiple = group.items.length > 1;
 
               if (!hasMultiple) {
@@ -43,15 +47,7 @@ function GroupTimeline({ beatingGroups = [] }: GroupTimelineProps) {
                       <span className={styles.timeText}>{group.timeLabel}</span>
                       <span className={styles.timeDot} aria-hidden />
                     </div>
-                    <BeatingCard
-                      choreIconCode={beating.choreIconCode}
-                      choreName={beating.choreName}
-                      userName={beating.userName}
-                      userImageUrl={beating.userImageUrl}
-                      likeCount={beating.likeCount}
-                      commentCount={beating.commentCount}
-                      userRoleLabel={beating.userRoleLabel}
-                    />
+                    <BeatingCard {...beating} />
                   </div>
                 );
               }

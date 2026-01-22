@@ -37,7 +37,7 @@ function BeatingAccordion({ timeLabel, items }: BeatingAccordionProps) {
             <p className={styles.summaryTitle}>{items.length}件の討伐</p>
             <p className={styles.summaryHint}>
               <span className={styles.summaryHintClosed}>クリックして詳細を表示</span>
-              <span className={styles.summaryHintOpen}>まとめて表示</span>
+              <span className={styles.summaryHintOpen}>詳細を閉じる</span>
             </p>
           </div>
           <span className={styles.summaryChevron} aria-hidden>
@@ -48,7 +48,6 @@ function BeatingAccordion({ timeLabel, items }: BeatingAccordionProps) {
       <div className={styles.accordionBody}>
         {items.map((beating) => (
           <BeatingCard
-            key={beating.id}
             choreIconCode={beating.choreIconCode}
             choreName={beating.choreName}
             userName={beating.userName}
