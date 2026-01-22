@@ -29,7 +29,8 @@
 }
 
 .item {
-  display: flex;
+  display: grid;
+  grid-template-columns: auto minmax(0, 520px);
   gap: 16px;
   align-items: flex-start;
 }
@@ -109,7 +110,7 @@
 
 @media (max-width: 480px) {
   .item {
-    flex-direction: column;
+    grid-template-columns: 1fr;
     gap: 12px;
   }
 
