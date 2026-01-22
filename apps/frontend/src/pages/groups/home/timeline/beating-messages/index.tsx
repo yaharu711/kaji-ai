@@ -1,8 +1,10 @@
-import { ChevronDown, User } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import HeartIcon from "../../../../../components/HeartIcon";
+import UserProfileImg from "../../../../../components/UserProfileImg";
 import styles from "./BeatingMessages.module.css";
 
 export interface BeatingMessage {
+  id: string;
   userName: string;
   userImageUrl?: string | null;
   mainMessage: string;
@@ -21,12 +23,17 @@ function BeatingMessageItem({ message }: BeatingMessageItemProps) {
   return (
     <div className={styles.gratitudeItem}>
       <div className={styles.gratitudeHeader}>
-        <div className={styles.gratitudeAvatar} aria-hidden>
-          {message.userImageUrl ? <img src={message.userImageUrl} alt="" /> : <User size={16} />}
-          <span className={styles.gratitudeBadge} aria-hidden>
-            <HeartIcon size="sm" />
-          </span>
-        </div>
+        <UserProfileImg
+          name={message.userName}
+          imageUrl={message.userImageUrl}
+          size="sm"
+          tone="orange"
+          badge={
+            <span className={styles.gratitudeBadge} aria-hidden>
+              <HeartIcon size="sm" />
+            </span>
+          }
+        />
         <p className={styles.gratitudeName}>{message.userName}</p>
       </div>
       <p className={styles.gratitudeMain}>{message.mainMessage}</p>
@@ -59,11 +66,8 @@ function BeatingMessages({ messages = [] }: BeatingMessagesProps) {
             </span>
           </summary>
           <div className={styles.gratitudeExtraList}>
-            {extraMessages.map((message, index) => (
-              <BeatingMessageItem
-                key={`${message.userName}-${message.mainMessage}-${String(index)}`}
-                message={message}
-              />
+            {extraMessages.map((message) => (
+              <BeatingMessageItem key={message.id} message={message} />
             ))}
           </div>
         </details>

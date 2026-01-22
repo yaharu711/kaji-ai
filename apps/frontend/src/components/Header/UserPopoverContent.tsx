@@ -1,6 +1,7 @@
 import { Crown, User } from "lucide-react";
 import type { AppSessionUser } from "@kaiji-ai/backend/contracts";
 import ActionLink from "../ActionLink";
+import UserProfileImg from "../UserProfileImg";
 import styles from "./UserPopoverContent.module.css";
 
 export interface GroupMember {
@@ -17,20 +18,17 @@ interface UserPopoverContentProps {
   members: GroupMember[];
 }
 
-const getMemberInitial = (name?: string | null) => name?.trim().charAt(0) ?? "?";
-
 function UserPopoverContent({ groupName, currentUser, members }: UserPopoverContentProps) {
   return (
     <div className={styles.userPopoverContent}>
       <div className={styles.userPopoverProfile}>
         <div className={styles.userPopoverProfileMain}>
-          <div className={styles.userPopoverAvatar}>
-            {currentUser.image ? (
-              <img src={currentUser.image} alt={`${currentUser.name ?? ""}のアイコン`} />
-            ) : (
-              getMemberInitial(currentUser.name)
-            )}
-          </div>
+          <UserProfileImg
+            name={currentUser.name}
+            imageUrl={currentUser.image}
+            size="lg"
+            tone="primary"
+          />
           <div className={styles.userPopoverText}>
             <p className={styles.userPopoverName}>{currentUser.name ?? "未設定"}</p>
             <div className={styles.userPopoverStatus}>
@@ -59,22 +57,19 @@ function UserPopoverContent({ groupName, currentUser, members }: UserPopoverCont
                   .filter(Boolean)
                   .join(" ")}
               >
-                <span
-                  className={[styles.userPopoverMemberAvatar, styles.memberTonePink]
-                    .filter(Boolean)
-                    .join(" ")}
-                >
-                  {member.image_url ? (
-                    <img src={member.image_url} alt={`${member.name ?? ""}のアイコン`} />
-                  ) : (
-                    getMemberInitial(member.name)
-                  )}
-                  {isOwner ? (
-                    <span className={styles.userPopoverMemberCrown} aria-hidden="true">
-                      <Crown size={12} />
-                    </span>
-                  ) : null}
-                </span>
+                <UserProfileImg
+                  name={member.name}
+                  imageUrl={member.image_url}
+                  size="md"
+                  tone="pink"
+                  badge={
+                    isOwner ? (
+                      <span className={styles.userPopoverMemberCrown} aria-hidden="true">
+                        <Crown size={12} />
+                      </span>
+                    ) : null
+                  }
+                />
                 <div className={styles.userPopoverMemberInfo}>
                   <div className={styles.userPopoverMemberHeading}>
                     <span className={styles.userPopoverMemberName}>{member.name ?? "未設定"}</span>

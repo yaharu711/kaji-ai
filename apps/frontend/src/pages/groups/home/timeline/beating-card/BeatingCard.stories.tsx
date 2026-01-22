@@ -16,6 +16,7 @@ const meta = {
     userRoleLabel: "討伐者",
     messages: [
       {
+        id: "message-1",
         userName: "山田 太郎",
         userImageUrl: "https://placehold.co/64x64/png",
         mainMessage: "いつも助かってます！",
@@ -45,6 +46,7 @@ export const WithUserImage: Story = {
     commentCount: 1,
     messages: [
       {
+        id: "message-2",
         userName: "佐藤 花子",
         userImageUrl: "https://placehold.co/64x64/png",
         mainMessage: "助かったよ！",
@@ -58,12 +60,14 @@ export const WithMultipleMessages: Story = {
   args: {
     messages: [
       {
+        id: "message-3",
         userName: "山田 太郎",
         userImageUrl: "https://placehold.co/64x64/png",
         mainMessage: "これやってくれるのほんと助かる！",
         describeMessage: "いつもありがとう！",
       },
       {
+        id: "message-4",
         userName: "佐藤 花子",
         userImageUrl: null,
         mainMessage: "ナイス討伐！",

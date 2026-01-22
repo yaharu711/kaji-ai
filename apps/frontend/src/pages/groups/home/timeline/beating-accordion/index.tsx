@@ -1,6 +1,7 @@
 import { ChevronDown } from "lucide-react";
 import { getChoreIcon, type ChoreIconCode } from "../../../../../constants/chores";
 import BeatingCard from "../beating-card";
+import type { BeatingMessage } from "../beating-messages";
 import styles from "./BeatingAccordion.module.css";
 
 interface BeatingLog {
@@ -12,12 +13,7 @@ interface BeatingLog {
   likeCount?: number;
   commentCount?: number;
   userRoleLabel?: string;
-  messages?: readonly {
-    userName: string;
-    userImageUrl?: string | null;
-    mainMessage: string;
-    describeMessage?: string;
-  }[];
+  messages?: readonly BeatingMessage[];
 }
 
 interface BeatingAccordionProps {
