@@ -9,7 +9,7 @@ export const createGroupNavItems = (
   const basePath = `/groups/${groupId}`;
   const state = { groupName };
   return [
-    { label: "グループ", to: basePath, icon: Home, isActive: activeTo === basePath, state },
+    { label: "ホーム", to: basePath, icon: Home, isActive: activeTo === basePath, state },
     {
       label: "レポート",
       to: `${basePath}/reports`,

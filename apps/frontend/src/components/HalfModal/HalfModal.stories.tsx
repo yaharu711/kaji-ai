@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
-import { Swords } from "lucide-react";
 import HalfModal from ".";
 import Button from "../Button";
 import Input from "../Input";
+import SwordsHeaderIcon from "../SwordsHeaderIcon";
 import "../../theme.css";
 
 const meta = {
@@ -44,7 +44,7 @@ function WithTrigger() {
         onOpenChange={setOpen}
         title="家事を討伐する"
         description="討伐する家事を選択してください"
-        headerIcon={<Swords size={18} />}
+        headerIcon={<SwordsHeaderIcon size="sm" aria-hidden />}
         secondaryActionLabel="キャンセル"
         onSecondaryAction={() => {
           setOpen(false);
@@ -82,7 +82,7 @@ export const HeightSmall: Story = {
     },
     title: "家事を討伐する",
     description: "討伐する家事を選択してください",
-    headerIcon: <Swords size={18} />,
+    headerIcon: <SwordsHeaderIcon size="sm" aria-hidden />,
     secondaryActionLabel: "キャンセル",
     primaryActionLabel: "討伐完了",
     height: "sm",
@@ -99,7 +99,7 @@ export const HeightMedium: Story = {
     },
     title: "家事を討伐する",
     description: "討伐する家事を選択してください",
-    headerIcon: <Swords size={18} />,
+    headerIcon: <SwordsHeaderIcon size="sm" aria-hidden />,
     secondaryActionLabel: "キャンセル",
     primaryActionLabel: "討伐完了",
     height: "md",
@@ -116,7 +116,7 @@ export const HeightLarge: Story = {
     },
     title: "家事を討伐する",
     description: "討伐する家事を選択してください",
-    headerIcon: <Swords size={18} />,
+    headerIcon: <SwordsHeaderIcon size="sm" aria-hidden />,
     secondaryActionLabel: "キャンセル",
     primaryActionLabel: "討伐完了",
     height: "lg",
@@ -133,7 +133,7 @@ export const WithoutFooter: Story = {
     },
     title: "家事を討伐する",
     description: "討伐する家事を選択してください",
-    headerIcon: <Swords size={18} />,
+    headerIcon: <SwordsHeaderIcon size="sm" aria-hidden />,
     children: Content,
   },
 };
@@ -147,7 +147,7 @@ export const PrimaryDisabled: Story = {
     },
     title: "家事を討伐する",
     description: "討伐する家事を選択してください",
-    headerIcon: <Swords size={18} />,
+    headerIcon: <SwordsHeaderIcon size="sm" aria-hidden />,
     secondaryActionLabel: "キャンセル",
     primaryActionLabel: "討伐完了",
     primaryActionDisabled: true,
