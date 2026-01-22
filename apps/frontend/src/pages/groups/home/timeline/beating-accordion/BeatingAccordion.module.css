@@ -1,0 +1,114 @@
+.accordion {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.accordionSummary {
+  list-style: none;
+  cursor: pointer;
+  width: 100%;
+}
+
+.accordionSummary::-webkit-details-marker {
+  display: none;
+}
+
+.accordionSummary::marker {
+  content: "";
+}
+
+.summaryCard {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 18px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, rgba(255, 241, 251, 0.9), rgba(243, 232, 255, 0.95));
+  border: 1px solid color-mix(in srgb, var(--color-card-border), #ffffff 30%);
+  box-shadow: 0 12px 22px rgba(168, 85, 247, 0.12);
+  width: 100%;
+  min-height: 88px;
+  box-sizing: border-box;
+}
+
+.summaryIcons {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+
+.summaryIcon {
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  font-size: 20px;
+  background: linear-gradient(135deg, #f472b6, #c084fc);
+  color: var(--color-surface);
+  box-shadow: 0 8px 14px rgba(168, 85, 247, 0.2);
+  border: 2px solid rgba(255, 255, 255, 0.9);
+}
+
+.summaryIcon + .summaryIcon {
+  margin-left: -10px;
+}
+
+.summaryText {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  color: var(--color-text-strong);
+  flex: 1;
+}
+
+.summaryTitle {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.summaryHint {
+  margin: 0;
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+.summaryHintOpen {
+  display: none;
+}
+
+.summaryChevron {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  background: var(--color-surface);
+  color: var(--color-text-accent);
+  box-shadow: 0 6px 12px rgba(148, 163, 184, 0.2);
+  transition: transform 0.2s ease;
+}
+
+.accordion[open] .summaryChevron {
+  transform: rotate(180deg);
+}
+
+.accordion[open] .summaryHintClosed {
+  display: none;
+}
+
+.accordion[open] .summaryHintOpen {
+  display: inline;
+  color: var(--color-text-accent);
+  font-weight: 600;
+}
+
+.accordionBody {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-top: 16px;
+  width: 100%;
+}

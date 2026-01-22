@@ -1,0 +1,147 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  padding: 24px;
+  border-radius: 22px;
+  background: linear-gradient(135deg, #f9e9ff, #ffeef7 55%, #f2f7ff);
+  box-shadow: 0 14px 30px rgba(30, 41, 59, 0.15);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--color-card-border);
+}
+
+.choreIcon {
+  width: 76px;
+  height: 76px;
+  border-radius: 20px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, var(--color-accent), var(--color-primary-to));
+  box-shadow: 0 10px 18px rgba(168, 85, 247, 0.28);
+  font-size: 34px;
+}
+
+.headerBody {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+}
+
+.choreName {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-text-strong);
+}
+
+.reactions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.reactionItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+  box-shadow: 0 8px 18px rgba(148, 163, 184, 0.2);
+  font-size: 13px;
+}
+
+.reactionIcon {
+  display: grid;
+  place-items: center;
+  color: var(--color-accent);
+}
+
+.reactionCount {
+  font-weight: 600;
+  color: var(--color-text-strong);
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, #f472b6, #c084fc);
+  color: var(--color-surface);
+  box-shadow: 0 10px 18px rgba(168, 85, 247, 0.2);
+  overflow: hidden;
+}
+
+.avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.userText {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.userName {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-text-strong);
+}
+
+.userRole {
+  margin: 0;
+  font-size: 13px;
+  color: var(--color-text-accent);
+}
+
+@media (max-width: 540px) {
+  .card {
+    padding: 20px;
+    max-width: 100%;
+  }
+
+  .header {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .choreIcon {
+    width: 68px;
+    height: 68px;
+    border-radius: 18px;
+    font-size: 30px;
+  }
+
+  .choreName {
+    font-size: 18px;
+  }
+}
