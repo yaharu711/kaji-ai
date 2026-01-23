@@ -92,7 +92,7 @@ function HalfModal({
   const resolvedPrimaryDisabled = primaryActionDisabled || primaryActionLoading;
   const resolvedSecondaryDisabled = secondaryActionDisabled || primaryActionLoading;
   const primaryActionIcon = primaryActionLoading ? (
-    <LoaderCircle size="xs" ariaLabel="処理中" />
+    <LoaderCircle size="xs" tone="onPrimary" ariaLabel="処理中" />
   ) : undefined;
 
   return (

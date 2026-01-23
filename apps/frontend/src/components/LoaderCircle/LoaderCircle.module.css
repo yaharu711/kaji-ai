@@ -3,6 +3,18 @@
   animation: spinner-rotate 1.1s linear infinite;
 }
 
+.toneAccent {
+  color: var(--color-accent-strong);
+}
+
+.toneNeutral {
+  color: var(--color-text-strong);
+}
+
+.toneOnPrimary {
+  color: var(--color-surface);
+}
+
 .sizeXs {
   width: 16px;
   height: 16px;
