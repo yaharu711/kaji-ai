@@ -1,6 +1,7 @@
 import type { Context } from "hono";
 
 import { getDb } from "../db/client";
+import { requireGroupMember } from "./authorization";
 import { ChoreRepository } from "../repositories/chore.repository";
 import { ChoreBeatingsRepository } from "../repositories/choreBeatings.repository";
 import { GroupRepository } from "../repositories/group.repository";
@@ -13,7 +14,7 @@ import { getGroupUsersSuccessSchema } from "../routing/schemas/responses/getGrou
 import { getGroupsSuccessSchema } from "../routing/schemas/responses/getGroupsResponse";
 import { inviteGroupSuccessSchema } from "../routing/schemas/responses/inviteGroupResponse";
 import { searchUsersSuccessSchema } from "../routing/schemas/responses/searchUsersResponse";
-import { forbiddenSchema, unprocessableEntitySchema } from "../routing/schemas/responses/common";
+import { unprocessableEntitySchema } from "../routing/schemas/responses/common";
 import { fromIsoJst, nowJst } from "../util/datetime";
 
 const db = getDb();
@@ -54,12 +55,9 @@ export const getGroupChoresController = async (c: Context, groupId: string) => {
 };
 
 export const getGroupUsersController = async (c: Context, requesterId: string, groupId: string) => {
-  const users = await groupRepository.findUsersByGroupId(groupId);
-  const requesterBelonging = users.find((user) => user.id === requesterId);
-  if (!requesterBelonging || requesterBelonging.acceptedAt === null) {
-    const body = forbiddenSchema.parse({ status: 403, message: "Forbidden" });
-    return c.json(body, 403);
-  }
+  const auth = await requireGroupMember(c, groupRepository, requesterId, groupId);
+  if (!auth.ok) return auth.response;
+  const users = auth.members;
 
   const response = getGroupUsersSuccessSchema.parse(
     users.map((user) => ({
@@ -80,12 +78,8 @@ export const getGroupBeatingsController = async (
   groupId: string,
   date: string,
 ) => {
-  const members = await groupRepository.findUsersByGroupId(groupId);
-  const requesterBelonging = members.find((member) => member.id === requesterId);
-  if (!requesterBelonging || requesterBelonging.acceptedAt === null) {
-    const body = forbiddenSchema.parse({ status: 403, message: "Forbidden" });
-    return c.json(body, 403);
-  }
+  const auth = await requireGroupMember(c, groupRepository, requesterId, groupId);
+  if (!auth.ok) return auth.response;
 
   const baseDate = fromIsoJst(date);
   if (!baseDate) {
@@ -167,13 +161,10 @@ export const inviteGroupController = async (
   userId: string,
 ) => {
   const now = nowJst();
-  const belongings = await groupRepository.findUsersByGroupId(groupId);
-  // 招待リクエスト送信者がグループ所属者であることを確認(グループ所属者なら誰でも招待可能)
-  const requesterBelonging = belongings.find((member) => member.id === requesterId);
-  if (!requesterBelonging) {
-    const body = forbiddenSchema.parse({ status: 403, message: "Forbidden" });
-    return c.json(body, 403);
-  }
+  // 招待リクエスト送信者がグループ所属者であることを確認(承諾済みのみ)
+  const auth = await requireGroupMember(c, groupRepository, requesterId, groupId);
+  if (!auth.ok) return auth.response;
+  const belongings = auth.members;
   const belonging = belongings.find((member) => member.id === userId);
   if (belonging) {
     const body = unprocessableEntitySchema.parse({
@@ -288,12 +279,8 @@ export const createChoreBeatingController = async (
   choreId: number,
   beatedAt: Date,
 ) => {
-  const belongings = await groupRepository.findUsersByGroupId(groupId);
-  const requesterBelonging = belongings.find((member) => member.id === requesterId);
-  if (!requesterBelonging || requesterBelonging.acceptedAt === null) {
-    const body = forbiddenSchema.parse({ status: 403, message: "Forbidden" });
-    return c.json(body, 403);
-  }
+  const auth = await requireGroupMember(c, groupRepository, requesterId, groupId);
+  if (!auth.ok) return auth.response;
 
   const now = nowJst();
   await choreBeatingsRepository.create({
