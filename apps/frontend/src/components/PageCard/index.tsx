@@ -3,10 +3,11 @@ import styles from "./PageCard.module.css";
 
 type PageCardProps = PropsWithChildren<{
   align?: "left" | "center";
-  padding?: "md" | "lg";
+  padding?: "sm" | "md" | "lg";
 }>;
 
 const PADDING_CLASS = {
+  sm: styles.paddingSm,
   md: styles.paddingMd,
   lg: styles.paddingLg,
 } as const;
