@@ -20,7 +20,7 @@ import DateNavigator from "./date-navigator";
 const formatJstDateLabel = (dateString: string) => {
   const date = toJstDate(dateString);
   const { year, month, day, weekday } = getJstDateParts(date);
-  return `${year}年${Number(month)}月${Number(day)}日 (${weekday})`;
+  return `${year}年${String(Number(month))}月${String(Number(day))}日 (${weekday})`;
 };
 
 function GroupHomePage() {

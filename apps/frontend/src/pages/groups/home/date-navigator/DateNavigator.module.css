@@ -92,17 +92,17 @@
 
   .navButton {
     padding: 4px 6px;
-    font-size: 12px;
+    font-size: 13px;
     gap: 4px;
   }
 
   .label {
-    font-size: 13px;
+    font-size: 14px;
   }
 
   .todayLabel,
   .todayButton {
-    font-size: 11px;
+    font-size: 12px;
   }
 
   .todayButton {
