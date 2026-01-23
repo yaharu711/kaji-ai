@@ -7,13 +7,14 @@ import { GroupRepository } from "../repositories/group.repository";
 import { UserRepository } from "../repositories/user.repository";
 import { createChoreBeatingSuccessSchema } from "../routing/schemas/responses/createChoreBeatingResponse";
 import { createGroupSuccessSchema } from "../routing/schemas/responses/createGroupResponse";
+import { getGroupBeatingsSuccessSchema } from "../routing/schemas/responses/getGroupBeatingsResponse";
 import { getGroupChoresSuccessSchema } from "../routing/schemas/responses/getGroupChoresResponse";
 import { getGroupUsersSuccessSchema } from "../routing/schemas/responses/getGroupUsersResponse";
 import { getGroupsSuccessSchema } from "../routing/schemas/responses/getGroupsResponse";
 import { inviteGroupSuccessSchema } from "../routing/schemas/responses/inviteGroupResponse";
 import { searchUsersSuccessSchema } from "../routing/schemas/responses/searchUsersResponse";
 import { forbiddenSchema, unprocessableEntitySchema } from "../routing/schemas/responses/common";
-import { nowJst } from "../util/datetime";
+import { fromIsoJst, nowJst } from "../util/datetime";
 
 const db = getDb();
 const groupRepository = new GroupRepository(db);
@@ -67,6 +68,66 @@ export const getGroupUsersController = async (c: Context, requesterId: string, g
       image_url: user.image ?? null,
       is_owner: user.isOwner,
       is_invited: user.acceptedAt === null,
+    })),
+  );
+
+  return c.json(response, 200);
+};
+
+export const getGroupBeatingsController = async (
+  c: Context,
+  requesterId: string,
+  groupId: string,
+  date: string,
+) => {
+  const members = await groupRepository.findUsersByGroupId(groupId);
+  const requesterBelonging = members.find((member) => member.id === requesterId);
+  if (!requesterBelonging || requesterBelonging.acceptedAt === null) {
+    const body = forbiddenSchema.parse({ status: 403, message: "Forbidden" });
+    return c.json(body, 403);
+  }
+
+  const baseDate = fromIsoJst(date);
+  if (!baseDate) {
+    const body = unprocessableEntitySchema.parse({
+      status: 422,
+      errors: [{ field: "date", message: "date は ISO8601 形式で指定してください" }],
+    });
+    return c.json(body, 422);
+  }
+
+  const startJst = baseDate.startOf("day");
+  const endJst = startJst.add(1, "day");
+  const startUtc = startJst.utc().toDate();
+  const endUtc = endJst.utc().toDate();
+
+  const groups = await choreBeatingsRepository.findTimelineByGroupIdAndUtcRange(groupId, {
+    startUtc,
+    endUtc,
+  });
+
+  const response = getGroupBeatingsSuccessSchema.parse(
+    groups.map((group) => ({
+      hour: group.hour,
+      items: group.items.map((item) => ({
+        beating_id: item.beatingId,
+        beated_at: item.beatedAt.toISOString(),
+        chore_id: item.choreId,
+        chore_name: item.choreName,
+        icon_code: item.iconCode,
+        thanks_count: item.thanksCount,
+        messages: item.messages.map((message) => ({
+          id: message.id,
+          user_id: message.userId,
+          user_name: message.userName ?? null,
+          img_url: message.imgUrl ?? null,
+          main_message: message.mainMessage,
+          description_message: message.descriptionMessage ?? null,
+        })),
+        user_id: item.userId,
+        user_name: item.userName ?? null,
+        img_url: item.imgUrl ?? null,
+      })),
     })),
   );
 

@@ -5,6 +5,7 @@ import {
   createChoreBeatingController,
   createGroupController,
   denyGroupInvitationController,
+  getGroupBeatingsController,
   getGroupChoresController,
   getGroupUsersController,
   getGroupsController,
@@ -13,7 +14,11 @@ import {
 } from "../controllers/groups.controller";
 import { createChoreBeatingRequestSchema } from "./schemas/requests/createChoreBeatingRequest";
 import { createGroupRequestSchema } from "./schemas/requests/createGroupRequest";
-import { inviteGroupRequestSchema, searchUsersRequestSchema } from "./schemas/requests";
+import {
+  getGroupBeatingsRequestSchema,
+  inviteGroupRequestSchema,
+  searchUsersRequestSchema,
+} from "./schemas/requests";
 import { validateJson, validateQuery } from "./middlewares/validator";
 
 const app = new Hono()
@@ -29,6 +34,12 @@ const app = new Hono()
     const requesterId = c.var.requesterId;
     const { groupId } = c.req.param();
     return getGroupUsersController(c, requesterId, groupId);
+  })
+  .get("/:groupId/beatings", validateQuery(getGroupBeatingsRequestSchema), async (c) => {
+    const requesterId = c.var.requesterId;
+    const { groupId } = c.req.param();
+    const { date } = c.req.valid("query");
+    return getGroupBeatingsController(c, requesterId, groupId, date);
   })
   .post("/:groupId/beatings", validateJson(createChoreBeatingRequestSchema), async (c) => {
     const requesterId = c.var.requesterId;

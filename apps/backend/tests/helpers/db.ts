@@ -41,6 +41,27 @@ type CreateGroupChoreParams = {
   deletedAt?: Date | null;
 };
 
+type CreateChoreBeatingParams = {
+  id?: number;
+  groupId: string;
+  choreId: number;
+  userId: string;
+  likeCount?: number;
+  beatedAt: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
+};
+
+type CreateChoreBeatingThankMessageParams = {
+  id?: number;
+  groupId: string;
+  userId: string;
+  beatingId: number;
+  mainMessage: string;
+  descriptionMessage?: string | null;
+  createdAt?: Date;
+};
+
 export const createUser = async ({
   id,
   name = null,
@@ -164,6 +185,61 @@ export const createGroupChore = async ({
   }
 
   await db.insert(schema.groupChores).values(values);
+};
+
+export const createChoreBeating = async ({
+  id,
+  groupId,
+  choreId,
+  userId,
+  likeCount = 0,
+  beatedAt,
+  createdAt = new Date(),
+  updatedAt = createdAt,
+}: CreateChoreBeatingParams): Promise<number> => {
+  const values: typeof schema.choreBeatings.$inferInsert = {
+    groupId,
+    choreId,
+    userId,
+    likeCount,
+    beatedAt,
+    createdAt,
+    updatedAt,
+  };
+
+  if (id !== undefined) {
+    values.id = id;
+  }
+
+  const rows = await db.insert(schema.choreBeatings).values(values).returning({
+    id: schema.choreBeatings.id,
+  });
+  return rows[0].id;
+};
+
+export const createChoreBeatingThankMessage = async ({
+  id,
+  groupId,
+  userId,
+  beatingId,
+  mainMessage,
+  descriptionMessage = null,
+  createdAt = new Date(),
+}: CreateChoreBeatingThankMessageParams) => {
+  const values: typeof schema.choreBeatingThankMessages.$inferInsert = {
+    groupId,
+    userId,
+    beatingId,
+    mainMessage,
+    descriptionMessage,
+    createdAt,
+  };
+
+  if (id !== undefined) {
+    values.id = id;
+  }
+
+  await db.insert(schema.choreBeatingThankMessages).values(values);
 };
 
 export const findBelongingsByGroupId = async (groupId: string, userId?: string) => {
