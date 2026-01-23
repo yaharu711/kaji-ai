@@ -1,19 +1,21 @@
 import type { Context } from "hono";
 
 import { getDb } from "../db/client";
+import { requireGroupMember } from "./authorization";
 import { ChoreRepository } from "../repositories/chore.repository";
 import { ChoreBeatingsRepository } from "../repositories/choreBeatings.repository";
 import { GroupRepository } from "../repositories/group.repository";
 import { UserRepository } from "../repositories/user.repository";
 import { createChoreBeatingSuccessSchema } from "../routing/schemas/responses/createChoreBeatingResponse";
 import { createGroupSuccessSchema } from "../routing/schemas/responses/createGroupResponse";
+import { getGroupBeatingsSuccessSchema } from "../routing/schemas/responses/getGroupBeatingsResponse";
 import { getGroupChoresSuccessSchema } from "../routing/schemas/responses/getGroupChoresResponse";
 import { getGroupUsersSuccessSchema } from "../routing/schemas/responses/getGroupUsersResponse";
 import { getGroupsSuccessSchema } from "../routing/schemas/responses/getGroupsResponse";
 import { inviteGroupSuccessSchema } from "../routing/schemas/responses/inviteGroupResponse";
 import { searchUsersSuccessSchema } from "../routing/schemas/responses/searchUsersResponse";
-import { forbiddenSchema, unprocessableEntitySchema } from "../routing/schemas/responses/common";
-import { nowJst } from "../util/datetime";
+import { unprocessableEntitySchema } from "../routing/schemas/responses/common";
+import { nowJst, toIsoJstFromDate, toUtcDayRangeFromJstDateString } from "../util/datetime";
 
 const db = getDb();
 const groupRepository = new GroupRepository(db);
@@ -53,12 +55,9 @@ export const getGroupChoresController = async (c: Context, groupId: string) => {
 };
 
 export const getGroupUsersController = async (c: Context, requesterId: string, groupId: string) => {
-  const users = await groupRepository.findUsersByGroupId(groupId);
-  const requesterBelonging = users.find((user) => user.id === requesterId);
-  if (!requesterBelonging || requesterBelonging.acceptedAt === null) {
-    const body = forbiddenSchema.parse({ status: 403, message: "Forbidden" });
-    return c.json(body, 403);
-  }
+  const auth = await requireGroupMember(c, groupRepository, requesterId, groupId);
+  if (!auth.ok) return auth.response;
+  const users = auth.members;
 
   const response = getGroupUsersSuccessSchema.parse(
     users.map((user) => ({
@@ -69,6 +68,60 @@ export const getGroupUsersController = async (c: Context, requesterId: string, g
       is_invited: user.acceptedAt === null,
     })),
   );
+
+  return c.json(response, 200);
+};
+
+export const getGroupBeatingsController = async (
+  c: Context,
+  requesterId: string,
+  groupId: string,
+  date: string,
+) => {
+  const auth = await requireGroupMember(c, groupRepository, requesterId, groupId);
+  if (!auth.ok) return auth.response;
+
+  const dateRange = toUtcDayRangeFromJstDateString(date);
+  if (!dateRange) {
+    const body = unprocessableEntitySchema.parse({
+      status: 422,
+      errors: [
+        { field: "date", message: "date は YYYY-MM-DD または YYYY/MM/DD 形式で指定してください" },
+      ],
+    });
+    return c.json(body, 422);
+  }
+
+  const groups = await choreBeatingsRepository.findTimelineByGroupIdAndUtcRange(groupId, {
+    startUtc: dateRange.startUtc,
+    endUtc: dateRange.endUtc,
+  });
+
+  const response = getGroupBeatingsSuccessSchema.parse(
+    groups.map((group) => ({
+      hour: group.hour,
+      items: group.items.map((item) => ({
+        beating_id: item.beatingId,
+        beated_at: toIsoJstFromDate(item.beatedAt),
+        chore_id: item.choreId,
+        chore_name: item.choreName,
+        icon_code: item.iconCode,
+        thanks_count: item.thanksCount,
+        messages: item.messages.map((message) => ({
+          id: message.id,
+          user_id: message.userId,
+          user_name: message.userName ?? null,
+          img_url: message.imgUrl ?? null,
+          main_message: message.mainMessage,
+          description_message: message.descriptionMessage ?? null,
+        })),
+        user_id: item.userId,
+        user_name: item.userName ?? null,
+        img_url: item.imgUrl ?? null,
+      })),
+    })),
+  );
+  console.log(response);
 
   return c.json(response, 200);
 };
@@ -106,13 +159,10 @@ export const inviteGroupController = async (
   userId: string,
 ) => {
   const now = nowJst();
-  const belongings = await groupRepository.findUsersByGroupId(groupId);
-  // 招待リクエスト送信者がグループ所属者であることを確認(グループ所属者なら誰でも招待可能)
-  const requesterBelonging = belongings.find((member) => member.id === requesterId);
-  if (!requesterBelonging) {
-    const body = forbiddenSchema.parse({ status: 403, message: "Forbidden" });
-    return c.json(body, 403);
-  }
+  // 招待リクエスト送信者がグループ所属者であることを確認(承諾済みのみ)
+  const auth = await requireGroupMember(c, groupRepository, requesterId, groupId);
+  if (!auth.ok) return auth.response;
+  const belongings = auth.members;
   const belonging = belongings.find((member) => member.id === userId);
   if (belonging) {
     const body = unprocessableEntitySchema.parse({
@@ -125,7 +175,7 @@ export const inviteGroupController = async (
   await groupRepository.addBelonging({
     groupId,
     userId,
-    createdAt: now.toDate(),
+    createdAt: now,
     acceptedAt: null,
   });
 
@@ -153,8 +203,8 @@ export const acceptGroupInvitationController = async (
   await groupRepository.updateBelonging({
     groupId,
     userId,
-    createdAt: now.toDate(),
-    acceptedAt: now.toDate(),
+    createdAt: now,
+    acceptedAt: now,
   });
 
   return c.body(null, 204);
@@ -189,15 +239,15 @@ export const createGroupController = async (c: Context, requesterId: string, nam
     name,
     ownerId: requesterId,
     image: null,
-    createdAt: now.toDate(),
-    updatedAt: now.toDate(),
+    createdAt: now,
+    updatedAt: now,
   };
   // 作成者なので所属済みとして登録するためのデータ
   const belonging = {
     groupId,
     userId: requesterId,
-    createdAt: now.toDate(),
-    acceptedAt: now.toDate(),
+    createdAt: now,
+    acceptedAt: now,
   };
 
   try {
@@ -227,12 +277,8 @@ export const createChoreBeatingController = async (
   choreId: number,
   beatedAt: Date,
 ) => {
-  const belongings = await groupRepository.findUsersByGroupId(groupId);
-  const requesterBelonging = belongings.find((member) => member.id === requesterId);
-  if (!requesterBelonging || requesterBelonging.acceptedAt === null) {
-    const body = forbiddenSchema.parse({ status: 403, message: "Forbidden" });
-    return c.json(body, 403);
-  }
+  const auth = await requireGroupMember(c, groupRepository, requesterId, groupId);
+  if (!auth.ok) return auth.response;
 
   const now = nowJst();
   await choreBeatingsRepository.create({
@@ -241,8 +287,8 @@ export const createChoreBeatingController = async (
     userId: requesterId,
     likeCount: 0,
     beatedAt,
-    createdAt: now.toDate(),
-    updatedAt: now.toDate(),
+    createdAt: now,
+    updatedAt: now,
   });
 
   const response = createChoreBeatingSuccessSchema.parse({ status: 201 });

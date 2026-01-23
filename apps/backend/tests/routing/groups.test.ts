@@ -8,6 +8,8 @@ import { getDb } from "../../src/db/client";
 import * as schema from "../../src/db/schema";
 import {
   createBelonging,
+  createChoreBeating,
+  createChoreBeatingThankMessage,
   createGroup,
   createGroupChore,
   createUser,
@@ -22,6 +24,7 @@ const client = testClient<RoutingApp>(app);
 const db = getDb();
 
 beforeEach(async () => {
+  await db.execute(sql`TRUNCATE TABLE "chore_beating_thank_messages" CASCADE`);
   await db.execute(sql`TRUNCATE TABLE "chore_beatings" CASCADE`);
   await db.execute(sql`TRUNCATE TABLE "group_chores" CASCADE`);
   await db.execute(sql`TRUNCATE TABLE "master_chores" CASCADE`);
@@ -265,6 +268,110 @@ describe("POST /api/groups/:groupId/beatings", () => {
         },
       ],
     });
+  });
+});
+
+describe("GET /api/groups/:groupId/beatings", () => {
+  it("レスポンスに討伐ログの内容が正しく含まれる", async () => {
+    const groupId = "group-1";
+    const now = new Date("2025-01-01T00:00:00Z");
+
+    await createUser({ id: "member-1", name: "Beater", image: "beater.png" });
+    await createUser({ id: "member-2", name: "Sender", image: "sender.png" });
+    await createGroup({
+      id: groupId,
+      name: "家族",
+      ownerId: "member-1",
+      image: null,
+      createdAt: now,
+      updatedAt: now,
+    });
+    await createBelonging({ groupId, userId: AUTH_USER.id, acceptedAt: now });
+    await createBelonging({ groupId, userId: "member-1", acceptedAt: now });
+    await createGroupChore({ id: 1, groupId, choreName: "食器洗い", iconCode: "dish-wash" });
+    await createGroupChore({ id: 2, groupId, choreName: "掃除", iconCode: "cleaning" });
+
+    const beating1Id = await createChoreBeating({
+      groupId,
+      choreId: 1,
+      userId: "member-1",
+      likeCount: 2,
+      beatedAt: new Date("2025-01-10T01:15:00Z"),
+      createdAt: new Date("2025-01-10T01:16:00Z"),
+      updatedAt: new Date("2025-01-10T01:17:00Z"),
+    });
+    const beating2Id = await createChoreBeating({
+      groupId,
+      choreId: 2,
+      userId: "member-1",
+      likeCount: 0,
+      beatedAt: new Date("2025-01-10T02:05:00Z"),
+      createdAt: new Date("2025-01-10T02:06:00Z"),
+      updatedAt: new Date("2025-01-10T02:07:00Z"),
+    });
+
+    await createChoreBeatingThankMessage({
+      groupId,
+      userId: "member-2",
+      beatingId: beating1Id,
+      mainMessage: "ありがとう",
+      descriptionMessage: "助かりました",
+      createdAt: new Date("2025-01-10T02:00:00Z"),
+    });
+
+    const res = await client.api.groups[":groupId"].beatings.$get({
+      param: { groupId },
+      query: { date: "2025-01-10" },
+    });
+
+    expect(res.status).toBe(200);
+    const body = await res.json();
+
+    expect(body).toEqual([
+      {
+        hour: "10:00",
+        items: [
+          {
+            beating_id: beating1Id,
+            beated_at: "2025-01-10T10:15:00+09:00",
+            chore_id: 1,
+            chore_name: "食器洗い",
+            icon_code: "dish-wash",
+            thanks_count: 2,
+            messages: [
+              {
+                id: expect.any(Number),
+                user_id: "member-2",
+                user_name: "Sender",
+                img_url: "sender.png",
+                main_message: "ありがとう",
+                description_message: "助かりました",
+              },
+            ],
+            user_id: "member-1",
+            user_name: "Beater",
+            img_url: "beater.png",
+          },
+        ],
+      },
+      {
+        hour: "11:00",
+        items: [
+          {
+            beating_id: beating2Id,
+            beated_at: "2025-01-10T11:05:00+09:00",
+            chore_id: 2,
+            chore_name: "掃除",
+            icon_code: "cleaning",
+            thanks_count: 0,
+            messages: [],
+            user_id: "member-1",
+            user_name: "Beater",
+            img_url: "beater.png",
+          },
+        ],
+      },
+    ]);
   });
 });
 
