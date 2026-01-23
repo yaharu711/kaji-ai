@@ -2,7 +2,8 @@ import { MessageSquareHeart } from "lucide-react";
 import { getChoreIcon, type ChoreIconCode } from "../../../../../constants/chores";
 import HeartIcon from "../../../../../components/HeartIcon";
 import UserProfileImg from "../../../../../components/UserProfileImg";
-import BeatingMessages, { type BeatingMessage } from "../beating-messages";
+import BeatingMessages from "../beating-messages";
+import type { BeatingMessage } from "../../../types/beatings";
 import styles from "./BeatingCard.module.css";
 
 interface BeatingCardProps {

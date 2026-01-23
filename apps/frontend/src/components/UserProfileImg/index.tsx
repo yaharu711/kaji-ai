@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import styles from "./UserProfileImg.module.css";
 
 const SIZE_CLASS = {
@@ -41,10 +41,22 @@ function UserProfileImg({
 }: UserProfileImgProps) {
   const className = [styles.root, SIZE_CLASS[size], TONE_CLASS[tone]].join(" ");
   const resolvedAlt = alt ?? (name?.trim() ? `${name}のアイコン` : "ユーザーのアイコン");
+  const [failedImageUrl, setFailedImageUrl] = useState<string | null>(null);
+  const hasImageError = imageUrl ? failedImageUrl === imageUrl : false;
 
   return (
     <span className={className} data-user-profile-img>
-      {imageUrl ? <img src={imageUrl} alt={resolvedAlt} /> : getMemberInitial(name)}
+      {imageUrl && !hasImageError ? (
+        <img
+          src={imageUrl}
+          alt={resolvedAlt}
+          onError={() => {
+            setFailedImageUrl(imageUrl);
+          }}
+        />
+      ) : (
+        getMemberInitial(name)
+      )}
       {badge}
     </span>
   );

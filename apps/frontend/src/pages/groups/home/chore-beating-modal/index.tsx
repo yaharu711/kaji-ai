@@ -7,6 +7,7 @@ import {
   type DropdownOption,
 } from "../../../../components";
 import SwordsHeaderIcon from "../../../../components/SwordsHeaderIcon";
+import { getJstDateParts, nowJst } from "../../../../util/datetime";
 import styles from "./ChoreBeatingModal.module.css";
 
 interface ChoreBeatingModalProps {
@@ -20,34 +21,16 @@ interface ChoreBeatingModalProps {
 
 const formatHour = (hour: number) => `${String(hour)}時`;
 
-const getJstDateParts = (date: Date) => {
-  const formatter = new Intl.DateTimeFormat("ja-JP", {
-    timeZone: "Asia/Tokyo",
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-    hour: "2-digit",
-    hour12: false,
+const buildTimeOptions = (currentHour: number) =>
+  Array.from({ length: 24 }, (_, hour) => {
+    const start = formatHour(hour);
+    const end = formatHour((hour + 1) % 24);
+    const label = `${start}〜${end}`;
+    return { value: label, label, disabled: hour > currentHour };
   });
-  const parts = formatter.formatToParts(date);
-  const getPart = (type: string) => parts.find((part) => part.type === type)?.value ?? "";
-  return {
-    year: getPart("year"),
-    month: getPart("month"),
-    day: getPart("day"),
-    hour: getPart("hour"),
-  };
-};
-
-const timeOptions = Array.from({ length: 24 }, (_, hour) => {
-  const start = formatHour(hour);
-  const end = formatHour((hour + 1) % 24);
-  const label = `${start}〜${end}`;
-  return { value: label, label };
-});
 
 const getDefaultTimeRange = () => {
-  const now = new Date();
+  const now = nowJst();
   const hourText = getJstDateParts(now).hour;
   const hour = Number(hourText);
   const resolvedHour = Number.isNaN(hour) ? now.getHours() : hour;
@@ -76,7 +59,10 @@ function ChoreBeatingModal({
   const [selectedTime, setSelectedTime] = useState<string>(getDefaultTimeRange);
   const isPrimaryDisabled = !selectedChore || isSubmitting;
 
-  const todayParts = getJstDateParts(new Date());
+  const nowParts = getJstDateParts(nowJst());
+  const currentHour = Number(nowParts.hour);
+  const timeOptions = buildTimeOptions(currentHour);
+  const todayParts = nowParts;
   const todayText = `${todayParts.month}月${todayParts.day}日`;
   const timeHelperText = `本日 ${todayText}の討伐として記録されます！`;
 
@@ -113,6 +99,8 @@ function ChoreBeatingModal({
       primaryActionLabel="討伐完了"
       secondaryActionLabel="キャンセル"
       primaryActionDisabled={isPrimaryDisabled}
+      primaryActionLoading={isSubmitting}
+      secondaryActionDisabled={isSubmitting}
       onPrimaryAction={() => {
         void handleSubmit();
       }}

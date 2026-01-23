@@ -43,6 +43,7 @@ export interface DropdownOption {
   value: string;
   label: string;
   icon?: ReactNode;
+  disabled?: boolean;
 }
 
 interface DropdownSelectProps {
@@ -106,7 +107,8 @@ function DropdownSelect({
   }, [hasSelectedOption, isOpen]);
 
   const handleSelect = (nextValue: string) => {
-    if (disabled) {
+    const targetOption = options.find((option) => option.value === nextValue);
+    if (disabled || targetOption?.disabled) {
       return;
     }
     onChange(nextValue);
@@ -203,6 +205,7 @@ function DropdownSelect({
                     key={option.value}
                     className={styles.option}
                     value={option.value}
+                    disabled={option.disabled}
                     ref={option.value === value ? selectedItemRef : null}
                   >
                     <span className={styles.optionContent}>

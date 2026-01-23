@@ -1,15 +1,8 @@
 import { ChevronDown } from "lucide-react";
 import HeartIcon from "../../../../../components/HeartIcon";
 import UserProfileImg from "../../../../../components/UserProfileImg";
+import type { BeatingMessage } from "../../../types/beatings";
 import styles from "./BeatingMessages.module.css";
-
-export interface BeatingMessage {
-  id: string;
-  userName: string;
-  userImageUrl?: string | null;
-  mainMessage: string;
-  describeMessage?: string;
-}
 
 interface BeatingMessagesProps {
   messages?: readonly BeatingMessage[];

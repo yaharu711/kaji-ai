@@ -1,20 +1,8 @@
 import { ChevronDown } from "lucide-react";
-import { getChoreIcon, type ChoreIconCode } from "../../../../../constants/chores";
+import { getChoreIcon } from "../../../../../constants/chores";
 import BeatingCard from "../beating-card";
-import type { BeatingMessage } from "../beating-messages";
+import type { BeatingLog } from "../../../types/beatings";
 import styles from "./BeatingAccordion.module.css";
-
-interface BeatingLog {
-  id: string;
-  choreIconCode: ChoreIconCode;
-  choreName: string;
-  userName: string;
-  userImageUrl?: string | null;
-  likeCount?: number;
-  commentCount?: number;
-  userRoleLabel?: string;
-  messages?: readonly BeatingMessage[];
-}
 
 interface BeatingAccordionProps {
   timeLabel: string;
@@ -66,5 +54,4 @@ function BeatingAccordion({ timeLabel, items }: BeatingAccordionProps) {
   );
 }
 
-export type { BeatingLog };
 export default BeatingAccordion;

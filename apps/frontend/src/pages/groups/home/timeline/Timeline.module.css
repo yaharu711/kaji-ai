@@ -28,6 +28,10 @@
   gap: 18px;
 }
 
+.listLoading {
+  align-items: center;
+}
+
 .item {
   display: grid;
   grid-template-columns: auto minmax(0, 520px);

@@ -11,6 +11,14 @@ const chores = [
   { value: "trash", label: "ゴミ出し", icon: "🗑️" },
 ];
 
+const choresWithDisabled = [
+  { value: "dishes", label: "食器洗い", icon: "🍽️" },
+  { value: "clean", label: "掃除", icon: "🧹", disabled: true },
+  { value: "laundry", label: "洗濯", icon: "👕" },
+  { value: "cook", label: "料理", icon: "🍳", disabled: true },
+  { value: "trash", label: "ゴミ出し", icon: "🗑️" },
+];
+
 const manyChores = Array.from({ length: 18 }, (_, index) => ({
   value: `chore-${String(index + 1)}`,
   label: `家事 ${String(index + 1)}`,
@@ -202,6 +210,14 @@ export const Disabled: Story = {
     options: chores,
     value: "laundry",
     disabled: true,
+  },
+};
+
+export const DisabledOptions: Story = {
+  args: {
+    label: "一部選択不可",
+    options: choresWithDisabled,
+    value: "laundry",
   },
 };
 
