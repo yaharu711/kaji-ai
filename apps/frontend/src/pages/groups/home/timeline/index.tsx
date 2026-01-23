@@ -10,10 +10,20 @@ import styles from "./Timeline.module.css";
 interface GroupTimelineProps {
   beatingGroups?: readonly BeatingGroup[];
   isLoading?: boolean;
+  isToday?: boolean;
 }
 
-function GroupTimeline({ beatingGroups = [], isLoading = false }: GroupTimelineProps) {
+function GroupTimeline({
+  beatingGroups = [],
+  isLoading = false,
+  isToday = true,
+}: GroupTimelineProps) {
   const hasBeatings = beatingGroups.length > 0;
+  const subtitle = isToday
+    ? "みんなで協力して家事を討伐しよう！"
+    : "この日の討伐記録を見てみよう！";
+  const emptyTitle = isToday ? "まだ討伐記録がありません" : "この日の討伐記録がありません";
+  const emptyDescription = isToday ? "右下のボタンから家事を討伐しましょう！" : "";
 
   return (
     <PageCard padding="md">
@@ -24,7 +34,7 @@ function GroupTimeline({ beatingGroups = [], isLoading = false }: GroupTimelineP
             <h2 id="timeline-heading" className={styles.title}>
               討伐タイムライン
             </h2>
-            <p className={styles.subtitle}>みんなで協力して家事を討伐しよう！</p>
+            <p className={styles.subtitle}>{subtitle}</p>
           </div>
         </div>
 
@@ -69,8 +79,8 @@ function GroupTimeline({ beatingGroups = [], isLoading = false }: GroupTimelineP
           <div className={styles.emptyState} role="status">
             <Swords className={styles.emptyIcon} aria-hidden />
             <div className={styles.emptyText}>
-              <p className={styles.emptyTitle}>まだ討伐記録がありません</p>
-              <p className={styles.emptyDescription}>右下のボタンから家事を討伐しましょう！</p>
+              <p className={styles.emptyTitle}>{emptyTitle}</p>
+              <p className={styles.emptyDescription}>{emptyDescription}</p>
             </div>
           </div>
         )}

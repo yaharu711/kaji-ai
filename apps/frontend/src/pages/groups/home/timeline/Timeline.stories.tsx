@@ -18,6 +18,13 @@ export const Empty: Story = {
   },
 };
 
+export const EmptyPastDay: Story = {
+  args: {
+    beatingGroups: [],
+    isToday: false,
+  },
+};
+
 export const WithBeatings: Story = {
   args: {
     beatingGroups: [
