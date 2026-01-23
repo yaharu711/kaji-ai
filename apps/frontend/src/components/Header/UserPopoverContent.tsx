@@ -61,7 +61,7 @@ function UserPopoverContent({ groupName, currentUser, members }: UserPopoverCont
                   name={member.name}
                   imageUrl={member.image_url}
                   size="md"
-                  tone="pink"
+                  tone="purple"
                   badge={
                     isOwner ? (
                       <span className={styles.userPopoverMemberCrown} aria-hidden="true">

@@ -7,6 +7,7 @@ import {
   type DropdownOption,
 } from "../../../../components";
 import SwordsHeaderIcon from "../../../../components/SwordsHeaderIcon";
+import { getJstDateParts } from "../../../../util/datetime";
 import styles from "./ChoreBeatingModal.module.css";
 
 interface ChoreBeatingModalProps {
@@ -19,25 +20,6 @@ interface ChoreBeatingModalProps {
 }
 
 const formatHour = (hour: number) => `${String(hour)}時`;
-
-const getJstDateParts = (date: Date) => {
-  const formatter = new Intl.DateTimeFormat("ja-JP", {
-    timeZone: "Asia/Tokyo",
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-    hour: "2-digit",
-    hour12: false,
-  });
-  const parts = formatter.formatToParts(date);
-  const getPart = (type: string) => parts.find((part) => part.type === type)?.value ?? "";
-  return {
-    year: getPart("year"),
-    month: getPart("month"),
-    day: getPart("day"),
-    hour: getPart("hour"),
-  };
-};
 
 const timeOptions = Array.from({ length: 24 }, (_, hour) => {
   const start = formatHour(hour);

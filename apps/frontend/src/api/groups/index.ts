@@ -4,6 +4,8 @@ import type {
   CreateChoreBeatingRequest,
   CreateChoreBeatingResponse,
   GetGroupChoresResponse,
+  GetGroupBeatingsRequest,
+  GetGroupBeatingsResponse,
   GetGroupsResponse,
   GetGroupUsersResponse,
   InviteGroupRequest,
@@ -43,6 +45,35 @@ export const fetchGroupChores = async ({
   }
 
   return response.json() as Promise<GetGroupChoresResponse>;
+};
+
+export const fetchGroupBeatings = async ({
+  groupId,
+  date,
+}: {
+  groupId: string;
+  date: GetGroupBeatingsRequest["date"];
+}): Promise<GetGroupBeatingsResponse> => {
+  const res = await groupsApi[":groupId"].beatings.$get({
+    param: { groupId },
+    query: { date },
+  });
+  const response = res as Response;
+
+  if (response.status === 422) {
+    const body = (await response.json()) as UnprocessableEntityResponse;
+    const message = body.errors
+      .map((error) => error.message)
+      .filter(Boolean)
+      .join(" / ");
+    throw new ApiError(422, message || "入力内容を確認してください");
+  }
+
+  if (!response.ok) {
+    throw new ApiError(response.status, "討伐ログの取得に失敗しました");
+  }
+
+  return response.json() as Promise<GetGroupBeatingsResponse>;
 };
 
 export const searchGroupUsers = async ({

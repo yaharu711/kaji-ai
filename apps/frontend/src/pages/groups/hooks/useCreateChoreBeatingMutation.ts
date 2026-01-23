@@ -1,8 +1,10 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { createChoreBeating } from "../../../api/groups";
 import { ApiError } from "../../../api/errors";
 import { useErrorModal } from "../../../components/ErrorModalProvider/useErrorModal";
+import { buildBeatedAtIso, getJstDateString } from "../../../util/datetime";
+import { GROUP_BEATINGS_QUERY_KEY } from "./queryKey";
 
 interface CreateChoreBeatingParams {
   groupId: string;
@@ -10,29 +12,8 @@ interface CreateChoreBeatingParams {
   startHour: number;
 }
 
-const getJstDateParts = (date: Date) => {
-  const formatter = new Intl.DateTimeFormat("ja-JP", {
-    timeZone: "Asia/Tokyo",
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  });
-  const parts = formatter.formatToParts(date);
-  const getPart = (type: string) => parts.find((part) => part.type === type)?.value ?? "";
-  return {
-    year: getPart("year"),
-    month: getPart("month"),
-    day: getPart("day"),
-  };
-};
-
-const buildBeatedAtIso = (startHour: number) => {
-  const { year, month, day } = getJstDateParts(new Date());
-  const hourText = String(startHour).padStart(2, "0");
-  return `${year}-${month}-${day}T${hourText}:00:00+09:00`;
-};
-
 export const useCreateChoreBeatingMutation = () => {
+  const queryClient = useQueryClient();
   const { showError, closeError, getModalMessage } = useErrorModal();
 
   return useMutation({
@@ -42,7 +23,12 @@ export const useCreateChoreBeatingMutation = () => {
         chore_id: choreId,
         beated_at: buildBeatedAtIso(startHour),
       }),
-    onSuccess: () => {
+    onSuccess: async (_data, variables) => {
+      // 今日の討伐記録一覧を再取得
+      const date = getJstDateString(new Date());
+      await queryClient.invalidateQueries({
+        queryKey: GROUP_BEATINGS_QUERY_KEY(variables.groupId, date),
+      });
       closeError();
     },
     onError: (error) => {

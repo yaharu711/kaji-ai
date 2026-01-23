@@ -2,13 +2,9 @@ import { Swords } from "lucide-react";
 import PageCard from "../../../../components/PageCard";
 import SwordsHeaderIcon from "../../../../components/SwordsHeaderIcon";
 import BeatingCard from "./beating-card";
-import BeatingAccordion, { type BeatingLog } from "./beating-accordion";
+import BeatingAccordion from "./beating-accordion";
+import type { BeatingGroup } from "../../types/beatings";
 import styles from "./Timeline.module.css";
-
-interface BeatingGroup {
-  timeLabel: string;
-  items: readonly BeatingLog[];
-}
 
 interface GroupTimelineProps {
   beatingGroups?: readonly BeatingGroup[];
