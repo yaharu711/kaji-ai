@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Swords } from "lucide-react";
 import styles from "./home.module.css";
 import { useGroupLayout } from "../GroupLayoutContext";
@@ -8,14 +8,35 @@ import { getChoreIcon } from "../../../constants/chores";
 import { useCreateChoreBeatingMutation } from "../hooks/useCreateChoreBeatingMutation";
 import GroupTimeline from "./timeline";
 import { useGroupBeatingsQuery } from "../hooks/useGroupBeatingsQuery";
+import {
+  getJstDateParts,
+  getJstDateString,
+  nowJst,
+  shiftJstDate,
+  toJstDate,
+} from "../../../util/datetime";
+import DateNavigator from "./date-navigator";
+
+const formatJstDateLabel = (dateString: string) => {
+  const date = toJstDate(dateString);
+  const { year, month, day, weekday } = getJstDateParts(date);
+  return `${year}年${String(Number(month))}月${String(Number(day))}日 (${weekday})`;
+};
 
 function GroupHomePage() {
   const { groupId } = useGroupLayout();
+  const today = useMemo(() => getJstDateString(nowJst()), []);
+  const [selectedDate, setSelectedDate] = useState(() => today);
   const [isBattleOpen, setIsBattleOpen] = useState(false);
   const { data: chores, isLoading: choresLoading } = useGroupChoresQuery(groupId);
-  const { data: beatingGroups, isLoading: beatingLoading } = useGroupBeatingsQuery(groupId);
+  const { data: beatingGroups, isLoading: beatingLoading } = useGroupBeatingsQuery(
+    groupId,
+    selectedDate,
+  );
   const { mutateAsync: createBeating, isPending: isCreatingBeating } =
     useCreateChoreBeatingMutation();
+  const isToday = selectedDate === today;
+  const canGoNext = selectedDate < today;
 
   const choreOptions =
     chores?.map((chore) => ({
@@ -35,6 +56,20 @@ function GroupHomePage() {
         onSubmit={async ({ choreId, startHour }) => {
           if (!groupId) return;
           await createBeating({ groupId, choreId, startHour });
+        }}
+      />
+      <DateNavigator
+        label={formatJstDateLabel(selectedDate)}
+        isToday={isToday}
+        canGoNext={canGoNext}
+        onPrev={() => {
+          setSelectedDate((current) => shiftJstDate(current, -1));
+        }}
+        onNext={() => {
+          setSelectedDate((current) => shiftJstDate(current, 1));
+        }}
+        onReset={() => {
+          setSelectedDate(today);
         }}
       />
       <GroupTimeline beatingGroups={beatingGroups ?? []} isLoading={beatingLoading} />

@@ -126,6 +126,10 @@
     gap: 10px;
   }
 
+  .timeText {
+    font-size: 16px;
+  }
+
   .emptyState {
     min-height: 200px;
     padding: 28px 16px;
