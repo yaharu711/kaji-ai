@@ -23,7 +23,9 @@ export const fromDbTimestampJst = (value: string) => {
 
 export const fromDbTimestampUtc = (value: string) => {
   try {
-    return dayjs.utc(value);
+    const parsed = dayjs.utc(value);
+    if (!parsed.isValid()) return null;
+    return parsed;
   } catch {
     return null;
   }
@@ -39,8 +41,22 @@ export const fromIsoJst = (value: string) => {
   return parsed.tz(JST_TIMEZONE);
 };
 
-export const toUtcDayRangeFromIsoJstDate = (value: string): DateRangeUtcDto | null => {
-  const baseDate = fromIsoJst(value);
+const dateOnlyWithDashRegex = /^\d{4}-\d{2}-\d{2}$/;
+const dateOnlyWithSlashRegex = /^\d{4}\/\d{2}\/\d{2}$/;
+
+const toJstDateOnly = (value: string) => {
+  if (dateOnlyWithDashRegex.test(value)) {
+    return dayjs.tz(value, "YYYY-MM-DD", JST_TIMEZONE);
+  }
+  if (dateOnlyWithSlashRegex.test(value)) {
+    return dayjs.tz(value, "YYYY/MM/DD", JST_TIMEZONE);
+  }
+  return null;
+};
+
+// YYYY-MM-DD または YYYY/MM/DD 形式の日付文字列（一応ISO対応）を JST として解釈し、その日の UTC 範囲を返す
+export const toUtcDayRangeFromJstDateString = (value: string): DateRangeUtcDto | null => {
+  const baseDate = toJstDateOnly(value) ?? fromIsoJst(value);
   if (!baseDate) return null;
   const startJst = baseDate.startOf("day");
   const endJst = startJst.add(1, "day");

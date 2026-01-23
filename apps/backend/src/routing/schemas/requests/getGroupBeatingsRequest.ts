@@ -1,9 +1,9 @@
 import { z } from "zod";
 
-import { isoDateString } from "./common";
+import { dateOnlyString } from "./common";
 
 export const getGroupBeatingsRequestSchema = z.object({
-  date: isoDateString("date"),
+  date: dateOnlyString("date"),
 });
 
 export type GetGroupBeatingsRequest = z.infer<typeof getGroupBeatingsRequestSchema>;

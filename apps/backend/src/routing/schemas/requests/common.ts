@@ -11,7 +11,12 @@ export const isoJstDateTimeString = (fieldLabel: string) =>
       `${fieldLabel} は ISO8601 の JST 形式で指定してください`,
     );
 
-export const isoDateString = (fieldLabel: string) =>
+const dateOnlyRegex = /^\d{4}[/-]\d{2}[/-]\d{2}$/;
+
+export const dateOnlyString = (fieldLabel: string) =>
   z
     .string()
-    .refine((value) => dayjs(value).isValid(), `${fieldLabel} は ISO8601 形式で指定してください`);
+    .refine(
+      (value) => dateOnlyRegex.test(value) && dayjs(value).isValid(),
+      `${fieldLabel} は YYYY-MM-DD または YYYY/MM/DD 形式で指定してください`,
+    );

@@ -7,7 +7,7 @@ import {
   nowJst,
   toIsoJst,
   toIsoJstFromDate,
-  toUtcDayRangeFromIsoJstDate,
+  toUtcDayRangeFromJstDateString,
 } from "../../src/util/datetime";
 
 describe("nowJst", () => {
@@ -78,16 +78,30 @@ describe("fromIsoJst", () => {
   });
 });
 
-describe("toUtcDayRangeFromIsoJstDate", () => {
+describe("toUtcDayRangeFromJstDateString", () => {
   it("JST日付からUTCの開始/終了日時を返す", () => {
-    const range = toUtcDayRangeFromIsoJstDate("2026-01-21T12:00:00+09:00");
+    const range = toUtcDayRangeFromJstDateString("2026-01-21T12:00:00+09:00");
+    if (!range) throw new Error("Invalid test date");
+    expect(range.startUtc.toISOString()).toBe("2026-01-20T15:00:00.000Z");
+    expect(range.endUtc.toISOString()).toBe("2026-01-21T15:00:00.000Z");
+  });
+
+  it("日付のみ(YYYY-MM-DD)からUTCの開始/終了日時を返す", () => {
+    const range = toUtcDayRangeFromJstDateString("2026-01-21");
+    if (!range) throw new Error("Invalid test date");
+    expect(range.startUtc.toISOString()).toBe("2026-01-20T15:00:00.000Z");
+    expect(range.endUtc.toISOString()).toBe("2026-01-21T15:00:00.000Z");
+  });
+
+  it("日付のみ(YYYY/MM/DD)からUTCの開始/終了日時を返す", () => {
+    const range = toUtcDayRangeFromJstDateString("2026/01/21");
     if (!range) throw new Error("Invalid test date");
     expect(range.startUtc.toISOString()).toBe("2026-01-20T15:00:00.000Z");
     expect(range.endUtc.toISOString()).toBe("2026-01-21T15:00:00.000Z");
   });
 
   it("不正な文字列の場合は null を返す", () => {
-    const range = toUtcDayRangeFromIsoJstDate("invalid-date");
+    const range = toUtcDayRangeFromJstDateString("invalid-date");
     expect(range).toBeNull();
   });
 });

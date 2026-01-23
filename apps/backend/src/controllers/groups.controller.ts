@@ -15,7 +15,7 @@ import { getGroupsSuccessSchema } from "../routing/schemas/responses/getGroupsRe
 import { inviteGroupSuccessSchema } from "../routing/schemas/responses/inviteGroupResponse";
 import { searchUsersSuccessSchema } from "../routing/schemas/responses/searchUsersResponse";
 import { unprocessableEntitySchema } from "../routing/schemas/responses/common";
-import { nowJst, toIsoJstFromDate, toUtcDayRangeFromIsoJstDate } from "../util/datetime";
+import { nowJst, toIsoJstFromDate, toUtcDayRangeFromJstDateString } from "../util/datetime";
 
 const db = getDb();
 const groupRepository = new GroupRepository(db);
@@ -81,11 +81,13 @@ export const getGroupBeatingsController = async (
   const auth = await requireGroupMember(c, groupRepository, requesterId, groupId);
   if (!auth.ok) return auth.response;
 
-  const dateRange = toUtcDayRangeFromIsoJstDate(date);
+  const dateRange = toUtcDayRangeFromJstDateString(date);
   if (!dateRange) {
     const body = unprocessableEntitySchema.parse({
       status: 422,
-      errors: [{ field: "date", message: "date は ISO8601 形式で指定してください" }],
+      errors: [
+        { field: "date", message: "date は YYYY-MM-DD または YYYY/MM/DD 形式で指定してください" },
+      ],
     });
     return c.json(body, 422);
   }
