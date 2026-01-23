@@ -18,6 +18,6 @@
     var(--color-owner-crown-from),
     var(--color-owner-crown-to)
   );
-  color: #ffffff;
+  color: var(--color-surface);
   box-shadow: 0 6px 12px rgba(234, 179, 8, 0.35);
 }

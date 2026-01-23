@@ -21,12 +21,13 @@ interface ChoreBeatingModalProps {
 
 const formatHour = (hour: number) => `${String(hour)}時`;
 
-const timeOptions = Array.from({ length: 24 }, (_, hour) => {
-  const start = formatHour(hour);
-  const end = formatHour((hour + 1) % 24);
-  const label = `${start}〜${end}`;
-  return { value: label, label };
-});
+const buildTimeOptions = (currentHour: number) =>
+  Array.from({ length: 24 }, (_, hour) => {
+    const start = formatHour(hour);
+    const end = formatHour((hour + 1) % 24);
+    const label = `${start}〜${end}`;
+    return { value: label, label, disabled: hour > currentHour };
+  });
 
 const getDefaultTimeRange = () => {
   const now = new Date();
@@ -58,7 +59,11 @@ function ChoreBeatingModal({
   const [selectedTime, setSelectedTime] = useState<string>(getDefaultTimeRange);
   const isPrimaryDisabled = !selectedChore || isSubmitting;
 
-  const todayParts = getJstDateParts(new Date());
+  const nowParts = getJstDateParts(new Date());
+  const currentHour = Number(nowParts.hour);
+  const resolvedCurrentHour = Number.isNaN(currentHour) ? new Date().getHours() : currentHour;
+  const timeOptions = buildTimeOptions(resolvedCurrentHour);
+  const todayParts = nowParts;
   const todayText = `${todayParts.month}月${todayParts.day}日`;
   const timeHelperText = `本日 ${todayText}の討伐として記録されます！`;
 
