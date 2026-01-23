@@ -321,7 +321,7 @@ describe("GET /api/groups/:groupId/beatings", () => {
 
     const res = await client.api.groups[":groupId"].beatings.$get({
       param: { groupId },
-      query: { date: "2025-01-10T12:00:00+09:00" },
+      query: { date: "2025-01-10" },
     });
 
     expect(res.status).toBe(200);
