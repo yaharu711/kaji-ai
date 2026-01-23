@@ -15,7 +15,7 @@ import { getGroupsSuccessSchema } from "../routing/schemas/responses/getGroupsRe
 import { inviteGroupSuccessSchema } from "../routing/schemas/responses/inviteGroupResponse";
 import { searchUsersSuccessSchema } from "../routing/schemas/responses/searchUsersResponse";
 import { unprocessableEntitySchema } from "../routing/schemas/responses/common";
-import { fromIsoJst, nowJst } from "../util/datetime";
+import { nowJst, toUtcDayRangeFromIsoJstDate } from "../util/datetime";
 
 const db = getDb();
 const groupRepository = new GroupRepository(db);
@@ -81,8 +81,8 @@ export const getGroupBeatingsController = async (
   const auth = await requireGroupMember(c, groupRepository, requesterId, groupId);
   if (!auth.ok) return auth.response;
 
-  const baseDate = fromIsoJst(date);
-  if (!baseDate) {
+  const dateRange = toUtcDayRangeFromIsoJstDate(date);
+  if (!dateRange) {
     const body = unprocessableEntitySchema.parse({
       status: 422,
       errors: [{ field: "date", message: "date は ISO8601 形式で指定してください" }],
@@ -90,14 +90,9 @@ export const getGroupBeatingsController = async (
     return c.json(body, 422);
   }
 
-  const startJst = baseDate.startOf("day");
-  const endJst = startJst.add(1, "day");
-  const startUtc = startJst.utc().toDate();
-  const endUtc = endJst.utc().toDate();
-
   const groups = await choreBeatingsRepository.findTimelineByGroupIdAndUtcRange(groupId, {
-    startUtc,
-    endUtc,
+    startUtc: dateRange.startUtc,
+    endUtc: dateRange.endUtc,
   });
 
   const response = getGroupBeatingsSuccessSchema.parse(

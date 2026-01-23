@@ -2,6 +2,8 @@ import dayjs from "dayjs";
 import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
 
+import type { DateRangeUtcDto } from "../dtos/dateRangeUtc";
+
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
@@ -25,4 +27,15 @@ export const fromIsoJst = (value: string) => {
   const parsed = dayjs(value);
   if (!parsed.isValid()) return null;
   return parsed.tz(JST_TIMEZONE);
+};
+
+export const toUtcDayRangeFromIsoJstDate = (value: string): DateRangeUtcDto | null => {
+  const baseDate = fromIsoJst(value);
+  if (!baseDate) return null;
+  const startJst = baseDate.startOf("day");
+  const endJst = startJst.add(1, "day");
+  return {
+    startUtc: startJst.utc().toDate(),
+    endUtc: endJst.utc().toDate(),
+  };
 };

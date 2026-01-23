@@ -1,6 +1,12 @@
 import { describe, expect, it } from "vitest";
 
-import { fromDbTimestampJst, fromIsoJst, nowJst, toIsoJst } from "../../src/util/datetime";
+import {
+  fromDbTimestampJst,
+  fromIsoJst,
+  nowJst,
+  toIsoJst,
+  toUtcDayRangeFromIsoJstDate,
+} from "../../src/util/datetime";
 
 describe("nowJst", () => {
   it("JSTの現在時刻を返す", () => {
@@ -44,5 +50,19 @@ describe("fromIsoJst", () => {
   it("不正な文字列の場合は null を返す", () => {
     const dt = fromIsoJst("invalid-date");
     expect(dt).toBeNull();
+  });
+});
+
+describe("toUtcDayRangeFromIsoJstDate", () => {
+  it("JST日付からUTCの開始/終了日時を返す", () => {
+    const range = toUtcDayRangeFromIsoJstDate("2026-01-21T12:00:00+09:00");
+    if (!range) throw new Error("Invalid test date");
+    expect(range.startUtc.toISOString()).toBe("2026-01-20T15:00:00.000Z");
+    expect(range.endUtc.toISOString()).toBe("2026-01-21T15:00:00.000Z");
+  });
+
+  it("不正な文字列の場合は null を返す", () => {
+    const range = toUtcDayRangeFromIsoJstDate("invalid-date");
+    expect(range).toBeNull();
   });
 });
