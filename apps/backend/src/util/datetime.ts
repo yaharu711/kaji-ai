@@ -9,7 +9,7 @@ dayjs.extend(timezone);
 
 const JST_TIMEZONE = "Asia/Tokyo";
 
-export const nowJst = () => dayjs().tz(JST_TIMEZONE);
+export const nowJst = () => dayjs().tz(JST_TIMEZONE).toDate();
 
 // 時刻の運用的にJST固定のため、DBから取得したタイムスタンプ文字列をJSTとして解釈する
 // kaiji-ai/.codex/skills/datetime-handling/SKILL.md

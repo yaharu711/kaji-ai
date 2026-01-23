@@ -13,7 +13,8 @@ import {
 describe("nowJst", () => {
   it("JSTの現在時刻を返す", () => {
     const now = nowJst();
-    expect(now.format("Z")).toBe("+09:00");
+    expect(now).toBeInstanceOf(Date);
+    expect(Number.isNaN(now.getTime())).toBe(false);
   });
 });
 

@@ -173,7 +173,7 @@ export const inviteGroupController = async (
   await groupRepository.addBelonging({
     groupId,
     userId,
-    createdAt: now.toDate(),
+    createdAt: now,
     acceptedAt: null,
   });
 
@@ -201,8 +201,8 @@ export const acceptGroupInvitationController = async (
   await groupRepository.updateBelonging({
     groupId,
     userId,
-    createdAt: now.toDate(),
-    acceptedAt: now.toDate(),
+    createdAt: now,
+    acceptedAt: now,
   });
 
   return c.body(null, 204);
@@ -237,15 +237,15 @@ export const createGroupController = async (c: Context, requesterId: string, nam
     name,
     ownerId: requesterId,
     image: null,
-    createdAt: now.toDate(),
-    updatedAt: now.toDate(),
+    createdAt: now,
+    updatedAt: now,
   };
   // 作成者なので所属済みとして登録するためのデータ
   const belonging = {
     groupId,
     userId: requesterId,
-    createdAt: now.toDate(),
-    acceptedAt: now.toDate(),
+    createdAt: now,
+    acceptedAt: now,
   };
 
   try {
@@ -285,8 +285,8 @@ export const createChoreBeatingController = async (
     userId: requesterId,
     likeCount: 0,
     beatedAt,
-    createdAt: now.toDate(),
-    updatedAt: now.toDate(),
+    createdAt: now,
+    updatedAt: now,
   });
 
   const response = createChoreBeatingSuccessSchema.parse({ status: 201 });
