@@ -72,18 +72,24 @@ function GroupHomePage() {
           setSelectedDate(today);
         }}
       />
-      <GroupTimeline beatingGroups={beatingGroups ?? []} isLoading={beatingLoading} />
-      <button
-        type="button"
-        className={styles.floatingAction}
-        aria-label="バトルを開く"
-        aria-haspopup="dialog"
-        onClick={() => {
-          setIsBattleOpen(true);
-        }}
-      >
-        <Swords size={30} />
-      </button>
+      <GroupTimeline
+        beatingGroups={beatingGroups ?? []}
+        isLoading={beatingLoading}
+        isToday={isToday}
+      />
+      {isToday ? (
+        <button
+          type="button"
+          className={styles.floatingAction}
+          aria-label="バトルを開く"
+          aria-haspopup="dialog"
+          onClick={() => {
+            setIsBattleOpen(true);
+          }}
+        >
+          <Swords size={30} />
+        </button>
+      ) : null}
     </>
   );
 }
