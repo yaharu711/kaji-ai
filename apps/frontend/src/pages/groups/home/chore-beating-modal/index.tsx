@@ -100,6 +100,8 @@ function ChoreBeatingModal({
       primaryActionLabel="討伐完了"
       secondaryActionLabel="キャンセル"
       primaryActionDisabled={isPrimaryDisabled}
+      primaryActionLoading={isSubmitting}
+      secondaryActionDisabled={isSubmitting}
       onPrimaryAction={() => {
         void handleSubmit();
       }}

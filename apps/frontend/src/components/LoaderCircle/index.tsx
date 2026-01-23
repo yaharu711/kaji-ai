@@ -2,6 +2,7 @@ import { LoaderCircle as LoaderCircleIcon } from "lucide-react";
 import styles from "./LoaderCircle.module.css";
 
 const SIZE_CLASS_MAP = {
+  xs: styles.sizeXs,
   sm: styles.sizeSm,
   md: styles.sizeMd,
   lg: styles.sizeLg,

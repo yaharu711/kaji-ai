@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { X } from "lucide-react";
 import * as Dialog from "@radix-ui/react-dialog";
 import Button from "../Button";
+import LoaderCircle from "../LoaderCircle";
 import styles from "./HalfModal.module.css";
 
 const SIZE_CLASS = {
@@ -31,6 +32,8 @@ type FooterActions =
       primaryActionLabel: string;
       secondaryActionLabel: string;
       primaryActionDisabled?: boolean;
+      primaryActionLoading?: boolean;
+      secondaryActionDisabled?: boolean;
       onPrimaryAction?: () => void;
       onSecondaryAction?: () => void;
     }
@@ -38,6 +41,8 @@ type FooterActions =
       primaryActionLabel?: undefined;
       secondaryActionLabel?: undefined;
       primaryActionDisabled?: undefined;
+      primaryActionLoading?: undefined;
+      secondaryActionDisabled?: undefined;
       onPrimaryAction?: undefined;
       onSecondaryAction?: undefined;
     };
@@ -66,6 +71,8 @@ function HalfModal({
   primaryActionLabel,
   secondaryActionLabel,
   primaryActionDisabled = false,
+  primaryActionLoading = false,
+  secondaryActionDisabled = false,
   onPrimaryAction,
   onSecondaryAction,
   size = "md",
@@ -82,6 +89,11 @@ function HalfModal({
     .filter(Boolean)
     .join(" ");
   const shouldShowFooter = Boolean(primaryActionLabel && secondaryActionLabel);
+  const resolvedPrimaryDisabled = primaryActionDisabled || primaryActionLoading;
+  const resolvedSecondaryDisabled = secondaryActionDisabled || primaryActionLoading;
+  const primaryActionIcon = primaryActionLoading ? (
+    <LoaderCircle size="xs" ariaLabel="処理中" />
+  ) : undefined;
 
   return (
     <Dialog.Root open={open} onOpenChange={onOpenChange}>
@@ -118,6 +130,7 @@ function HalfModal({
                   size="sm"
                   fullWidth
                   onClick={onSecondaryAction}
+                  disabled={resolvedSecondaryDisabled}
                 >
                   {secondaryActionLabel}
                 </Button>
@@ -128,7 +141,9 @@ function HalfModal({
                   fullWidth
                   size="sm"
                   onClick={onPrimaryAction}
-                  disabled={primaryActionDisabled}
+                  disabled={resolvedPrimaryDisabled}
+                  icon={primaryActionIcon}
+                  aria-busy={primaryActionLoading}
                 >
                   {primaryActionLabel}
                 </Button>

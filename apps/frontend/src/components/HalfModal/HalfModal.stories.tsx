@@ -155,3 +155,37 @@ export const PrimaryDisabled: Story = {
     children: Content,
   },
 };
+
+export const PrimaryLoading: Story = {
+  render: (args) => <HalfModal {...args}>{Content}</HalfModal>,
+  args: {
+    open: true,
+    onOpenChange: () => {
+      /* noop */
+    },
+    title: "家事を討伐する",
+    description: "討伐中です…",
+    headerIcon: <SwordsHeaderIcon size="sm" aria-hidden />,
+    secondaryActionLabel: "キャンセル",
+    primaryActionLabel: "討伐完了",
+    primaryActionLoading: true,
+    children: Content,
+  },
+};
+
+export const SecondaryDisabled: Story = {
+  render: (args) => <HalfModal {...args}>{Content}</HalfModal>,
+  args: {
+    open: true,
+    onOpenChange: () => {
+      /* noop */
+    },
+    title: "家事を討伐する",
+    description: "キャンセル不可の状態",
+    headerIcon: <SwordsHeaderIcon size="sm" aria-hidden />,
+    secondaryActionLabel: "キャンセル",
+    secondaryActionDisabled: true,
+    primaryActionLabel: "討伐完了",
+    children: Content,
+  },
+};

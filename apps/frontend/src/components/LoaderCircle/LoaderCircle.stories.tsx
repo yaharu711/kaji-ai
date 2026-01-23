@@ -19,6 +19,7 @@ export const Default: Story = {};
 export const Sizes: Story = {
   render: () => (
     <div style={{ display: "flex", gap: 16, alignItems: "center" }}>
+      <LoaderCircle size="xs" />
       <LoaderCircle size="sm" />
       <LoaderCircle size="md" />
       <LoaderCircle size="lg" />
