@@ -12,6 +12,10 @@ const dirname = path.dirname(fileURLToPath(import.meta.url));
 // More info at: https://storybook.js.org/docs/next/writing-tests/integrations/vitest-addon
 export default defineConfig({
   plugins: [react()],
+  optimizeDeps: {
+    // Pre-bundle deps to avoid Vite reloads during Vitest/Storybook runs in CI.
+    include: ["react", "react-dom", "react-dom/client", "@hono/auth-js/react"],
+  },
   test: {
     projects: [
       {

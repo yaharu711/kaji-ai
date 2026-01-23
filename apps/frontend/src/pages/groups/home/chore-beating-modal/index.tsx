@@ -72,6 +72,7 @@ function ChoreBeatingModal({
   };
 
   const handleOpenChange = (nextOpen: boolean) => {
+    if (!nextOpen && isSubmitting) return;
     if (!nextOpen) {
       handleClose();
     }
