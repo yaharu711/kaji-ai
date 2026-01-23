@@ -4,7 +4,7 @@ import { fetchGroupBeatings } from "../../../api/groups";
 import type { GetGroupBeatingsResponse } from "@kaiji-ai/backend/contracts";
 import type { BeatingGroup } from "../types/beatings";
 import type { ChoreIconCode } from "../../../constants/chores";
-import { getJstDateString } from "../../../util/datetime";
+import { getJstDateString, nowJst } from "../../../util/datetime";
 import { GROUP_BEATINGS_QUERY_KEY } from "./queryKey";
 
 const formatUserName = (name: string | null) => {
@@ -39,7 +39,7 @@ const mapBeatingGroups = (timeline: GetGroupBeatingsResponse): BeatingGroup[] =>
 
 export const useGroupBeatingsQuery = (groupId?: string, date?: string) => {
   const resolvedGroupId = groupId ?? "";
-  const resolvedDate = date ?? getJstDateString(new Date());
+  const resolvedDate = date ?? getJstDateString(nowJst());
 
   return useQuery({
     queryKey: GROUP_BEATINGS_QUERY_KEY(resolvedGroupId, resolvedDate),

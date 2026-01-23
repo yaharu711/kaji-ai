@@ -1,6 +1,7 @@
 import { Swords } from "lucide-react";
 import PageCard from "../../../../components/PageCard";
 import SwordsHeaderIcon from "../../../../components/SwordsHeaderIcon";
+import LoaderCircle from "../../../../components/LoaderCircle";
 import BeatingCard from "./beating-card";
 import BeatingAccordion from "./beating-accordion";
 import type { BeatingGroup } from "../../types/beatings";
@@ -8,9 +9,10 @@ import styles from "./Timeline.module.css";
 
 interface GroupTimelineProps {
   beatingGroups?: readonly BeatingGroup[];
+  isLoading?: boolean;
 }
 
-function GroupTimeline({ beatingGroups = [] }: GroupTimelineProps) {
+function GroupTimeline({ beatingGroups = [], isLoading = false }: GroupTimelineProps) {
   const hasBeatings = beatingGroups.length > 0;
 
   return (
@@ -26,7 +28,11 @@ function GroupTimeline({ beatingGroups = [] }: GroupTimelineProps) {
           </div>
         </div>
 
-        {hasBeatings ? (
+        {isLoading ? (
+          <div className={`${styles.list} ${styles.listLoading}`} role="status">
+            <LoaderCircle size="md" ariaLabel="討伐ログを読み込み中" />
+          </div>
+        ) : hasBeatings ? (
           <div className={styles.list}>
             {beatingGroups.map((group) => {
               if (group.items.length === 0) {

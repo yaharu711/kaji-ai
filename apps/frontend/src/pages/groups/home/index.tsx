@@ -13,7 +13,7 @@ function GroupHomePage() {
   const { groupId } = useGroupLayout();
   const [isBattleOpen, setIsBattleOpen] = useState(false);
   const { data: chores, isLoading: choresLoading } = useGroupChoresQuery(groupId);
-  const { data: beatingGroups } = useGroupBeatingsQuery(groupId);
+  const { data: beatingGroups, isLoading: beatingLoading } = useGroupBeatingsQuery(groupId);
   const { mutateAsync: createBeating, isPending: isCreatingBeating } =
     useCreateChoreBeatingMutation();
 
@@ -37,7 +37,7 @@ function GroupHomePage() {
           await createBeating({ groupId, choreId, startHour });
         }}
       />
-      <GroupTimeline beatingGroups={beatingGroups ?? []} />
+      <GroupTimeline beatingGroups={beatingGroups ?? []} isLoading={beatingLoading} />
       <button
         type="button"
         className={styles.floatingAction}

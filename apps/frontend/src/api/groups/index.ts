@@ -58,10 +58,9 @@ export const fetchGroupBeatings = async ({
     param: { groupId },
     query: { date },
   });
-  const response = res as Response;
 
-  if (response.status === 422) {
-    const body = (await response.json()) as UnprocessableEntityResponse;
+  if (res.status === 422) {
+    const body = (await res.json()) as UnprocessableEntityResponse;
     const message = body.errors
       .map((error) => error.message)
       .filter(Boolean)
@@ -69,11 +68,11 @@ export const fetchGroupBeatings = async ({
     throw new ApiError(422, message || "入力内容を確認してください");
   }
 
-  if (!response.ok) {
-    throw new ApiError(response.status, "討伐ログの取得に失敗しました");
+  if (!res.ok) {
+    throw new ApiError(res.status, "討伐ログの取得に失敗しました");
   }
 
-  return response.json() as Promise<GetGroupBeatingsResponse>;
+  return res.json() as Promise<GetGroupBeatingsResponse>;
 };
 
 export const searchGroupUsers = async ({

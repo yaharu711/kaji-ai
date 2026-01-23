@@ -7,7 +7,7 @@ import {
   type DropdownOption,
 } from "../../../../components";
 import SwordsHeaderIcon from "../../../../components/SwordsHeaderIcon";
-import { getJstDateParts } from "../../../../util/datetime";
+import { getJstDateParts, nowJst } from "../../../../util/datetime";
 import styles from "./ChoreBeatingModal.module.css";
 
 interface ChoreBeatingModalProps {
@@ -30,7 +30,7 @@ const buildTimeOptions = (currentHour: number) =>
   });
 
 const getDefaultTimeRange = () => {
-  const now = new Date();
+  const now = nowJst();
   const hourText = getJstDateParts(now).hour;
   const hour = Number(hourText);
   const resolvedHour = Number.isNaN(hour) ? now.getHours() : hour;
@@ -59,10 +59,9 @@ function ChoreBeatingModal({
   const [selectedTime, setSelectedTime] = useState<string>(getDefaultTimeRange);
   const isPrimaryDisabled = !selectedChore || isSubmitting;
 
-  const nowParts = getJstDateParts(new Date());
+  const nowParts = getJstDateParts(nowJst());
   const currentHour = Number(nowParts.hour);
-  const resolvedCurrentHour = Number.isNaN(currentHour) ? new Date().getHours() : currentHour;
-  const timeOptions = buildTimeOptions(resolvedCurrentHour);
+  const timeOptions = buildTimeOptions(currentHour);
   const todayParts = nowParts;
   const todayText = `${todayParts.month}月${todayParts.day}日`;
   const timeHelperText = `本日 ${todayText}の討伐として記録されます！`;

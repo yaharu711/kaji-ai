@@ -3,7 +3,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createChoreBeating } from "../../../api/groups";
 import { ApiError } from "../../../api/errors";
 import { useErrorModal } from "../../../components/ErrorModalProvider/useErrorModal";
-import { buildBeatedAtIso, getJstDateString } from "../../../util/datetime";
+import { buildBeatedAtIso, getJstDateString, nowJst } from "../../../util/datetime";
 import { GROUP_BEATINGS_QUERY_KEY } from "./queryKey";
 
 interface CreateChoreBeatingParams {
@@ -25,7 +25,7 @@ export const useCreateChoreBeatingMutation = () => {
       }),
     onSuccess: async (_data, variables) => {
       // 今日の討伐記録一覧を再取得
-      const date = getJstDateString(new Date());
+      const date = getJstDateString(nowJst());
       await queryClient.invalidateQueries({
         queryKey: GROUP_BEATINGS_QUERY_KEY(variables.groupId, date),
       });

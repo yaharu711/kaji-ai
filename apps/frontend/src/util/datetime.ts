@@ -1,6 +1,8 @@
 const getJstFormatter = (options: Intl.DateTimeFormatOptions) =>
   new Intl.DateTimeFormat("ja-JP", { timeZone: "Asia/Tokyo", ...options });
 
+export const nowJst = () => new Date();
+
 export const getJstDateParts = (date: Date) => {
   const formatter = getJstFormatter({
     year: "numeric",
@@ -24,7 +26,7 @@ export const getJstDateString = (date: Date) => {
   return `${year}-${month}-${day}`;
 };
 
-export const buildBeatedAtIso = (startHour: number, date = new Date()) => {
+export const buildBeatedAtIso = (startHour: number, date = nowJst()) => {
   const { year, month, day } = getJstDateParts(date);
   const hourText = String(startHour).padStart(2, "0");
   return `${year}-${month}-${day}T${hourText}:00:00+09:00`;
