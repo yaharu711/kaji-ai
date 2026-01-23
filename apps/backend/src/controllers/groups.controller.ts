@@ -15,7 +15,7 @@ import { getGroupsSuccessSchema } from "../routing/schemas/responses/getGroupsRe
 import { inviteGroupSuccessSchema } from "../routing/schemas/responses/inviteGroupResponse";
 import { searchUsersSuccessSchema } from "../routing/schemas/responses/searchUsersResponse";
 import { unprocessableEntitySchema } from "../routing/schemas/responses/common";
-import { nowJst, toUtcDayRangeFromIsoJstDate } from "../util/datetime";
+import { nowJst, toIsoJstFromDate, toUtcDayRangeFromIsoJstDate } from "../util/datetime";
 
 const db = getDb();
 const groupRepository = new GroupRepository(db);
@@ -100,7 +100,7 @@ export const getGroupBeatingsController = async (
       hour: group.hour,
       items: group.items.map((item) => ({
         beating_id: item.beatingId,
-        beated_at: item.beatedAt.toISOString(),
+        beated_at: toIsoJstFromDate(item.beatedAt),
         chore_id: item.choreId,
         chore_name: item.choreName,
         icon_code: item.iconCode,
@@ -119,6 +119,7 @@ export const getGroupBeatingsController = async (
       })),
     })),
   );
+  console.log(response);
 
   return c.json(response, 200);
 };

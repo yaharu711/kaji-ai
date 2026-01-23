@@ -9,6 +9,7 @@ import type {
 } from "../dtos/choreBeating";
 import type { DateRangeUtcDto } from "../dtos/dateRangeUtc";
 import type { NewChoreBeatingModel } from "../models/choreBeating";
+import { fromDbTimestampUtc } from "../util/datetime";
 
 export class ChoreBeatingsRepository {
   constructor(private readonly db: Database) {}
@@ -102,6 +103,12 @@ export class ChoreBeatingsRepository {
     };
 
     const rows = (result as { rows?: unknown[] }).rows ?? [];
+    const toDate = (value: unknown) => {
+      if (value instanceof Date) return value;
+      const parsed = fromDbTimestampUtc(String(value));
+      return parsed ? parsed.toDate() : new Date(String(value));
+    };
+
     return rows.map((row) => {
       const record = row as { hour: string; items: unknown };
       const items = normalizeJson<BeatingTimelineItemDto[]>(record.items, []);
@@ -109,6 +116,7 @@ export class ChoreBeatingsRepository {
         hour: record.hour,
         items: items.map((item) => ({
           ...item,
+          beatedAt: toDate(item.beatedAt),
           messages: normalizeJson<BeatingTimelineMessageDto[]>(item.messages, []),
         })),
       };

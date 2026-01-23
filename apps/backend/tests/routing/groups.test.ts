@@ -327,52 +327,51 @@ describe("GET /api/groups/:groupId/beatings", () => {
     expect(res.status).toBe(200);
     const body = await res.json();
 
-    expect(body).toEqual(
-      expect.arrayContaining([
-        expect.objectContaining({
-          hour: "10:00",
-          items: expect.arrayContaining([
-            expect.objectContaining({
-              beating_id: beating1Id,
-              beated_at: "2025-01-10T01:15:00.000Z",
-              chore_id: 1,
-              chore_name: "食器洗い",
-              icon_code: "dish-wash",
-              thanks_count: 2,
-              user_id: "member-1",
-              user_name: "Beater",
-              img_url: "beater.png",
-              messages: expect.arrayContaining([
-                expect.objectContaining({
-                  user_id: "member-2",
-                  user_name: "Sender",
-                  img_url: "sender.png",
-                  main_message: "ありがとう",
-                  description_message: "助かりました",
-                }),
-              ]),
-            }),
-          ]),
-        }),
-        expect.objectContaining({
-          hour: "11:00",
-          items: expect.arrayContaining([
-            expect.objectContaining({
-              beating_id: beating2Id,
-              beated_at: "2025-01-10T02:05:00.000Z",
-              chore_id: 2,
-              chore_name: "掃除",
-              icon_code: "cleaning",
-              thanks_count: 0,
-              user_id: "member-1",
-              user_name: "Beater",
-              img_url: "beater.png",
-              messages: [],
-            }),
-          ]),
-        }),
-      ]),
-    );
+    expect(body).toEqual([
+      {
+        hour: "10:00",
+        items: [
+          {
+            beating_id: beating1Id,
+            beated_at: "2025-01-10T10:15:00+09:00",
+            chore_id: 1,
+            chore_name: "食器洗い",
+            icon_code: "dish-wash",
+            thanks_count: 2,
+            messages: [
+              {
+                id: expect.any(Number),
+                user_id: "member-2",
+                user_name: "Sender",
+                img_url: "sender.png",
+                main_message: "ありがとう",
+                description_message: "助かりました",
+              },
+            ],
+            user_id: "member-1",
+            user_name: "Beater",
+            img_url: "beater.png",
+          },
+        ],
+      },
+      {
+        hour: "11:00",
+        items: [
+          {
+            beating_id: beating2Id,
+            beated_at: "2025-01-10T11:05:00+09:00",
+            chore_id: 2,
+            chore_name: "掃除",
+            icon_code: "cleaning",
+            thanks_count: 0,
+            messages: [],
+            user_id: "member-1",
+            user_name: "Beater",
+            img_url: "beater.png",
+          },
+        ],
+      },
+    ]);
   });
 });
 

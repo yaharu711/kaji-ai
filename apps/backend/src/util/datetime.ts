@@ -21,7 +21,17 @@ export const fromDbTimestampJst = (value: string) => {
   }
 };
 
+export const fromDbTimestampUtc = (value: string) => {
+  try {
+    return dayjs.utc(value);
+  } catch {
+    return null;
+  }
+};
+
 export const toIsoJst = (value: dayjs.Dayjs) => value.tz(JST_TIMEZONE).format();
+
+export const toIsoJstFromDate = (value: Date) => toIsoJst(dayjs(value));
 
 export const fromIsoJst = (value: string) => {
   const parsed = dayjs(value);
