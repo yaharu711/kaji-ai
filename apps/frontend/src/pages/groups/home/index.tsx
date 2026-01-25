@@ -1,8 +1,9 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Swords } from "lucide-react";
 import styles from "./home.module.css";
 import { useGroupLayout } from "../GroupLayoutContext";
 import ChoreBeatingModal from "./chore-beating-modal";
+import AddToHomeModal from "./add-to-home-modal";
 import { useGroupChoresQuery } from "../hooks/useGroupChoresQuery";
 import { getChoreIcon } from "../../../constants/chores";
 import { useCreateChoreBeatingMutation } from "../hooks/useCreateChoreBeatingMutation";
@@ -16,6 +17,7 @@ import {
   toJstDate,
 } from "../../../util/datetime";
 import DateNavigator from "./date-navigator";
+import { hideAddToHomeModal, shouldShowAddToHomeModal } from "./add-to-home-modal/storage";
 
 const formatJstDateLabel = (dateString: string) => {
   const date = toJstDate(dateString);
@@ -28,6 +30,7 @@ function GroupHomePage() {
   const today = useMemo(() => getJstDateString(nowJst()), []);
   const [selectedDate, setSelectedDate] = useState(() => today);
   const [isBattleOpen, setIsBattleOpen] = useState(false);
+  const [isAddToHomeOpen, setIsAddToHomeOpen] = useState(false);
   const { data: chores, isLoading: choresLoading } = useGroupChoresQuery(groupId);
   const { data: beatingGroups, isLoading: beatingLoading } = useGroupBeatingsQuery(
     groupId,
@@ -37,6 +40,18 @@ function GroupHomePage() {
     useCreateChoreBeatingMutation();
   const isToday = selectedDate === today;
   const canGoNext = selectedDate < today;
+
+  // 説明モーダルは少し遅延させてページ遷移したことを認識しやすくする
+  useEffect(() => {
+    if (!shouldShowAddToHomeModal()) return undefined;
+    const timer = window.setTimeout(() => {
+      setIsAddToHomeOpen(true);
+    }, 500);
+
+    return () => {
+      window.clearTimeout(timer);
+    };
+  }, []);
 
   const choreOptions =
     chores?.map((chore) => ({
@@ -56,6 +71,13 @@ function GroupHomePage() {
         onSubmit={async ({ choreId, startHour }) => {
           if (!groupId) return;
           await createBeating({ groupId, choreId, startHour });
+        }}
+      />
+      <AddToHomeModal
+        open={isAddToHomeOpen}
+        onClose={(dontShowAgain) => {
+          if (dontShowAgain) hideAddToHomeModal();
+          setIsAddToHomeOpen(false);
         }}
       />
       <DateNavigator

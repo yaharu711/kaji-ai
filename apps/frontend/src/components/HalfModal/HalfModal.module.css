@@ -4,6 +4,11 @@
   background: var(--color-overlay-scrim);
   backdrop-filter: blur(2px);
   z-index: var(--z-index-overlay);
+  animation: halfModalFadeIn 0.35s ease;
+}
+
+.overlay[data-state="closed"] {
+  animation: halfModalFadeOut 0.25s ease;
 }
 
 .content {
@@ -23,6 +28,11 @@
   background: var(--half-modal-body-bg);
   box-shadow: var(--shadow-dialog);
   z-index: var(--z-index-harf-modal);
+  animation: halfModalSlideUp 0.45s ease;
+}
+
+.content[data-state="closed"] {
+  animation: halfModalSlideDown 0.3s ease;
 }
 
 .sizeSm {
@@ -146,6 +156,50 @@
   padding: 16px 20px 18px;
   background: var(--half-modal-footer-bg);
   border-top: 1px solid var(--half-modal-divider);
+}
+
+@keyframes halfModalFadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes halfModalFadeOut {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes halfModalSlideUp {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(28px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+@keyframes halfModalSlideDown {
+  from {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateX(-50%) translateY(24px);
+  }
 }
 
 @media (max-width: 600px) {
