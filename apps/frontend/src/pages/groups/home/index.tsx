@@ -41,6 +41,7 @@ function GroupHomePage() {
   const isToday = selectedDate === today;
   const canGoNext = selectedDate < today;
 
+  // 説明モーダルは少し遅延させてページ遷移したことを認識しやすくする
   useEffect(() => {
     if (!shouldShowAddToHomeModal()) return undefined;
     const timer = window.setTimeout(() => {
