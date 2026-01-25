@@ -65,7 +65,7 @@ function AddToHomeModal({ open, onClose }: AddToHomeModalProps) {
             className={styles.articleLink}
             href="https://support.google.com/chrome/answer/15085120?hl=ja&co=GENIE.Platform%3DAndroid"
             target="_blank"
-            rel="noreferrer"
+            rel="noopener noreferrer"
           >
             <ExternalLink size={16} aria-hidden />
             Androidの手順を見る
@@ -74,7 +74,7 @@ function AddToHomeModal({ open, onClose }: AddToHomeModalProps) {
             className={styles.articleLink}
             href="https://support.apple.com/ja-jp/guide/iphone/iphea86e5236/ios"
             target="_blank"
-            rel="noreferrer"
+            rel="noopener noreferrer"
           >
             <ExternalLink size={16} aria-hidden />
             iPhoneの手順を見る
