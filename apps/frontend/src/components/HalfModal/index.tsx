@@ -124,6 +124,8 @@ function HalfModal({
     onOpenChange(false);
   };
 
+  // 今のままだと、primaryActionLoading中に閉じてしまい、ローディング中のフィードバックができない、、！
+  // けど、閉じないようにすると閉じる時にアニメーションがつかなくなる
   const handlePrimaryActionClick = () => {
     onPrimaryAction?.();
     handleOpenChange(false);
