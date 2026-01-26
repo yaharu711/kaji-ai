@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import GroupTimeline from ".";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ErrorModalProvider } from "src/components";
+import ErrorModalProvider from "../../../../components/ErrorModalProvider";
 
 const meta = {
   component: GroupTimeline,

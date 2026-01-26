@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import BeatingCard from ".";
-import { ErrorModalProvider } from "src/components";
+import { ErrorModalProvider } from "../../../../../components";
 
 const meta = {
   component: BeatingCard,
