@@ -35,7 +35,11 @@ type FooterActions =
       secondaryActionLabel: string;
       primaryActionDisabled?: boolean;
       primaryActionLoading?: boolean;
+      primaryActionIcon?: ReactNode;
+      primaryActionIconPosition?: "start" | "end";
       secondaryActionDisabled?: boolean;
+      secondaryActionIcon?: ReactNode;
+      secondaryActionIconPosition?: "start" | "end";
       onPrimaryAction?: () => void;
       onSecondaryAction?: () => void;
     }
@@ -44,7 +48,11 @@ type FooterActions =
       secondaryActionLabel?: undefined;
       primaryActionDisabled?: undefined;
       primaryActionLoading?: undefined;
+      primaryActionIcon?: undefined;
+      primaryActionIconPosition?: undefined;
       secondaryActionDisabled?: undefined;
+      secondaryActionIcon?: undefined;
+      secondaryActionIconPosition?: undefined;
       onPrimaryAction?: undefined;
       onSecondaryAction?: undefined;
     };
@@ -74,7 +82,11 @@ function HalfModal({
   secondaryActionLabel,
   primaryActionDisabled = false,
   primaryActionLoading = false,
+  primaryActionIcon,
+  primaryActionIconPosition = "start",
   secondaryActionDisabled = false,
+  secondaryActionIcon,
+  secondaryActionIconPosition = "start",
   onPrimaryAction,
   onSecondaryAction,
   size = "md",
@@ -93,9 +105,11 @@ function HalfModal({
   const shouldShowFooter = Boolean(primaryActionLabel && secondaryActionLabel);
   const resolvedPrimaryDisabled = primaryActionDisabled || primaryActionLoading;
   const resolvedSecondaryDisabled = secondaryActionDisabled || primaryActionLoading;
-  const primaryActionIcon = primaryActionLoading ? (
+  const resolvedPrimaryIcon = primaryActionLoading ? (
     <LoaderCircle size="xs" tone="onPrimary" ariaLabel="処理中" />
-  ) : undefined;
+  ) : (
+    primaryActionIcon
+  );
   const [isClosing, setIsClosing] = useState(false);
 
   // isClosingをtrueにすることで、すぐにアンマウントされないようにしている
@@ -123,11 +137,11 @@ function HalfModal({
   return (
     <Dialog.Root open={open || isClosing} onOpenChange={handleOpenChange}>
       <Dialog.Portal>
-          <AnimatePresence
-            onExitComplete={() => {
-              setIsClosing(false);
-            }}
-          >
+        <AnimatePresence
+          onExitComplete={() => {
+            setIsClosing(false);
+          }}
+        >
           {open ? (
             <>
               <Dialog.Overlay asChild>
@@ -177,6 +191,8 @@ function HalfModal({
                           fullWidth
                           onClick={handleSecondaryActionClick}
                           disabled={resolvedSecondaryDisabled}
+                          icon={secondaryActionIcon}
+                          iconPosition={secondaryActionIconPosition}
                         >
                           {secondaryActionLabel}
                         </Button>
@@ -188,7 +204,8 @@ function HalfModal({
                           size="sm"
                           onClick={handlePrimaryActionClick}
                           disabled={resolvedPrimaryDisabled}
-                          icon={primaryActionIcon}
+                          icon={resolvedPrimaryIcon}
+                          iconPosition={primaryActionIconPosition}
                           aria-busy={primaryActionLoading}
                         >
                           {primaryActionLabel}

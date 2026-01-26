@@ -1,6 +1,7 @@
 import type { ComponentProps } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { MotionConfig } from "framer-motion";
+import { Heart } from "lucide-react";
 import { useState } from "react";
 import HalfModal from ".";
 import Button from "../Button";
@@ -188,6 +189,24 @@ export const PrimaryLoading: Story = {
     secondaryActionLabel: "キャンセル",
     primaryActionLabel: "討伐完了",
     primaryActionLoading: true,
+    children: Content,
+  },
+};
+
+export const WithActionIcons: Story = {
+  render: (args: ComponentProps<typeof HalfModal>) => <HalfModal {...args}>{Content}</HalfModal>,
+  args: {
+    open: true,
+    onOpenChange: () => {
+      /* noop */
+    },
+    title: "感謝を伝える",
+    description: "メッセージを選んで送信してください",
+    headerIcon: <SwordsHeaderIcon size="sm" aria-hidden />,
+    secondaryActionLabel: "キャンセル",
+    primaryActionLabel: "感謝を伝える",
+    primaryActionIcon: <Heart size={16} fill="currentColor" stroke="currentColor" />,
+    height: "md",
     children: Content,
   },
 };

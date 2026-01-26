@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Clock3, Swords } from "lucide-react";
+import { Clock3, Swords, SwordsIcon } from "lucide-react";
 import {
   DropdownSelect,
   HalfModal,
@@ -99,6 +99,7 @@ function ChoreBeatingModal({
       headerIcon={<SwordsHeaderIcon size="sm" aria-hidden />}
       primaryActionLabel="討伐完了"
       secondaryActionLabel="キャンセル"
+      primaryActionIcon={<SwordsIcon size="18" aria-hidden />}
       primaryActionDisabled={isPrimaryDisabled}
       primaryActionLoading={isSubmitting}
       secondaryActionDisabled={isSubmitting}
