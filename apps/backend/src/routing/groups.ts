@@ -3,6 +3,7 @@ import { Hono } from "hono";
 import {
   acceptGroupInvitationController,
   createChoreBeatingController,
+  createChoreBeatingLikeController,
   createGroupController,
   denyGroupInvitationController,
   getGroupBeatingsController,
@@ -20,6 +21,7 @@ import {
   searchUsersRequestSchema,
 } from "./schemas/requests";
 import { validateJson, validateQuery } from "./middlewares/validator";
+import { unprocessableEntitySchema } from "./schemas/responses/common";
 
 const app = new Hono()
   .get("/", async (c) => {
@@ -46,6 +48,19 @@ const app = new Hono()
     const { groupId } = c.req.param();
     const { chore_id, beated_at } = c.req.valid("json");
     return createChoreBeatingController(c, requesterId, groupId, chore_id, new Date(beated_at));
+  })
+  .post("/:groupId/beatings/:beatingId/likes", async (c) => {
+    const requesterId = c.var.requesterId;
+    const { groupId, beatingId } = c.req.param();
+    const parsedBeatingId = Number(beatingId);
+    if (Number.isNaN(parsedBeatingId)) {
+      const body = unprocessableEntitySchema.parse({
+        status: 422,
+        errors: [{ field: "beating_id", message: "beating_id は数値で指定してください" }],
+      });
+      return c.json(body, 422);
+    }
+    return createChoreBeatingLikeController(c, requesterId, groupId, parsedBeatingId);
   })
   .get("/:groupId/search/users", validateQuery(searchUsersRequestSchema), async (c) => {
     const { email } = c.req.valid("query");

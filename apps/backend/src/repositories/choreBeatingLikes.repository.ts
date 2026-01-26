@@ -6,6 +6,6 @@ export class ChoreBeatingLikesRepository {
   constructor(private readonly db: Database) {}
 
   async create(like: NewChoreBeatingLikeRecord): Promise<void> {
-    await this.db.insert(schema.choreBeatingLikes).values(like);
+    await this.db.insert(schema.choreBeatingLikes).values(like).onConflictDoNothing();
   }
 }

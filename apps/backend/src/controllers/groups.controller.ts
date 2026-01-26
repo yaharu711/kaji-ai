@@ -7,6 +7,7 @@ import { ChoreBeatingsRepository } from "../repositories/choreBeatings.repositor
 import { GroupRepository } from "../repositories/group.repository";
 import { UserRepository } from "../repositories/user.repository";
 import { createChoreBeatingSuccessSchema } from "../routing/schemas/responses/createChoreBeatingResponse";
+import { createChoreBeatingLikeSuccessSchema } from "../routing/schemas/responses/createChoreBeatingLikeResponse";
 import { createGroupSuccessSchema } from "../routing/schemas/responses/createGroupResponse";
 import { getGroupBeatingsSuccessSchema } from "../routing/schemas/responses/getGroupBeatingsResponse";
 import { getGroupChoresSuccessSchema } from "../routing/schemas/responses/getGroupChoresResponse";
@@ -292,5 +293,21 @@ export const createChoreBeatingController = async (
   });
 
   const response = createChoreBeatingSuccessSchema.parse({ status: 201 });
+  return c.json(response, 201);
+};
+
+export const createChoreBeatingLikeController = async (
+  c: Context,
+  requesterId: string,
+  groupId: string,
+  beatingId: number,
+) => {
+  const auth = await requireGroupMember(c, groupRepository, requesterId, groupId);
+  if (!auth.ok) return auth.response;
+
+  const now = nowJst();
+  await choreBeatingsRepository.addLikeAndIncrementCount(groupId, requesterId, beatingId, now, now);
+
+  const response = createChoreBeatingLikeSuccessSchema.parse({ status: 201 });
   return c.json(response, 201);
 };

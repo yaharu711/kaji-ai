@@ -25,6 +25,7 @@ const db = getDb();
 
 beforeEach(async () => {
   await db.execute(sql`TRUNCATE TABLE "chore_beating_thank_messages" CASCADE`);
+  await db.execute(sql`TRUNCATE TABLE "chore_beating_likes" CASCADE`);
   await db.execute(sql`TRUNCATE TABLE "chore_beatings" CASCADE`);
   await db.execute(sql`TRUNCATE TABLE "group_chores" CASCADE`);
   await db.execute(sql`TRUNCATE TABLE "master_chores" CASCADE`);
@@ -268,6 +269,160 @@ describe("POST /api/groups/:groupId/beatings", () => {
         },
       ],
     });
+  });
+});
+
+describe("POST /api/groups/:groupId/beatings/:beatingId/likes", () => {
+  it("所属メンバーであれば良いねでき、like_count が更新される", async () => {
+    const groupId = "group-like-1";
+    const now = new Date("2026-01-21T00:00:00Z");
+
+    await createGroup({
+      id: groupId,
+      name: "Like Group",
+      ownerId: AUTH_USER.id,
+      createdAt: now,
+      updatedAt: now,
+    });
+    await createBelonging({
+      groupId,
+      userId: AUTH_USER.id,
+      createdAt: now,
+      acceptedAt: now,
+    });
+    await createGroupChore({
+      id: 999,
+      groupId,
+      choreName: "食器洗い",
+      iconCode: "dish-wash",
+    });
+
+    const beatingId = await createChoreBeating({
+      groupId,
+      choreId: 999,
+      userId: AUTH_USER.id,
+      likeCount: 0,
+      beatedAt: new Date("2026-01-21T10:00:00Z"),
+      createdAt: new Date("2026-01-21T10:01:00Z"),
+      updatedAt: new Date("2026-01-21T10:02:00Z"),
+    });
+
+    const res = await client.api.groups[":groupId"].beatings[":beatingId"].likes.$post({
+      param: { groupId, beatingId: String(beatingId) },
+    });
+
+    expect(res.status).toBe(201);
+    expect(await res.json()).toEqual({ status: 201 });
+
+    const likes = await db.select().from(schema.choreBeatingLikes);
+    expect(likes).toHaveLength(1);
+    expect(likes[0]).toMatchObject({
+      groupId,
+      userId: AUTH_USER.id,
+      beatingId,
+    });
+
+    const [beating] = await db.select().from(schema.choreBeatings);
+    expect(beating.likeCount).toBe(1);
+  });
+
+  it("同じユーザーの重複リクエストでも like_count が増えない", async () => {
+    const groupId = "group-like-2";
+    const now = new Date("2026-01-21T00:00:00Z");
+
+    await createGroup({
+      id: groupId,
+      name: "Like Group 2",
+      ownerId: AUTH_USER.id,
+      createdAt: now,
+      updatedAt: now,
+    });
+    await createBelonging({
+      groupId,
+      userId: AUTH_USER.id,
+      createdAt: now,
+      acceptedAt: now,
+    });
+    await createGroupChore({
+      id: 1000,
+      groupId,
+      choreName: "掃除",
+      iconCode: "cleaning",
+    });
+
+    const beatingId = await createChoreBeating({
+      groupId,
+      choreId: 1000,
+      userId: AUTH_USER.id,
+      likeCount: 0,
+      beatedAt: new Date("2026-01-21T10:00:00Z"),
+      createdAt: new Date("2026-01-21T10:01:00Z"),
+      updatedAt: new Date("2026-01-21T10:02:00Z"),
+    });
+
+    const request = () =>
+      client.api.groups[":groupId"].beatings[":beatingId"].likes.$post({
+        param: { groupId, beatingId: String(beatingId) },
+      });
+
+    const first = await request();
+    const second = await request();
+
+    expect(first.status).toBe(201);
+    expect(second.status).toBe(201);
+
+    const likes = await db.select().from(schema.choreBeatingLikes);
+    expect(likes).toHaveLength(1);
+
+    const [beating] = await db.select().from(schema.choreBeatings);
+    expect(beating.likeCount).toBe(1);
+  });
+
+  it("所属メンバーでなければ403を返す", async () => {
+    const groupId = "group-like-3";
+    const ownerId = "owner-like-3";
+    const now = new Date("2026-01-21T00:00:00Z");
+
+    await createUser({ id: ownerId, name: "Owner" });
+    await createGroup({
+      id: groupId,
+      name: "Other Group",
+      ownerId,
+      createdAt: now,
+      updatedAt: now,
+    });
+    await createBelonging({
+      groupId,
+      userId: ownerId,
+      createdAt: now,
+      acceptedAt: now,
+    });
+    await createGroupChore({
+      id: 1001,
+      groupId,
+      choreName: "洗濯",
+      iconCode: "laundry",
+    });
+
+    const beatingId = await createChoreBeating({
+      groupId,
+      choreId: 1001,
+      userId: ownerId,
+      likeCount: 0,
+      beatedAt: new Date("2026-01-21T10:00:00Z"),
+      createdAt: new Date("2026-01-21T10:01:00Z"),
+      updatedAt: new Date("2026-01-21T10:02:00Z"),
+    });
+
+    const res = await client.api.groups[":groupId"].beatings[":beatingId"].likes.$post({
+      param: { groupId, beatingId: String(beatingId) },
+    });
+
+    expect(res.status).toBe(403);
+    expect(await res.json()).toEqual({ status: 403, message: "Forbidden" });
+
+    const likes = await db.select().from(schema.choreBeatingLikes);
+    expect(likes).toHaveLength(0);
   });
 });
 
