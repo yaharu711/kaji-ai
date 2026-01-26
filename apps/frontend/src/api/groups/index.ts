@@ -3,6 +3,7 @@ import type {
   CreateGroupResponse,
   CreateChoreBeatingRequest,
   CreateChoreBeatingResponse,
+  CreateChoreBeatingLikeResponse,
   GetGroupChoresResponse,
   GetGroupBeatingsRequest,
   GetGroupBeatingsResponse,
@@ -146,6 +147,34 @@ export const createChoreBeating = async ({
   }
 
   return response.json() as Promise<CreateChoreBeatingResponse>;
+};
+
+export const createChoreBeatingLike = async ({
+  groupId,
+  beatingId,
+}: {
+  groupId: string;
+  beatingId: number;
+}): Promise<CreateChoreBeatingLikeResponse> => {
+  const res = await groupsApi[":groupId"].beatings[":beatingId"].likes.$post({
+    param: { groupId, beatingId: String(beatingId) },
+  });
+  const response = res as Response;
+
+  if (response.status === 422) {
+    const body = (await response.json()) as UnprocessableEntityResponse;
+    const message = body.errors
+      .map((error) => error.message)
+      .filter(Boolean)
+      .join(" / ");
+    throw new ApiError(422, message || "入力内容を確認してください");
+  }
+
+  if (!response.ok) {
+    throw new ApiError(response.status, "いいねの送信に失敗しました");
+  }
+
+  return response.json() as Promise<CreateChoreBeatingLikeResponse>;
 };
 
 export const createGroup = async ({ name }: CreateGroupRequest): Promise<CreateGroupResponse> => {

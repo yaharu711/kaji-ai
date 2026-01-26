@@ -10,6 +10,9 @@ export interface BeatingMessage {
 
 export interface BeatingLog {
   id: string;
+  beatingId: number;
+  groupId: string;
+  date: string;
   choreIconCode: ChoreIconCode;
   choreName: string;
   userName: string;

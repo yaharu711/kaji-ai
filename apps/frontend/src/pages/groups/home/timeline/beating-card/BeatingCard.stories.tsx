@@ -7,6 +7,9 @@ const meta = {
     layout: "centered",
   },
   args: {
+    groupId: "group-1",
+    beatingId: 1,
+    date: "2025-01-01",
     choreIconCode: "laundry",
     choreName: "洗濯",
     userName: "山田 太郎",
