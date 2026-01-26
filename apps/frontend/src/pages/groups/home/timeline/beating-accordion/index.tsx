@@ -1,4 +1,6 @@
 import { ChevronDown } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
+import { useState } from "react";
 import { getChoreIcon } from "../../../../../constants/chores";
 import BeatingCard from "../beating-card";
 import type { BeatingLog } from "../../../types/beatings";
@@ -11,10 +13,26 @@ interface BeatingAccordionProps {
 
 function BeatingAccordion({ timeLabel, items }: BeatingAccordionProps) {
   const iconCodes = items.map((item) => item.choreIconCode).slice(0, 3);
+  // 一つのStateだけにしてopacityやheightでアニメーションでできるが、
+  // DOM要素としてレンダリングしておく必要があるのでこうしている
+  const [isOpen, setIsOpen] = useState(false);
+  const [isDetailsOpen, setIsDetailsOpen] = useState(false);
 
   return (
-    <details className={styles.accordion}>
-      <summary className={styles.accordionSummary}>
+    <details className={styles.accordion} open={isDetailsOpen}>
+      <summary
+        className={styles.accordionSummary}
+        onClick={(event) => {
+          event.preventDefault();
+          if (isOpen) {
+            setIsOpen(false);
+            return;
+          }
+
+          setIsOpen(true);
+          setIsDetailsOpen(true);
+        }}
+      >
         <div className={styles.summaryCard}>
           <div className={styles.summaryIcons} aria-hidden>
             {iconCodes.map((code, index) => (
@@ -35,25 +53,42 @@ function BeatingAccordion({ timeLabel, items }: BeatingAccordionProps) {
           </span>
         </div>
       </summary>
-      <div className={styles.accordionBody}>
-        {items.map((beating) => (
-          <BeatingCard
-            key={beating.id}
-            groupId={beating.groupId}
-            beatingId={beating.beatingId}
-            date={beating.date}
-            choreIconCode={beating.choreIconCode}
-            choreName={beating.choreName}
-            userName={beating.userName}
-            userImageUrl={beating.userImageUrl}
-            likeCount={beating.likeCount}
-            likedByMe={beating.likedByMe}
-            commentCount={beating.commentCount}
-            userRoleLabel={beating.userRoleLabel}
-            messages={beating.messages}
-          />
-        ))}
-      </div>
+      <AnimatePresence
+        initial={false}
+        onExitComplete={() => {
+          setIsDetailsOpen(false);
+        }}
+      >
+        {isOpen ? (
+          <motion.div
+            className={styles.accordionBody}
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.24, ease: "easeOut" }}
+          >
+            <div className={styles.accordionBodyInner}>
+              {items.map((beating) => (
+                <BeatingCard
+                  key={beating.id}
+                  groupId={beating.groupId}
+                  beatingId={beating.beatingId}
+                  date={beating.date}
+                  choreIconCode={beating.choreIconCode}
+                  choreName={beating.choreName}
+                  userName={beating.userName}
+                  userImageUrl={beating.userImageUrl}
+                  likeCount={beating.likeCount}
+                  likedByMe={beating.likedByMe}
+                  commentCount={beating.commentCount}
+                  userRoleLabel={beating.userRoleLabel}
+                  messages={beating.messages}
+                />
+              ))}
+            </div>
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
     </details>
   );
 }
