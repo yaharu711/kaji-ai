@@ -16,6 +16,7 @@ export const beatingItemSchema = z.object({
   chore_name: z.string(),
   icon_code: z.string(),
   thanks_count: z.number(),
+  liked_by_me: z.boolean(),
   messages: z.array(beatingMessageSchema),
   user_id: z.string(),
   user_name: z.string().nullable(),

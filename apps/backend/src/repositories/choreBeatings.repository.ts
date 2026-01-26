@@ -20,6 +20,7 @@ export class ChoreBeatingsRepository {
 
   async findTimelineByGroupIdAndUtcRange(
     groupId: string,
+    requesterId: string,
     dateRange: DateRangeUtcDto,
   ): Promise<BeatingTimelineGroupDto[]> {
     const { startUtc, endUtc } = dateRange;
@@ -32,6 +33,7 @@ export class ChoreBeatingsRepository {
           group_chores.chore_name AS chore_name,
           group_chores.icon_code AS icon_code,
           chore_beatings.like_count AS thanks_count,
+          bool_or(chore_beating_likes.id IS NOT NULL) AS liked_by_me,
           "user".id AS user_id,
           "user".name AS user_name,
           "user".image AS img_url,
@@ -52,6 +54,10 @@ export class ChoreBeatingsRepository {
         FROM chore_beatings
         INNER JOIN group_chores ON chore_beatings.chore_id = group_chores.id
         INNER JOIN "user" ON chore_beatings.user_id = "user".id
+        LEFT JOIN chore_beating_likes
+          ON chore_beating_likes.beating_id = chore_beatings.id
+          AND chore_beating_likes.group_id = chore_beatings.group_id
+          AND chore_beating_likes.user_id = ${requesterId}
         LEFT JOIN chore_beating_thank_messages
           ON chore_beating_thank_messages.beating_id = chore_beatings.id
           AND chore_beating_thank_messages.group_id = chore_beatings.group_id
@@ -80,6 +86,7 @@ export class ChoreBeatingsRepository {
             'choreName', chore_name,
             'iconCode', icon_code,
             'thanksCount', thanks_count,
+            'likedByMe', liked_by_me,
             'messages', COALESCE(messages, '[]'::json),
             'userId', user_id,
             'userName', user_name,

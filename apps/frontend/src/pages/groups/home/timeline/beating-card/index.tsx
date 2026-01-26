@@ -16,6 +16,7 @@ interface BeatingCardProps {
   userName: string;
   userImageUrl?: string | null;
   likeCount?: number;
+  likedByMe?: boolean;
   commentCount?: number;
   userRoleLabel?: string;
   messages?: readonly BeatingMessage[];
@@ -30,6 +31,7 @@ function BeatingCard({
   userName,
   userImageUrl,
   likeCount = 0,
+  likedByMe = false,
   commentCount = 0,
   userRoleLabel = "討伐者",
   messages = [],
@@ -45,20 +47,29 @@ function BeatingCard({
         <div className={styles.headerBody}>
           <p className={styles.choreName}>{choreName}</p>
           <div className={styles.reactions}>
-            <button
-              type="button"
-              className={`${styles.reactionItem} ${styles.reactionButton}`}
-              aria-label="いいね"
-              disabled={isLiking}
-              onClick={() => {
-                sendLike({ groupId, beatingId, date });
-              }}
-            >
-              <span className={styles.reactionIcon} aria-hidden>
-                <HeartIcon variant="outline" size="lg" />
-              </span>
-              {likeCount > 0 ? <span className={styles.reactionCount}>{likeCount}</span> : null}
-            </button>
+            {likedByMe ? (
+              <div className={styles.reactionItem} role="img" aria-label="いいね済み">
+                <span className={styles.reactionIcon} aria-hidden>
+                  <HeartIcon variant="solid" size="lg" />
+                </span>
+                {likeCount > 0 ? <span className={styles.reactionCount}>{likeCount}</span> : null}
+              </div>
+            ) : (
+              <button
+                type="button"
+                className={`${styles.reactionItem} ${styles.reactionButton}`}
+                aria-label="いいね"
+                disabled={isLiking}
+                onClick={() => {
+                  sendLike({ groupId, beatingId, date });
+                }}
+              >
+                <span className={styles.reactionIcon} aria-hidden>
+                  <HeartIcon variant="outline" size="lg" />
+                </span>
+                {likeCount > 0 ? <span className={styles.reactionCount}>{likeCount}</span> : null}
+              </button>
+            )}
             <div className={styles.reactionItem} role="group" aria-label="メッセージ">
               <span className={styles.reactionIcon} aria-hidden>
                 <MessageSquareHeart size={20} />

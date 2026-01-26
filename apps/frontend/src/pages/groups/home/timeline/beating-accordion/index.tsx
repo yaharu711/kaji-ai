@@ -47,6 +47,7 @@ function BeatingAccordion({ timeLabel, items }: BeatingAccordionProps) {
             userName={beating.userName}
             userImageUrl={beating.userImageUrl}
             likeCount={beating.likeCount}
+            likedByMe={beating.likedByMe}
             commentCount={beating.commentCount}
             userRoleLabel={beating.userRoleLabel}
             messages={beating.messages}
