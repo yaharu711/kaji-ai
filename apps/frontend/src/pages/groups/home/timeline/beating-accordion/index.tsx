@@ -39,11 +39,15 @@ function BeatingAccordion({ timeLabel, items }: BeatingAccordionProps) {
         {items.map((beating) => (
           <BeatingCard
             key={beating.id}
+            groupId={beating.groupId}
+            beatingId={beating.beatingId}
+            date={beating.date}
             choreIconCode={beating.choreIconCode}
             choreName={beating.choreName}
             userName={beating.userName}
             userImageUrl={beating.userImageUrl}
             likeCount={beating.likeCount}
+            likedByMe={beating.likedByMe}
             commentCount={beating.commentCount}
             userRoleLabel={beating.userRoleLabel}
             messages={beating.messages}

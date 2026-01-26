@@ -4,29 +4,40 @@ import HeartIcon from "../../../../../components/HeartIcon";
 import UserProfileImg from "../../../../../components/UserProfileImg";
 import BeatingMessages from "../beating-messages";
 import type { BeatingMessage } from "../../../types/beatings";
+import { useCreateChoreBeatingLikeMutation } from "../../../hooks/useCreateChoreBeatingLikeMutation";
 import styles from "./BeatingCard.module.css";
 
 interface BeatingCardProps {
+  groupId: string;
+  beatingId: number;
+  date: string;
   choreIconCode: ChoreIconCode;
   choreName: string;
   userName: string;
   userImageUrl?: string | null;
   likeCount?: number;
+  likedByMe?: boolean;
   commentCount?: number;
   userRoleLabel?: string;
   messages?: readonly BeatingMessage[];
 }
 
 function BeatingCard({
+  groupId,
+  beatingId,
+  date,
   choreIconCode,
   choreName,
   userName,
   userImageUrl,
   likeCount = 0,
+  likedByMe = false,
   commentCount = 0,
   userRoleLabel = "討伐者",
   messages = [],
 }: BeatingCardProps) {
+  const { mutate: sendLike, isPending: isLiking } = useCreateChoreBeatingLikeMutation();
+
   return (
     <article className={styles.card} aria-label={`${userName}が${choreName}を討伐`}>
       <div className={styles.header}>
@@ -36,12 +47,29 @@ function BeatingCard({
         <div className={styles.headerBody}>
           <p className={styles.choreName}>{choreName}</p>
           <div className={styles.reactions}>
-            <div className={styles.reactionItem} role="group" aria-label="ハート">
-              <span className={styles.reactionIcon} aria-hidden>
-                <HeartIcon variant="outline" size="lg" />
-              </span>
-              {likeCount > 0 ? <span className={styles.reactionCount}>{likeCount}</span> : null}
-            </div>
+            {likedByMe ? (
+              <div className={styles.reactionItem} role="img" aria-label="いいね済み">
+                <span className={styles.reactionIcon} aria-hidden>
+                  <HeartIcon variant="solid" size="lg" />
+                </span>
+                {likeCount > 0 ? <span className={styles.reactionCount}>{likeCount}</span> : null}
+              </div>
+            ) : (
+              <button
+                type="button"
+                className={`${styles.reactionItem} ${styles.reactionButton}`}
+                aria-label="いいね"
+                disabled={isLiking}
+                onClick={() => {
+                  sendLike({ groupId, beatingId, date });
+                }}
+              >
+                <span className={styles.reactionIcon} aria-hidden>
+                  <HeartIcon variant="outline" size="lg" />
+                </span>
+                {likeCount > 0 ? <span className={styles.reactionCount}>{likeCount}</span> : null}
+              </button>
+            )}
             <div className={styles.reactionItem} role="group" aria-label="メッセージ">
               <span className={styles.reactionIcon} aria-hidden>
                 <MessageSquareHeart size={20} />

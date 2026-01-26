@@ -95,10 +95,14 @@ export const getGroupBeatingsController = async (
     return c.json(body, 422);
   }
 
-  const groups = await choreBeatingsRepository.findTimelineByGroupIdAndUtcRange(groupId, {
-    startUtc: dateRange.startUtc,
-    endUtc: dateRange.endUtc,
-  });
+  const groups = await choreBeatingsRepository.findTimelineByGroupIdAndUtcRange(
+    groupId,
+    requesterId,
+    {
+      startUtc: dateRange.startUtc,
+      endUtc: dateRange.endUtc,
+    },
+  );
 
   const response = getGroupBeatingsSuccessSchema.parse(
     groups.map((group) => ({
@@ -110,6 +114,7 @@ export const getGroupBeatingsController = async (
         chore_name: item.choreName,
         icon_code: item.iconCode,
         thanks_count: item.thanksCount,
+        liked_by_me: item.likedByMe,
         messages: item.messages.map((message) => ({
           id: message.id,
           user_id: message.userId,

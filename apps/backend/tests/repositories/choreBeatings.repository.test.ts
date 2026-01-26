@@ -12,6 +12,8 @@ import {
   createGroupChore,
   createUser,
 } from "../helpers/db";
+import { Auth } from "@auth/core";
+import { AUTH_USER } from "../helpers/mockAuth";
 
 type Database = NeonHttpDatabase<typeof schema>;
 
@@ -153,7 +155,7 @@ describe("findTimelineByGroupIdAndUtcRange", () => {
       createdAt: new Date("2025-01-10T02:10:00Z"),
     });
 
-    const result = await repository.findTimelineByGroupIdAndUtcRange("group-1", {
+    const result = await repository.findTimelineByGroupIdAndUtcRange("group-1", AUTH_USER.id, {
       startUtc: new Date("2025-01-09T15:00:00Z"),
       endUtc: new Date("2025-01-10T15:00:00Z"),
     });
@@ -226,7 +228,7 @@ describe("findTimelineByGroupIdAndUtcRange", () => {
       updatedAt: new Date("2025-01-10T15:02:00Z"),
     });
 
-    const result = await repository.findTimelineByGroupIdAndUtcRange("group-1", {
+    const result = await repository.findTimelineByGroupIdAndUtcRange("group-1", AUTH_USER.id, {
       startUtc: new Date("2025-01-09T15:00:00Z"),
       endUtc: new Date("2025-01-10T15:00:00Z"),
     });
@@ -259,7 +261,7 @@ describe("findTimelineByGroupIdAndUtcRange", () => {
       updatedAt: new Date("2025-01-10T01:32:00Z"),
     });
 
-    const result = await repository.findTimelineByGroupIdAndUtcRange("group-1", {
+    const result = await repository.findTimelineByGroupIdAndUtcRange("group-1", AUTH_USER.id, {
       startUtc: new Date("2025-01-09T15:00:00Z"),
       endUtc: new Date("2025-01-10T15:00:00Z"),
     });

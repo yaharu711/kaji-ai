@@ -10,11 +10,15 @@ export interface BeatingMessage {
 
 export interface BeatingLog {
   id: string;
+  beatingId: number;
+  groupId: string;
+  date: string;
   choreIconCode: ChoreIconCode;
   choreName: string;
   userName: string;
   userImageUrl?: string | null;
   likeCount?: number;
+  likedByMe?: boolean;
   commentCount?: number;
   userRoleLabel?: string;
   messages?: readonly BeatingMessage[];

@@ -12,7 +12,11 @@ const formatUserName = (name: string | null) => {
   return trimmed || "名前";
 };
 
-const mapBeatingGroups = (timeline: GetGroupBeatingsResponse): BeatingGroup[] => {
+const mapBeatingGroups = (
+  timeline: GetGroupBeatingsResponse,
+  groupId: string,
+  date: string,
+): BeatingGroup[] => {
   return timeline.map((group) => ({
     timeLabel: group.hour,
     items: group.items.map((item) => {
@@ -25,11 +29,15 @@ const mapBeatingGroups = (timeline: GetGroupBeatingsResponse): BeatingGroup[] =>
       }));
       return {
         id: String(item.beating_id),
+        beatingId: item.beating_id,
+        groupId,
+        date,
         choreIconCode: item.icon_code as ChoreIconCode,
         choreName: item.chore_name,
         userName: formatUserName(item.user_name),
         userImageUrl: item.img_url,
         likeCount: item.thanks_count,
+        likedByMe: item.liked_by_me,
         commentCount: messages.length,
         messages,
       };
@@ -44,7 +52,7 @@ export const useGroupBeatingsQuery = (groupId?: string, date?: string) => {
   return useQuery({
     queryKey: GROUP_BEATINGS_QUERY_KEY(resolvedGroupId, resolvedDate),
     queryFn: () => fetchGroupBeatings({ groupId: resolvedGroupId, date: resolvedDate }),
-    select: mapBeatingGroups,
+    select: (timeline) => mapBeatingGroups(timeline, resolvedGroupId, resolvedDate),
     enabled: Boolean(groupId),
   });
 };
