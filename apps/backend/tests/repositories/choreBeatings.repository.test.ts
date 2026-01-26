@@ -1,5 +1,5 @@
 import { beforeAll, beforeEach, describe, expect, it } from "vitest";
-import { sql } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import type { NeonHttpDatabase } from "drizzle-orm/neon-http";
 
 import { getDb } from "../../src/db/client";
@@ -267,5 +267,50 @@ describe("findTimelineByGroupIdAndUtcRange", () => {
     const allIds = result.flatMap((group) => group.items.map((item) => item.beatingId));
     expect(allIds).toContain(inRangeId);
     expect(allIds).not.toContain(otherGroupId);
+  });
+});
+
+describe("incrementLikeCount", () => {
+  it("like_count を +1 して updated_at を更新できること", async () => {
+    await createUser({ id: "user-1", name: "User" });
+    await createGroup({
+      id: "group-1",
+      name: "家族",
+      ownerId: "user-1",
+      image: null,
+    });
+    await createGroupChore({
+      id: 1,
+      groupId: "group-1",
+      choreName: "食器洗い",
+      iconCode: "dish-wash",
+    });
+
+    const initialUpdatedAt = new Date("2025-01-10T09:02:00Z");
+    const beatingId = await createChoreBeating({
+      groupId: "group-1",
+      choreId: 1,
+      userId: "user-1",
+      likeCount: 2,
+      beatedAt: new Date("2025-01-10T09:00:00Z"),
+      createdAt: new Date("2025-01-10T09:01:00Z"),
+      updatedAt: initialUpdatedAt,
+    });
+
+    const updatedAt = new Date("2025-01-10T10:00:00Z");
+    await repository.incrementLikeCount(beatingId, updatedAt);
+
+    const [row] = await db
+      .select({
+        likeCount: schema.choreBeatings.likeCount,
+        updatedAt: schema.choreBeatings.updatedAt,
+      })
+      .from(schema.choreBeatings)
+      .where(eq(schema.choreBeatings.id, beatingId));
+
+    expect(row).toMatchObject({
+      likeCount: 3,
+      updatedAt,
+    });
   });
 });

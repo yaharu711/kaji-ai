@@ -1,4 +1,4 @@
-import { sql } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 
 import type { Database } from "../db/client";
 import * as schema from "../db/schema";
@@ -16,6 +16,16 @@ export class ChoreBeatingsRepository {
 
   async create(beating: NewChoreBeatingModel): Promise<void> {
     await this.db.insert(schema.choreBeatings).values(beating);
+  }
+
+  async incrementLikeCount(beatingId: number, updatedAt: Date): Promise<void> {
+    await this.db
+      .update(schema.choreBeatings)
+      .set({
+        likeCount: sql<number>`${schema.choreBeatings.likeCount} + 1`,
+        updatedAt,
+      })
+      .where(eq(schema.choreBeatings.id, beatingId));
   }
 
   async findTimelineByGroupIdAndUtcRange(
