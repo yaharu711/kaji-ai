@@ -29,8 +29,8 @@ beforeEach(async () => {
   await truncateTables();
 });
 
-describe("create", () => {
-  it("良いねを登録できること", async () => {
+describe("addLikeAndIncrementCount", () => {
+  it("良いねを追加し like_count を +1 して updated_at を更新できること", async () => {
     await createUser({ id: "user-1", name: "User" });
     await createGroup({ id: "group-1", name: "家族", ownerId: "user-1", image: null });
     await createGroupChore({
@@ -40,36 +40,36 @@ describe("create", () => {
       iconCode: "dish-wash",
     });
 
+    const initialUpdatedAt = new Date("2025-01-10T09:02:00Z");
     const beatingId = await createChoreBeating({
       groupId: "group-1",
       choreId: 1,
       userId: "user-1",
-      likeCount: 0,
+      likeCount: 2,
       beatedAt: new Date("2025-01-10T09:00:00Z"),
       createdAt: new Date("2025-01-10T09:01:00Z"),
-      updatedAt: new Date("2025-01-10T09:02:00Z"),
+      updatedAt: initialUpdatedAt,
     });
 
-    const createdAt = new Date("2025-01-10T09:03:00Z");
+    const now = new Date("2025-01-10T10:00:00Z");
+    await repository.addLikeAndIncrementCount("group-1", "user-1", beatingId, now, now);
 
-    await repository.create({
+    const [row] = await db.select().from(schema.choreBeatings);
+    expect(row).toMatchObject({
+      likeCount: 3,
+      updatedAt: now,
+    });
+
+    const likes = await db.select().from(schema.choreBeatingLikes);
+    expect(likes).toHaveLength(1);
+    expect(likes[0]).toMatchObject({
       groupId: "group-1",
       userId: "user-1",
       beatingId,
-      createdAt,
     });
-
-    const rows = await db.select().from(schema.choreBeatingLikes);
-    expect(rows).toHaveLength(1);
-    expect(rows[0]).toMatchObject({
-      groupId: "group-1",
-      userId: "user-1",
-      beatingId,
-    });
-    expect(rows[0].createdAt).toEqual(createdAt);
   });
 
-  it("同じユーザーの重複良いねは追加されないこと", async () => {
+  it("同じユーザーの重複良いねでも like_count が増えないこと", async () => {
     await createUser({ id: "user-1", name: "User" });
     await createGroup({ id: "group-1", name: "家族", ownerId: "user-1", image: null });
     await createGroupChore({
@@ -89,22 +89,25 @@ describe("create", () => {
       updatedAt: new Date("2025-01-10T09:02:00Z"),
     });
 
-    const createdAt = new Date("2025-01-10T09:03:00Z");
-
-    await repository.create({
-      groupId: "group-1",
-      userId: "user-1",
+    await repository.addLikeAndIncrementCount(
+      "group-1",
+      "user-1",
       beatingId,
-      createdAt,
-    });
-    await repository.create({
-      groupId: "group-1",
-      userId: "user-1",
+      new Date("2025-01-10T10:00:00Z"),
+      new Date("2025-01-10T10:00:00Z"),
+    );
+    await repository.addLikeAndIncrementCount(
+      "group-1",
+      "user-1",
       beatingId,
-      createdAt,
-    });
+      new Date("2025-01-10T11:00:00Z"),
+      new Date("2025-01-10T11:00:00Z"),
+    );
 
-    const rows = await db.select().from(schema.choreBeatingLikes);
-    expect(rows).toHaveLength(1);
+    const [row] = await db.select().from(schema.choreBeatings);
+    expect(row.likeCount).toBe(1);
+
+    const likes = await db.select().from(schema.choreBeatingLikes);
+    expect(likes).toHaveLength(1);
   });
 });

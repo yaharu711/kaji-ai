@@ -4,6 +4,7 @@ import { getDb } from "../db/client";
 import { requireGroupMember } from "./authorization";
 import { ChoreRepository } from "../repositories/chore.repository";
 import { ChoreBeatingsRepository } from "../repositories/choreBeatings.repository";
+import { ChoreBeatingLikesRepository } from "../repositories/choreBeatingLikes.repository";
 import { GroupRepository } from "../repositories/group.repository";
 import { UserRepository } from "../repositories/user.repository";
 import { createChoreBeatingSuccessSchema } from "../routing/schemas/responses/createChoreBeatingResponse";
@@ -22,6 +23,7 @@ const db = getDb();
 const groupRepository = new GroupRepository(db);
 const choreRepository = new ChoreRepository(db);
 const choreBeatingsRepository = new ChoreBeatingsRepository(db);
+const choreBeatingLikesRepository = new ChoreBeatingLikesRepository(db);
 const userRepository = new UserRepository(db);
 
 export const getGroupsController = async (c: Context, requesterId: string) => {
@@ -306,7 +308,13 @@ export const createChoreBeatingLikeController = async (
   if (!auth.ok) return auth.response;
 
   const now = nowJst();
-  await choreBeatingsRepository.addLikeAndIncrementCount(groupId, requesterId, beatingId, now, now);
+  await choreBeatingLikesRepository.addLikeAndIncrementCount(
+    groupId,
+    requesterId,
+    beatingId,
+    now,
+    now,
+  );
 
   const response = createChoreBeatingLikeSuccessSchema.parse({ status: 201 });
   return c.json(response, 201);
