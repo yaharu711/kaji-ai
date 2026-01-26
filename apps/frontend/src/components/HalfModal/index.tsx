@@ -126,6 +126,7 @@ function HalfModal({
 
   // 今のままだと、primaryActionLoading中に閉じてしまい、ローディング中のフィードバックができない、、！
   // けど、閉じないようにすると閉じる時にアニメーションがつかなくなる
+  // この記事も参考にすると解決策が出てくるかも: https://qiita.com/yun_bow/items/31aaad10d182f03c795b#modal
   const handlePrimaryActionClick = () => {
     onPrimaryAction?.();
     handleOpenChange(false);
