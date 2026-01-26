@@ -122,88 +122,86 @@ function HalfModal({
 
   return (
     <Dialog.Root open={open || isClosing} onOpenChange={handleOpenChange}>
-      {open || isClosing ? (
-        <Dialog.Portal>
-          <AnimatePresence
-            onExitComplete={() => {
-              setIsClosing(false);
-            }}
-          >
-            {open ? (
-              <>
-                <Dialog.Overlay asChild>
-                  <motion.div
-                    className={styles.overlay}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.25, ease: "easeOut" }}
-                  />
-                </Dialog.Overlay>
-                <Dialog.Content asChild>
-                  <motion.div
-                    className={contentClassName}
-                    initial={{ opacity: 0, y: 32 }}
-                    animate={{ opacity: 1, y: 0, transition: { duration: 0.32, ease: "easeOut" } }}
-                    exit={{ opacity: 0, y: 32, transition: { duration: 0.24, ease: "easeIn" } }}
-                  >
-                    <div className={styles.header}>
-                      <div className={styles.heading}>
-                        {headerIcon ?? null}
-                        <div className={styles.titleGroup}>
-                          <Dialog.Title className={styles.title}>{title}</Dialog.Title>
-                          {description ? (
-                            <Dialog.Description className={styles.description}>
-                              {description}
-                            </Dialog.Description>
-                          ) : null}
-                        </div>
+      <Dialog.Portal>
+        <AnimatePresence
+          onExitComplete={() => {
+            setIsClosing(false);
+          }}
+        >
+          {open ? (
+            <>
+              <Dialog.Overlay asChild>
+                <motion.div
+                  className={styles.overlay}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.25, ease: "easeOut" }}
+                />
+              </Dialog.Overlay>
+              <Dialog.Content asChild>
+                <motion.div
+                  className={contentClassName}
+                  initial={{ opacity: 0, y: 32 }}
+                  animate={{ opacity: 1, y: 0, transition: { duration: 0.32, ease: "easeOut" } }}
+                  exit={{ opacity: 0, y: 32, transition: { duration: 0.24, ease: "easeIn" } }}
+                >
+                  <div className={styles.header}>
+                    <div className={styles.heading}>
+                      {headerIcon ?? null}
+                      <div className={styles.titleGroup}>
+                        <Dialog.Title className={styles.title}>{title}</Dialog.Title>
+                        {description ? (
+                          <Dialog.Description className={styles.description}>
+                            {description}
+                          </Dialog.Description>
+                        ) : null}
                       </div>
-                      <Dialog.Close asChild>
-                        <button type="button" className={styles.closeButton} aria-label="閉じる">
-                          <X size={18} strokeWidth={2.5} />
-                        </button>
-                      </Dialog.Close>
                     </div>
+                    <Dialog.Close asChild>
+                      <button type="button" className={styles.closeButton} aria-label="閉じる">
+                        <X size={18} strokeWidth={2.5} />
+                      </button>
+                    </Dialog.Close>
+                  </div>
 
-                    <div className={styles.body}>{children}</div>
+                  <div className={styles.body}>{children}</div>
 
-                    {shouldShowFooter ? (
-                      <div className={styles.footer}>
-                        {secondaryActionLabel ? (
-                          <Button
-                            variant="outline"
-                            radius="pill"
-                            size="sm"
-                            fullWidth
-                            onClick={handleSecondaryActionClick}
-                            disabled={resolvedSecondaryDisabled}
-                          >
-                            {secondaryActionLabel}
-                          </Button>
-                        ) : null}
-                        {primaryActionLabel ? (
-                          <Button
-                            radius="pill"
-                            fullWidth
-                            size="sm"
-                            onClick={handlePrimaryActionClick}
-                            disabled={resolvedPrimaryDisabled}
-                            icon={primaryActionIcon}
-                            aria-busy={primaryActionLoading}
-                          >
-                            {primaryActionLabel}
-                          </Button>
-                        ) : null}
-                      </div>
-                    ) : null}
-                  </motion.div>
-                </Dialog.Content>
-              </>
-            ) : null}
-          </AnimatePresence>
-        </Dialog.Portal>
-      ) : null}
+                  {shouldShowFooter ? (
+                    <div className={styles.footer}>
+                      {secondaryActionLabel ? (
+                        <Button
+                          variant="outline"
+                          radius="pill"
+                          size="sm"
+                          fullWidth
+                          onClick={handleSecondaryActionClick}
+                          disabled={resolvedSecondaryDisabled}
+                        >
+                          {secondaryActionLabel}
+                        </Button>
+                      ) : null}
+                      {primaryActionLabel ? (
+                        <Button
+                          radius="pill"
+                          fullWidth
+                          size="sm"
+                          onClick={handlePrimaryActionClick}
+                          disabled={resolvedPrimaryDisabled}
+                          icon={primaryActionIcon}
+                          aria-busy={primaryActionLoading}
+                        >
+                          {primaryActionLabel}
+                        </Button>
+                      ) : null}
+                    </div>
+                  ) : null}
+                </motion.div>
+              </Dialog.Content>
+            </>
+          ) : null}
+        </AnimatePresence>
+      </Dialog.Portal>
     </Dialog.Root>
   );
 }
