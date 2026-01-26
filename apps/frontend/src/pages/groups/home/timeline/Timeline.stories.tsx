@@ -1,11 +1,32 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import GroupTimeline from ".";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ErrorModalProvider } from "src/components";
 
 const meta = {
   component: GroupTimeline,
   parameters: {
     layout: "centered",
   },
+  decorators: [
+    (Story) => {
+      const queryClient = new QueryClient({
+        defaultOptions: {
+          queries: {
+            refetchOnWindowFocus: false,
+          },
+        },
+      });
+
+      return (
+        <QueryClientProvider client={queryClient}>
+          <ErrorModalProvider>
+            <Story />
+          </ErrorModalProvider>
+        </QueryClientProvider>
+      );
+    },
+  ],
 } satisfies Meta<typeof GroupTimeline>;
 
 export default meta;
