@@ -1,0 +1,30 @@
+import{j as e}from"./jsx-runtime-u17CrQMm.js";import{H as r}from"./index-B2NyVZ54.js";import"./iframe-CqmAOgwB.js";import"./heart-CwcBIqXa.js";import"./createLucideIcon-ap7CA1ry.js";import"./preload-helper-PPVm8Dsz.js";const p={title:"Components/HeartIcon",component:r,parameters:{layout:"centered"},args:{size:"md",tone:"accent",variant:"solid"}},s={},n={render:()=>e.jsxs("div",{style:{display:"flex",gap:16,alignItems:"center"},children:[e.jsx(r,{size:"sm"}),e.jsx(r,{size:"md"}),e.jsx(r,{size:"lg"})]})},t={render:()=>e.jsxs("div",{style:{display:"flex",gap:16,alignItems:"center"},children:[e.jsx(r,{tone:"accent"}),e.jsx(r,{tone:"strong"}),e.jsx(r,{tone:"muted"})]})},a={render:()=>e.jsxs("div",{style:{display:"flex",gap:16,alignItems:"center"},children:[e.jsx(r,{variant:"solid"}),e.jsx(r,{variant:"outline"})]})};s.parameters={...s.parameters,docs:{...s.parameters?.docs,source:{originalSource:"{}",...s.parameters?.docs?.source}}};n.parameters={...n.parameters,docs:{...n.parameters?.docs,source:{originalSource:`{
+  render: () => <div style={{
+    display: "flex",
+    gap: 16,
+    alignItems: "center"
+  }}>
+      <HeartIcon size="sm" />
+      <HeartIcon size="md" />
+      <HeartIcon size="lg" />
+    </div>
+}`,...n.parameters?.docs?.source}}};t.parameters={...t.parameters,docs:{...t.parameters?.docs,source:{originalSource:`{
+  render: () => <div style={{
+    display: "flex",
+    gap: 16,
+    alignItems: "center"
+  }}>
+      <HeartIcon tone="accent" />
+      <HeartIcon tone="strong" />
+      <HeartIcon tone="muted" />
+    </div>
+}`,...t.parameters?.docs?.source}}};a.parameters={...a.parameters,docs:{...a.parameters?.docs,source:{originalSource:`{
+  render: () => <div style={{
+    display: "flex",
+    gap: 16,
+    alignItems: "center"
+  }}>
+      <HeartIcon variant="solid" />
+      <HeartIcon variant="outline" />
+    </div>
+}`,...a.parameters?.docs?.source}}};const g=["Default","Sizes","Tones","Variants"];export{s as Default,n as Sizes,t as Tones,a as Variants,g as __namedExportsOrder,p as default};
