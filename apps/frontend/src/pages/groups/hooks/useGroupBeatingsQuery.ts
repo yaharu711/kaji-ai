@@ -37,7 +37,7 @@ const mapBeatingGroups = (
         userName: formatUserName(item.user_name),
         userImageUrl: item.img_url,
         likeCount: item.thanks_count,
-        likedByMe: Boolean(item.liked_by_me),
+        likedByMe: item.liked_by_me,
         commentCount: messages.length,
         messages,
       };
