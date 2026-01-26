@@ -123,11 +123,11 @@ function HalfModal({
   return (
     <Dialog.Root open={open || isClosing} onOpenChange={handleOpenChange}>
       <Dialog.Portal>
-        <AnimatePresence
-          onExitComplete={() => {
-            setIsClosing(false);
-          }}
-        >
+          <AnimatePresence
+            onExitComplete={() => {
+              setIsClosing(false);
+            }}
+          >
           {open ? (
             <>
               <Dialog.Overlay asChild>
