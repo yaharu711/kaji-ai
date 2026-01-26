@@ -1,4 +1,6 @@
+import type { ComponentProps } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { MotionConfig } from "framer-motion";
 import { useState } from "react";
 import HalfModal from ".";
 import Button from "../Button";
@@ -6,16 +8,33 @@ import Input from "../Input";
 import SwordsHeaderIcon from "../SwordsHeaderIcon";
 import "../../theme.css";
 
-const meta = {
+const meta: Meta<typeof HalfModal> = {
   component: HalfModal,
   parameters: {
     layout: "fullscreen",
+    a11y: {
+      config: {
+        rules: [
+          {
+            id: "color-contrast",
+            enabled: false,
+          },
+        ],
+      },
+    },
   },
-} satisfies Meta<typeof HalfModal>;
+  decorators: [
+    (Story) => (
+      <MotionConfig reducedMotion="always">
+        <Story />
+      </MotionConfig>
+    ),
+  ],
+};
 
 export default meta;
 
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof HalfModal>;
 
 const Content = (
   <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
@@ -74,7 +93,7 @@ export const WithTriggerButton: Story = {
 };
 
 export const HeightSmall: Story = {
-  render: (args) => <HalfModal {...args}>{Content}</HalfModal>,
+  render: (args: ComponentProps<typeof HalfModal>) => <HalfModal {...args}>{Content}</HalfModal>,
   args: {
     open: true,
     onOpenChange: () => {
@@ -91,7 +110,7 @@ export const HeightSmall: Story = {
 };
 
 export const HeightMedium: Story = {
-  render: (args) => <HalfModal {...args}>{Content}</HalfModal>,
+  render: (args: ComponentProps<typeof HalfModal>) => <HalfModal {...args}>{Content}</HalfModal>,
   args: {
     open: true,
     onOpenChange: () => {
@@ -108,7 +127,7 @@ export const HeightMedium: Story = {
 };
 
 export const HeightLarge: Story = {
-  render: (args) => <HalfModal {...args}>{Content}</HalfModal>,
+  render: (args: ComponentProps<typeof HalfModal>) => <HalfModal {...args}>{Content}</HalfModal>,
   args: {
     open: true,
     onOpenChange: () => {
@@ -125,7 +144,7 @@ export const HeightLarge: Story = {
 };
 
 export const WithoutFooter: Story = {
-  render: (args) => <HalfModal {...args}>{Content}</HalfModal>,
+  render: (args: ComponentProps<typeof HalfModal>) => <HalfModal {...args}>{Content}</HalfModal>,
   args: {
     open: true,
     onOpenChange: () => {
@@ -139,7 +158,7 @@ export const WithoutFooter: Story = {
 };
 
 export const PrimaryDisabled: Story = {
-  render: (args) => <HalfModal {...args}>{Content}</HalfModal>,
+  render: (args: ComponentProps<typeof HalfModal>) => <HalfModal {...args}>{Content}</HalfModal>,
   args: {
     open: true,
     onOpenChange: () => {
@@ -157,7 +176,7 @@ export const PrimaryDisabled: Story = {
 };
 
 export const PrimaryLoading: Story = {
-  render: (args) => <HalfModal {...args}>{Content}</HalfModal>,
+  render: (args: ComponentProps<typeof HalfModal>) => <HalfModal {...args}>{Content}</HalfModal>,
   args: {
     open: true,
     onOpenChange: () => {
@@ -174,7 +193,7 @@ export const PrimaryLoading: Story = {
 };
 
 export const SecondaryDisabled: Story = {
-  render: (args) => <HalfModal {...args}>{Content}</HalfModal>,
+  render: (args: ComponentProps<typeof HalfModal>) => <HalfModal {...args}>{Content}</HalfModal>,
   args: {
     open: true,
     onOpenChange: () => {

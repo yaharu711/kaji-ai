@@ -1,6 +1,8 @@
 import type { ReactNode } from "react";
 import { X } from "lucide-react";
 import * as Dialog from "@radix-ui/react-dialog";
+import { AnimatePresence, motion } from "framer-motion";
+import { useState } from "react";
 import Button from "../Button";
 import LoaderCircle from "../LoaderCircle";
 import styles from "./HalfModal.module.css";
@@ -94,63 +96,111 @@ function HalfModal({
   const primaryActionIcon = primaryActionLoading ? (
     <LoaderCircle size="xs" tone="onPrimary" ariaLabel="処理中" />
   ) : undefined;
+  const [isClosing, setIsClosing] = useState(false);
+
+  // isClosingをtrueにすることで、すぐにアンマウントされないようにしている
+  // これは、アニメーションが終わった時点でisClosingをfalseにしてアンマウントするため
+  const handleOpenChange = (nextOpen: boolean) => {
+    if (nextOpen) {
+      onOpenChange(true);
+      return;
+    }
+
+    setIsClosing(true);
+    onOpenChange(false);
+  };
+
+  const handlePrimaryActionClick = () => {
+    onPrimaryAction?.();
+    handleOpenChange(false);
+  };
+
+  const handleSecondaryActionClick = () => {
+    onSecondaryAction?.();
+    handleOpenChange(false);
+  };
 
   return (
-    <Dialog.Root open={open} onOpenChange={onOpenChange}>
+    <Dialog.Root open={open || isClosing} onOpenChange={handleOpenChange}>
       <Dialog.Portal>
-        <Dialog.Overlay className={styles.overlay} />
-        <Dialog.Content className={contentClassName}>
-          <div className={styles.header}>
-            <div className={styles.heading}>
-              {headerIcon ?? null}
-              <div className={styles.titleGroup}>
-                <Dialog.Title className={styles.title}>{title}</Dialog.Title>
-                {description ? (
-                  <Dialog.Description className={styles.description}>
-                    {description}
-                  </Dialog.Description>
-                ) : null}
-              </div>
-            </div>
-            <Dialog.Close asChild>
-              <button type="button" className={styles.closeButton} aria-label="閉じる">
-                <X size={18} strokeWidth={2.5} />
-              </button>
-            </Dialog.Close>
-          </div>
-
-          <div className={styles.body}>{children}</div>
-
-          {shouldShowFooter ? (
-            <div className={styles.footer}>
-              {secondaryActionLabel ? (
-                <Button
-                  variant="outline"
-                  radius="pill"
-                  size="sm"
-                  fullWidth
-                  onClick={onSecondaryAction}
-                  disabled={resolvedSecondaryDisabled}
+          <AnimatePresence
+            onExitComplete={() => {
+              setIsClosing(false);
+            }}
+          >
+          {open ? (
+            <>
+              <Dialog.Overlay asChild>
+                <motion.div
+                  className={styles.overlay}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.25, ease: "easeOut" }}
+                />
+              </Dialog.Overlay>
+              <Dialog.Content asChild>
+                <motion.div
+                  className={contentClassName}
+                  initial={{ opacity: 0, y: 32 }}
+                  animate={{ opacity: 1, y: 0, transition: { duration: 0.32, ease: "easeOut" } }}
+                  exit={{ opacity: 0, y: 32, transition: { duration: 0.24, ease: "easeIn" } }}
                 >
-                  {secondaryActionLabel}
-                </Button>
-              ) : null}
-              {primaryActionLabel ? (
-                <Button
-                  radius="pill"
-                  fullWidth
-                  size="sm"
-                  onClick={onPrimaryAction}
-                  disabled={resolvedPrimaryDisabled}
-                  icon={primaryActionIcon}
-                  aria-busy={primaryActionLoading}
-                >
-                  {primaryActionLabel}
-                </Button>
-              ) : null}
-            </div>
+                  <div className={styles.header}>
+                    <div className={styles.heading}>
+                      {headerIcon ?? null}
+                      <div className={styles.titleGroup}>
+                        <Dialog.Title className={styles.title}>{title}</Dialog.Title>
+                        {description ? (
+                          <Dialog.Description className={styles.description}>
+                            {description}
+                          </Dialog.Description>
+                        ) : null}
+                      </div>
+                    </div>
+                    <Dialog.Close asChild>
+                      <button type="button" className={styles.closeButton} aria-label="閉じる">
+                        <X size={18} strokeWidth={2.5} />
+                      </button>
+                    </Dialog.Close>
+                  </div>
+
+                  <div className={styles.body}>{children}</div>
+
+                  {shouldShowFooter ? (
+                    <div className={styles.footer}>
+                      {secondaryActionLabel ? (
+                        <Button
+                          variant="outline"
+                          radius="pill"
+                          size="sm"
+                          fullWidth
+                          onClick={handleSecondaryActionClick}
+                          disabled={resolvedSecondaryDisabled}
+                        >
+                          {secondaryActionLabel}
+                        </Button>
+                      ) : null}
+                      {primaryActionLabel ? (
+                        <Button
+                          radius="pill"
+                          fullWidth
+                          size="sm"
+                          onClick={handlePrimaryActionClick}
+                          disabled={resolvedPrimaryDisabled}
+                          icon={primaryActionIcon}
+                          aria-busy={primaryActionLoading}
+                        >
+                          {primaryActionLabel}
+                        </Button>
+                      ) : null}
+                    </div>
+                  ) : null}
+                </motion.div>
+              </Dialog.Content>
+            </>
           ) : null}
-        </Dialog.Content>
+        </AnimatePresence>
       </Dialog.Portal>
     </Dialog.Root>
   );

@@ -1,9 +1,9 @@
 import { MessageSquareHeart } from "lucide-react";
 import { getChoreIcon, type ChoreIconCode } from "../../../../../constants/chores";
-import HeartIcon from "../../../../../components/HeartIcon";
 import UserProfileImg from "../../../../../components/UserProfileImg";
 import BeatingMessages from "../beating-messages";
 import type { BeatingMessage } from "../../../types/beatings";
+import LikeReaction from "./like-reaction";
 import { useCreateChoreBeatingLikeMutation } from "../../../hooks/useCreateChoreBeatingLikeMutation";
 import styles from "./BeatingCard.module.css";
 
@@ -47,29 +47,14 @@ function BeatingCard({
         <div className={styles.headerBody}>
           <p className={styles.choreName}>{choreName}</p>
           <div className={styles.reactions}>
-            {likedByMe ? (
-              <div className={styles.reactionItem} role="img" aria-label="いいね済み">
-                <span className={styles.reactionIcon} aria-hidden>
-                  <HeartIcon variant="solid" size="lg" />
-                </span>
-                {likeCount > 0 ? <span className={styles.reactionCount}>{likeCount}</span> : null}
-              </div>
-            ) : (
-              <button
-                type="button"
-                className={`${styles.reactionItem} ${styles.reactionButton}`}
-                aria-label="いいね"
-                disabled={isLiking}
-                onClick={() => {
-                  sendLike({ groupId, beatingId, date });
-                }}
-              >
-                <span className={styles.reactionIcon} aria-hidden>
-                  <HeartIcon variant="outline" size="lg" />
-                </span>
-                {likeCount > 0 ? <span className={styles.reactionCount}>{likeCount}</span> : null}
-              </button>
-            )}
+            <LikeReaction
+              likedByMe={likedByMe}
+              likeCount={likeCount}
+              isLiking={isLiking}
+              onLike={() => {
+                sendLike({ groupId, beatingId, date });
+              }}
+            />
             <div className={styles.reactionItem} role="group" aria-label="メッセージ">
               <span className={styles.reactionIcon} aria-hidden>
                 <MessageSquareHeart size={20} />
