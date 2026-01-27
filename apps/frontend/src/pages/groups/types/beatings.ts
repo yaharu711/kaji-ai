@@ -2,7 +2,6 @@ import type { ChoreIconCode } from "../../../constants/chores";
 
 export interface BeatingMessage {
   id: string;
-  userId: string;
   userName: string;
   userImageUrl?: string | null;
   mainMessage: string;

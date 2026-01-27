@@ -674,6 +674,7 @@ describe("GET /api/groups/:groupId/beatings", () => {
             icon_code: "dish-wash",
             thanks_count: 2,
             liked_by_me: false,
+            messaged_by_me: false,
             messages: [
               {
                 id: expect.any(Number),
@@ -701,6 +702,7 @@ describe("GET /api/groups/:groupId/beatings", () => {
             icon_code: "cleaning",
             thanks_count: 0,
             liked_by_me: false,
+            messaged_by_me: false,
             messages: [],
             user_id: "member-1",
             user_name: "Beater",

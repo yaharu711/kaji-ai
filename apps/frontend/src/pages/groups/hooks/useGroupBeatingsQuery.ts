@@ -22,7 +22,6 @@ const mapBeatingGroups = (
     items: group.items.map((item) => {
       const messages = item.messages.map((message) => ({
         id: String(message.id),
-        userId: message.user_id,
         userName: formatUserName(message.user_name),
         userImageUrl: message.img_url,
         mainMessage: message.main_message,
