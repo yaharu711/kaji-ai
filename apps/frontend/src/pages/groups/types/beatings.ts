@@ -2,6 +2,7 @@ import type { ChoreIconCode } from "../../../constants/chores";
 
 export interface BeatingMessage {
   id: string;
+  userId: string;
   userName: string;
   userImageUrl?: string | null;
   mainMessage: string;
@@ -19,6 +20,7 @@ export interface BeatingLog {
   userImageUrl?: string | null;
   likeCount?: number;
   likedByMe?: boolean;
+  messagedByMe?: boolean;
   commentCount?: number;
   userRoleLabel?: string;
   messages?: readonly BeatingMessage[];

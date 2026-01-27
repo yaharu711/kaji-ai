@@ -1,0 +1,46 @@
+.button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+  box-shadow: 0 8px 18px rgba(148, 163, 184, 0.2);
+  font-size: 13px;
+  border: none;
+  cursor: pointer;
+  font: inherit;
+}
+
+.button:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.icon {
+  display: grid;
+  place-items: center;
+  color: var(--color-accent);
+}
+
+.count {
+  font-weight: 600;
+  color: var(--color-text-strong);
+}
+
+.thanksBubble {
+  position: absolute;
+  top: -14px;
+  right: -6px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(236, 72, 153, 0.12);
+  color: var(--color-primary);
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+  box-shadow: 0 6px 16px rgba(236, 72, 153, 0.2);
+  pointer-events: none;
+}

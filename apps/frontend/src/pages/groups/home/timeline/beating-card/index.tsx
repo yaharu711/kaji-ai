@@ -1,10 +1,10 @@
-import { MessageSquareHeart } from "lucide-react";
 import { useState } from "react";
 import { getChoreIcon, type ChoreIconCode } from "../../../../../constants/chores";
 import UserProfileImg from "../../../../../components/UserProfileImg";
 import BeatingMessages from "../beating-messages";
 import type { BeatingMessage } from "../../../types/beatings";
 import LikeReaction from "./like-reaction";
+import MessageReaction from "./message-reaction";
 import { useCreateChoreBeatingLikeMutation } from "../../../hooks/useCreateChoreBeatingLikeMutation";
 import { useCreateChoreBeatingMessageMutation } from "../../../hooks/useCreateChoreBeatingMessageMutation";
 import GratitudeModal from "../../gratitude-modal";
@@ -20,6 +20,7 @@ interface BeatingCardProps {
   userImageUrl?: string | null;
   likeCount?: number;
   likedByMe?: boolean;
+  messagedByMe?: boolean;
   commentCount?: number;
   userRoleLabel?: string;
   messages?: readonly BeatingMessage[];
@@ -35,6 +36,7 @@ function BeatingCard({
   userImageUrl,
   likeCount = 0,
   likedByMe = false,
+  messagedByMe = false,
   commentCount = 0,
   userRoleLabel = "討伐者",
   messages = [],
@@ -61,21 +63,13 @@ function BeatingCard({
                 sendLike({ groupId, beatingId, date });
               }}
             />
-            <button
-              type="button"
-              className={[styles.reactionItem, styles.reactionButton].join(" ")}
-              aria-label="メッセージを送る"
+            <MessageReaction
+              messagedByMe={messagedByMe}
+              commentCount={commentCount}
               onClick={() => {
                 setIsGratitudeOpen(true);
               }}
-            >
-              <span className={styles.reactionIcon} aria-hidden>
-                <MessageSquareHeart size={20} />
-              </span>
-              {commentCount > 0 ? (
-                <span className={styles.reactionCount}>{commentCount}</span>
-              ) : null}
-            </button>
+            />
           </div>
         </div>
       </div>
