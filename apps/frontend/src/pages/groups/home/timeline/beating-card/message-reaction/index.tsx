@@ -57,7 +57,7 @@ function MessageReaction({ messagedByMe, commentCount, onClick }: MessageReactio
               setShowThanks(false);
             }}
           >
-            いつも感謝をありがとう！
+            いつも感謝をありがとう
           </motion.span>
         ) : null}
       </AnimatePresence>
