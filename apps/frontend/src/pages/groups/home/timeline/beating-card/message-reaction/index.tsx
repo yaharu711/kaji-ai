@@ -21,11 +21,12 @@ function MessageReaction({ messagedByMe, commentCount, onClick }: MessageReactio
   const [burstId, setBurstId] = useState(0);
 
   return (
-    <button
+    <motion.button
       type="button"
       className={styles.button}
       aria-label="メッセージを送る"
       aria-pressed={messagedByMe}
+      whileTap={{ scale: 0.8 }}
       onClick={() => {
         if (messagedByMe) {
           setBurstId((current) => current + 1);
@@ -56,7 +57,7 @@ function MessageReaction({ messagedByMe, commentCount, onClick }: MessageReactio
           </motion.span>
         ) : null}
       </AnimatePresence>
-    </button>
+    </motion.button>
   );
 }
 
