@@ -16,21 +16,21 @@ function LikeReaction({ likedByMe, likeCount, isLiking, onLike }: LikeReactionPr
   const [burstMode, setBurstMode] = useState<"local" | "screen">("local");
 
   const localHeartParticles = [
-    { x: -26, y: -34, delay: 0 },
-    { x: 0, y: -44, delay: 40 },
-    { x: 26, y: -34, delay: 80 },
-    { x: -34, y: 6, delay: 120 },
-    { x: 34, y: 6, delay: 160 },
+    { x: -38, y: -52, delay: 0 },
+    { x: 0, y: -64, delay: 40 },
+    { x: 38, y: -52, delay: 80 },
+    { x: -52, y: 8, delay: 120 },
+    { x: 52, y: 8, delay: 160 },
   ] as const;
 
   const screenHeartParticles = [
-    { x: -72, y: -58, delay: 0 },
-    { x: 0, y: -86, delay: 40 },
-    { x: 72, y: -58, delay: 80 },
-    { x: -88, y: 6, delay: 120 },
-    { x: 88, y: 6, delay: 160 },
-    { x: -48, y: 72, delay: 200 },
-    { x: 48, y: 72, delay: 240 },
+    { x: -108, y: -86, delay: 0 },
+    { x: 0, y: -128, delay: 40 },
+    { x: 108, y: -86, delay: 80 },
+    { x: -132, y: 10, delay: 120 },
+    { x: 132, y: 10, delay: 160 },
+    { x: -72, y: 108, delay: 200 },
+    { x: 72, y: 108, delay: 240 },
   ] as const;
 
   const triggerBurst = () => {
