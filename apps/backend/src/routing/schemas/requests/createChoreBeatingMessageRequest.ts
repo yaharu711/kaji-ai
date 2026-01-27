@@ -1,9 +1,11 @@
 import { z } from "zod";
 
-export const MESSAGE_LIMITS = {
+const MESSAGE_LIMITS = {
   main: 100,
   description: 150,
 } as const;
+
+export type ChoreBeatingMessageLimits = typeof MESSAGE_LIMITS;
 
 export const createChoreBeatingMessageRequestSchema = z.object({
   main_message: z.string().min(1, "main_message は必須です").max(MESSAGE_LIMITS.main),
