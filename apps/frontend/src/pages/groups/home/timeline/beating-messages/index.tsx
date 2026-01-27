@@ -1,4 +1,6 @@
 import { ChevronDown } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
+import { useState } from "react";
 import HeartIcon from "../../../../../components/HeartIcon";
 import UserProfileImg from "../../../../../components/UserProfileImg";
 import type { BeatingMessage } from "../../../types/beatings";
@@ -38,19 +40,32 @@ function BeatingMessageItem({ message }: BeatingMessageItemProps) {
 }
 
 function BeatingMessages({ messages = [] }: BeatingMessagesProps) {
+  const primaryMessage = messages[0];
+  const extraMessages = messages.slice(1);
+  const [isOpen, setIsOpen] = useState(false);
+  const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   if (messages.length === 0) {
     return null;
   }
-
-  const primaryMessage = messages[0];
-  const extraMessages = messages.slice(1);
 
   return (
     <div className={styles.gratitudeList} aria-label="感謝メッセージ">
       <BeatingMessageItem message={primaryMessage} />
       {extraMessages.length > 0 ? (
-        <details className={styles.gratitudeAccordion}>
-          <summary className={styles.gratitudeSummary}>
+        <details className={styles.gratitudeAccordion} open={isDetailsOpen}>
+          <summary
+            className={styles.gratitudeSummary}
+            onClick={(event) => {
+              event.preventDefault();
+              if (isOpen) {
+                setIsOpen(false);
+                return;
+              }
+
+              setIsOpen(true);
+              setIsDetailsOpen(true);
+            }}
+          >
             <span className={styles.gratitudeSummaryIcon} aria-hidden>
               <ChevronDown size={16} />
             </span>
@@ -58,11 +73,37 @@ function BeatingMessages({ messages = [] }: BeatingMessagesProps) {
               他{extraMessages.length}件の感謝を見る
             </span>
           </summary>
-          <div className={styles.gratitudeExtraList}>
-            {extraMessages.map((message) => (
-              <BeatingMessageItem key={message.id} message={message} />
-            ))}
-          </div>
+          <AnimatePresence
+            initial={false}
+            onExitComplete={() => {
+              setIsDetailsOpen(false);
+            }}
+          >
+            {isOpen ? (
+              <motion.div
+                className={styles.gratitudeAccordionBody}
+                initial={{ height: 0, opacity: 0 }}
+                animate={{
+                  height: "auto",
+                  opacity: 1,
+                  transitionDuration: "0.3",
+                  transition: { ease: "easeIn" },
+                }}
+                exit={{
+                  height: 0,
+                  opacity: 0,
+                  transitionDuration: "0.3",
+                  transition: { ease: "easeOut" },
+                }}
+              >
+                <div className={styles.gratitudeExtraList}>
+                  {extraMessages.map((message) => (
+                    <BeatingMessageItem key={message.id} message={message} />
+                  ))}
+                </div>
+              </motion.div>
+            ) : null}
+          </AnimatePresence>
         </details>
       ) : null}
     </div>
