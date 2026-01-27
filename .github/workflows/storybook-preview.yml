@@ -43,6 +43,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Build backend types
+        run: npm run build:types --workspace apps/backend
+
       - name: Build Storybook
         run: npm run build-storybook --workspace apps/frontend
 
