@@ -44,16 +44,20 @@ function MessageReaction({ messagedByMe, commentCount, onClick }: MessageReactio
         {showThanks ? (
           <motion.span
             key={burstId}
-            className={styles.thanksBubble}
+            className={styles.thanksRibbon}
             aria-hidden
-            initial={{ opacity: 0, y: 6, scale: 0.9 }}
-            animate={{ opacity: [0, 1, 0], y: [6, 0, -8], scale: [1.3, 1.4, 0.98] }}
-            transition={{ duration: 1.5, ease: "easeOut" }}
+            initial={{ opacity: 0, y: 8, scale: 0.96 }}
+            animate={{
+              opacity: [0, 1, 1, 0],
+              y: [8, 0, -4, -8],
+              scale: [0.96, 1.3, 1.3, 0.98],
+            }}
+            transition={{ duration: 1.4, ease: "easeOut" }}
             onAnimationComplete={() => {
               setShowThanks(false);
             }}
           >
-            いつも感謝をありがとう！
+            いつも感謝をありがとう
           </motion.span>
         ) : null}
       </AnimatePresence>
