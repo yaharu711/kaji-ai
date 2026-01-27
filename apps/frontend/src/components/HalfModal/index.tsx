@@ -159,8 +159,8 @@ function HalfModal({
               <Dialog.Content asChild>
                 <motion.div
                   className={contentClassName}
-                  initial={{ opacity: 0, y: 32 }}
-                  animate={{ opacity: 1, y: 0, transition: { duration: 0.32, ease: "easeOut" } }}
+                  initial={{ y: 32 }}
+                  animate={{ y: 0, transition: { duration: 0.32, ease: "easeOut" } }}
                   exit={{ opacity: 0, y: 32, transition: { duration: 0.24, ease: "easeIn" } }}
                 >
                   <div className={styles.header}>

@@ -21,9 +21,10 @@ interface GratitudeModalProps {
 
 const NOTE_LIMIT = 100;
 const MESSAGE_OPTIONS: GratitudeMessageOption[] = [
-  { id: "1", label: "負担が軽くなってる！" },
-  { id: "2", label: "いつも助かってます！" },
-  { id: "3", label: "これやってくれるのほんと助かる！" },
+  { id: "1", label: "忙しいのにありがとう！" },
+  { id: "2", label: "大変な家事なのにやってくれてありがとう！" },
+  { id: "3", label: "いつも助かってます！" },
+  { id: "4", label: "これやってくれるのほんと助かる！" },
 ];
 const DEFAULT_MESSAGE_ID = MESSAGE_OPTIONS[0]?.id ?? null;
 
