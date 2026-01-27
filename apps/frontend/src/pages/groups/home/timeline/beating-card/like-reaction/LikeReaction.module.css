@@ -67,7 +67,7 @@
   left: 0;
   top: 0;
   transform: translate(-50%, -50%);
-  filter: drop-shadow(0 12px 24px rgba(236, 72, 153, 0.35));
+  /* filter: drop-shadow(0 12px 24px rgba(236, 72, 153, 0.35)); */
   z-index: 2;
 }
 
