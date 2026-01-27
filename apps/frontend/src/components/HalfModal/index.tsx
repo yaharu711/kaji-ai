@@ -113,11 +113,17 @@ function HalfModal({
     onOpenChange(nextOpen);
   };
 
+  // モーダルが閉じる時もちゃんとアニメーションがつくようになっている
+  // スマホユーザーでも入力欄があっても挙動が安定している
+  // おまけに、スクロールでモーダルを閉じることができる
   return (
-    <Drawer.Root open={open} onOpenChange={handleOpenChange}>
+    <Drawer.Root open={open} onOpenChange={handleOpenChange} repositionInputs={false}>
       <Drawer.Portal>
         <Drawer.Overlay className={styles.overlay} />
         <Drawer.Content className={contentClassName}>
+          <div className={styles.dragHandle}>
+            <Drawer.Handle className={styles.dragHandleInner} />
+          </div>
           <div className={styles.header}>
             <div className={styles.heading}>
               {headerIcon ?? null}

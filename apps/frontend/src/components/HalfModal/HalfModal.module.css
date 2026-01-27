@@ -77,12 +77,24 @@
   --half-modal-divider: color-mix(in srgb, var(--color-nav-active-ring), var(--color-surface) 50%);
 }
 
+.dragHandle {
+  display: flex;
+  justify-content: center;
+  padding-top: 10px;
+}
+
+.dragHandleInner {
+  width: 72px;
+  height: 6px;
+  background: var(--color-text-strong);
+}
+
 .header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  padding: 18px 20px;
+  padding: 15px 20px;
   background: var(--half-modal-header-bg);
   border-bottom: 1px solid var(--half-modal-divider);
 }
