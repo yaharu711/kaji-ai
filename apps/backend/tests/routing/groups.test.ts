@@ -426,6 +426,186 @@ describe("POST /api/groups/:groupId/beatings/:beatingId/likes", () => {
   });
 });
 
+describe("POST /api/groups/:groupId/beatings/:beatingId/messages", () => {
+  it("感謝メッセージを追加し、良いねも同時にカウントされる", async () => {
+    const groupId = "group-message-1";
+    const now = new Date("2026-01-22T00:00:00Z");
+
+    await createGroup({
+      id: groupId,
+      name: "Message Group",
+      ownerId: AUTH_USER.id,
+      createdAt: now,
+      updatedAt: now,
+    });
+    await createBelonging({
+      groupId,
+      userId: AUTH_USER.id,
+      createdAt: now,
+      acceptedAt: now,
+    });
+    await createGroupChore({
+      id: 2000,
+      groupId,
+      choreName: "掃除",
+      iconCode: "cleaning",
+    });
+
+    const beatingId = await createChoreBeating({
+      groupId,
+      choreId: 2000,
+      userId: AUTH_USER.id,
+      likeCount: 0,
+      beatedAt: new Date("2026-01-22T10:00:00Z"),
+      createdAt: new Date("2026-01-22T10:01:00Z"),
+      updatedAt: new Date("2026-01-22T10:02:00Z"),
+    });
+
+    const res = await client.api.groups[":groupId"].beatings[":beatingId"].messages.$post({
+      param: { groupId, beatingId: String(beatingId) },
+      json: {
+        main_message: "ありがとう！",
+        description_message: "とても助かったよ",
+      },
+    });
+
+    expect(res.status).toBe(201);
+
+    const messages = await db.select().from(schema.choreBeatingThankMessages);
+    expect(messages).toHaveLength(1);
+    expect(messages[0]).toMatchObject({
+      groupId,
+      userId: AUTH_USER.id,
+      beatingId,
+      mainMessage: "ありがとう！",
+      descriptionMessage: "とても助かったよ",
+    });
+
+    const likes = await db.select().from(schema.choreBeatingLikes);
+    expect(likes).toHaveLength(1);
+    expect(likes[0]).toMatchObject({
+      groupId,
+      userId: AUTH_USER.id,
+      beatingId,
+    });
+
+    const [beating] = await db.select().from(schema.choreBeatings);
+    expect(beating.likeCount).toBe(1);
+  });
+
+  it("同じユーザーは同じ討伐へのメッセージを一つまでに制限する", async () => {
+    const groupId = "group-message-2";
+    const now = new Date("2026-01-22T00:00:00Z");
+
+    await createGroup({
+      id: groupId,
+      name: "Message Group 2",
+      ownerId: AUTH_USER.id,
+      createdAt: now,
+      updatedAt: now,
+    });
+    await createBelonging({
+      groupId,
+      userId: AUTH_USER.id,
+      createdAt: now,
+      acceptedAt: now,
+    });
+    await createGroupChore({
+      id: 2001,
+      groupId,
+      choreName: "洗濯",
+      iconCode: "laundry",
+    });
+
+    const beatingId = await createChoreBeating({
+      groupId,
+      choreId: 2001,
+      userId: AUTH_USER.id,
+      likeCount: 0,
+      beatedAt: new Date("2026-01-22T10:00:00Z"),
+      createdAt: new Date("2026-01-22T10:01:00Z"),
+      updatedAt: new Date("2026-01-22T10:02:00Z"),
+    });
+
+    const request = () =>
+      client.api.groups[":groupId"].beatings[":beatingId"].messages.$post({
+        param: { groupId, beatingId: String(beatingId) },
+        json: {
+          main_message: "ありがとう！",
+          description_message: "助かったよ",
+        },
+      });
+
+    const first = await request();
+    expect(first.status).toBe(201);
+
+    const second = await request();
+    await expect(second.status).toBe(500);
+
+    const messages = await db.select().from(schema.choreBeatingThankMessages);
+    expect(messages).toHaveLength(1);
+
+    const likes = await db.select().from(schema.choreBeatingLikes);
+    expect(likes).toHaveLength(1);
+
+    const [beating] = await db.select().from(schema.choreBeatings);
+    expect(beating.likeCount).toBe(1);
+  });
+
+  it("所属メンバーでなければ403を返す", async () => {
+    const groupId = "group-message-3";
+    const ownerId = "owner-message-3";
+    const now = new Date("2026-01-22T00:00:00Z");
+
+    await createUser({ id: ownerId, name: "Owner" });
+    await createGroup({
+      id: groupId,
+      name: "Other Group",
+      ownerId,
+      createdAt: now,
+      updatedAt: now,
+    });
+    await createBelonging({
+      groupId,
+      userId: ownerId,
+      createdAt: now,
+      acceptedAt: now,
+    });
+    await createGroupChore({
+      id: 2002,
+      groupId,
+      choreName: "食器洗い",
+      iconCode: "dish-wash",
+    });
+
+    const beatingId = await createChoreBeating({
+      groupId,
+      choreId: 2002,
+      userId: ownerId,
+      likeCount: 0,
+      beatedAt: new Date("2026-01-22T10:00:00Z"),
+      createdAt: new Date("2026-01-22T10:01:00Z"),
+      updatedAt: new Date("2026-01-22T10:02:00Z"),
+    });
+
+    const res = await client.api.groups[":groupId"].beatings[":beatingId"].messages.$post({
+      param: { groupId, beatingId: String(beatingId) },
+      json: {
+        main_message: "ありがとう！",
+        description_message: "助かったよ",
+      },
+    });
+
+    expect(res.status).toBe(403);
+    expect(await res.json()).toEqual({ status: 403, message: "Forbidden" });
+
+    const messages = await db.select().from(schema.choreBeatingThankMessages);
+    expect(messages).toHaveLength(0);
+    const likes = await db.select().from(schema.choreBeatingLikes);
+    expect(likes).toHaveLength(0);
+  });
+});
+
 describe("GET /api/groups/:groupId/beatings", () => {
   it("レスポンスに討伐ログの内容が正しく含まれる", async () => {
     const groupId = "group-1";

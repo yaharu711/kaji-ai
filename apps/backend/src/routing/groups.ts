@@ -4,6 +4,7 @@ import {
   acceptGroupInvitationController,
   createChoreBeatingController,
   createChoreBeatingLikeController,
+  createChoreBeatingMessageController,
   createGroupController,
   denyGroupInvitationController,
   getGroupBeatingsController,
@@ -14,6 +15,7 @@ import {
   searchUsersController,
 } from "../controllers/groups.controller";
 import { createChoreBeatingRequestSchema } from "./schemas/requests/createChoreBeatingRequest";
+import { createChoreBeatingMessageRequestSchema } from "./schemas/requests/createChoreBeatingMessageRequest";
 import { createGroupRequestSchema } from "./schemas/requests/createGroupRequest";
 import {
   getGroupBeatingsRequestSchema,
@@ -62,6 +64,31 @@ const app = new Hono()
     }
     return createChoreBeatingLikeController(c, requesterId, groupId, parsedBeatingId);
   })
+  .post(
+    "/:groupId/beatings/:beatingId/messages",
+    validateJson(createChoreBeatingMessageRequestSchema),
+    async (c) => {
+      const requesterId = c.var.requesterId;
+      const { groupId, beatingId } = c.req.param();
+      const parsedBeatingId = Number(beatingId);
+      if (Number.isNaN(parsedBeatingId)) {
+        const body = unprocessableEntitySchema.parse({
+          status: 422,
+          errors: [{ field: "beating_id", message: "beating_id は数値で指定してください" }],
+        });
+        return c.json(body, 422);
+      }
+      const { main_message, description_message } = c.req.valid("json");
+      return createChoreBeatingMessageController(
+        c,
+        requesterId,
+        groupId,
+        parsedBeatingId,
+        main_message,
+        description_message ?? null,
+      );
+    },
+  )
   .get("/:groupId/search/users", validateQuery(searchUsersRequestSchema), async (c) => {
     const { email } = c.req.valid("query");
     const { groupId } = c.req.param();

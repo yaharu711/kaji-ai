@@ -5,10 +5,12 @@ import { requireGroupMember } from "./authorization";
 import { ChoreRepository } from "../repositories/chore.repository";
 import { ChoreBeatingsRepository } from "../repositories/choreBeatings.repository";
 import { ChoreBeatingLikesRepository } from "../repositories/choreBeatingLikes.repository";
+import { ChoreBeatingThankMessagesRepository } from "../repositories/choreBeatingThankMessages.repository";
 import { GroupRepository } from "../repositories/group.repository";
 import { UserRepository } from "../repositories/user.repository";
 import { createChoreBeatingSuccessSchema } from "../routing/schemas/responses/createChoreBeatingResponse";
 import { createChoreBeatingLikeSuccessSchema } from "../routing/schemas/responses/createChoreBeatingLikeResponse";
+import { createChoreBeatingMessageSuccessSchema } from "../routing/schemas/responses/createChoreBeatingMessageResponse";
 import { createGroupSuccessSchema } from "../routing/schemas/responses/createGroupResponse";
 import { getGroupBeatingsSuccessSchema } from "../routing/schemas/responses/getGroupBeatingsResponse";
 import { getGroupChoresSuccessSchema } from "../routing/schemas/responses/getGroupChoresResponse";
@@ -24,6 +26,7 @@ const groupRepository = new GroupRepository(db);
 const choreRepository = new ChoreRepository(db);
 const choreBeatingsRepository = new ChoreBeatingsRepository(db);
 const choreBeatingLikesRepository = new ChoreBeatingLikesRepository(db);
+const choreBeatingThankMessagesRepository = new ChoreBeatingThankMessagesRepository(db);
 const userRepository = new UserRepository(db);
 
 export const getGroupsController = async (c: Context, requesterId: string) => {
@@ -322,5 +325,38 @@ export const createChoreBeatingLikeController = async (
   );
 
   const response = createChoreBeatingLikeSuccessSchema.parse({ status: 201 });
+  return c.json(response, 201);
+};
+
+export const createChoreBeatingMessageController = async (
+  c: Context,
+  requesterId: string,
+  groupId: string,
+  beatingId: number,
+  mainMessage: string,
+  descriptionMessage: string | null,
+) => {
+  const auth = await requireGroupMember(c, groupRepository, requesterId, groupId);
+  if (!auth.ok) return auth.response;
+
+  const now = nowJst();
+
+  await choreBeatingThankMessagesRepository.create({
+    groupId,
+    userId: requesterId,
+    beatingId,
+    mainMessage,
+    descriptionMessage,
+    createdAt: now,
+  });
+  await choreBeatingLikesRepository.addLikeAndIncrementCount(
+    groupId,
+    requesterId,
+    beatingId,
+    now,
+    now,
+  );
+
+  const response = createChoreBeatingMessageSuccessSchema.parse({ status: 201 });
   return c.json(response, 201);
 };
