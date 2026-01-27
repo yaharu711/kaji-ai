@@ -9,6 +9,10 @@ import { requireRequester } from "./middlewares/requester";
 
 const frontendOrigin = env("FRONTEND_ORIGIN");
 const app = new Hono()
+  .onError((err, c) => {
+    console.error(err);
+    return c.json({ status: 500, message: "Internal Server Error" }, 500);
+  })
   .use(
     "*",
     cors({

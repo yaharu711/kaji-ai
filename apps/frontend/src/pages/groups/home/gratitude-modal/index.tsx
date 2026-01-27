@@ -3,6 +3,7 @@ import { Heart, Sparkles } from "lucide-react";
 import { getChoreIcon, type ChoreIconCode } from "../../../../constants/chores";
 import { HalfModal } from "../../../../components";
 import styles from "./GratitudeModal.module.css";
+import type { ChoreBeatingMessageLimits } from "@kaiji-ai/backend/contracts";
 
 interface GratitudeMessageOption {
   id: string;
@@ -19,7 +20,8 @@ interface GratitudeModalProps {
   onSubmit: (payload: { messageId: string; note: string }) => Promise<void>;
 }
 
-const NOTE_LIMIT = 100;
+const NOTE_LIMIT: ChoreBeatingMessageLimits["description"] = 150;
+
 const MESSAGE_OPTIONS: GratitudeMessageOption[] = [
   { id: "1", label: "忙しいのにありがとう！" },
   { id: "2", label: "大変な家事なのにやってくれてありがとう！" },
