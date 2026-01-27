@@ -82,6 +82,9 @@
 }
 
 .recipientDetail {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   margin: 0;
   font-size: 13px;
   color: var(--color-text-muted);
@@ -146,7 +149,7 @@
   resize: none;
   min-height: 120px;
   padding: 14px 16px;
-  font-size: 14px;
+  font-size: 16px;
   line-height: 1.6;
   border-radius: 18px;
   border: 1px solid var(--color-input-border);
