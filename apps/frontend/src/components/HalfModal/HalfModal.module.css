@@ -138,9 +138,6 @@
   flex: 1;
   background: var(--half-modal-body-bg);
   color: var(--color-text-strong);
-  -webkit-overflow-scrolling: touch;
-  overscroll-behavior: contain;
-  touch-action: pan-y;
 }
 
 .footer {
