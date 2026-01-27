@@ -1,5 +1,5 @@
 import { useId, useState } from "react";
-import { Heart, Sparkles } from "lucide-react";
+import { Heart, Sparkles, Swords } from "lucide-react";
 import { getChoreIcon, type ChoreIconCode } from "../../../../constants/chores";
 import { HalfModal } from "../../../../components";
 import styles from "./GratitudeModal.module.css";
@@ -107,7 +107,10 @@ function GratitudeModal({
             </div>
             <div className={styles.recipientInfo}>
               <p className={styles.recipientName}>{userName}</p>
-              <p className={styles.recipientDetail}>{choreName}</p>
+              <p className={styles.recipientDetail}>
+                <Swords size={16} />
+                {choreName}を討伐
+              </p>
             </div>
           </div>
         </section>
