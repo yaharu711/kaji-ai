@@ -99,6 +99,7 @@ function ChoreBeatingModal({
       headerIcon={<SwordsHeaderIcon size="sm" aria-hidden />}
       primaryActionLabel="討伐完了"
       secondaryActionLabel="キャンセル"
+      primaryActionIcon={<Swords size="18" aria-hidden />}
       primaryActionDisabled={isPrimaryDisabled}
       primaryActionLoading={isSubmitting}
       secondaryActionDisabled={isSubmitting}

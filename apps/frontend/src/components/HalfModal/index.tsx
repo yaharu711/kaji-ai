@@ -35,7 +35,11 @@ type FooterActions =
       secondaryActionLabel: string;
       primaryActionDisabled?: boolean;
       primaryActionLoading?: boolean;
+      primaryActionIcon?: ReactNode;
+      primaryActionIconPosition?: "start" | "end";
       secondaryActionDisabled?: boolean;
+      secondaryActionIcon?: ReactNode;
+      secondaryActionIconPosition?: "start" | "end";
       onPrimaryAction?: () => void;
       onSecondaryAction?: () => void;
     }
@@ -44,7 +48,11 @@ type FooterActions =
       secondaryActionLabel?: undefined;
       primaryActionDisabled?: undefined;
       primaryActionLoading?: undefined;
+      primaryActionIcon?: undefined;
+      primaryActionIconPosition?: undefined;
       secondaryActionDisabled?: undefined;
+      secondaryActionIcon?: undefined;
+      secondaryActionIconPosition?: undefined;
       onPrimaryAction?: undefined;
       onSecondaryAction?: undefined;
     };
@@ -74,7 +82,11 @@ function HalfModal({
   secondaryActionLabel,
   primaryActionDisabled = false,
   primaryActionLoading = false,
+  primaryActionIcon,
+  primaryActionIconPosition = "start",
   secondaryActionDisabled = false,
+  secondaryActionIcon,
+  secondaryActionIconPosition = "start",
   onPrimaryAction,
   onSecondaryAction,
   size = "md",
@@ -93,9 +105,11 @@ function HalfModal({
   const shouldShowFooter = Boolean(primaryActionLabel && secondaryActionLabel);
   const resolvedPrimaryDisabled = primaryActionDisabled || primaryActionLoading;
   const resolvedSecondaryDisabled = secondaryActionDisabled || primaryActionLoading;
-  const primaryActionIcon = primaryActionLoading ? (
+  const resolvedPrimaryIcon = primaryActionLoading ? (
     <LoaderCircle size="xs" tone="onPrimary" ariaLabel="処理中" />
-  ) : undefined;
+  ) : (
+    primaryActionIcon
+  );
   const [isClosing, setIsClosing] = useState(false);
 
   // isClosingをtrueにすることで、すぐにアンマウントされないようにしている
@@ -110,6 +124,9 @@ function HalfModal({
     onOpenChange(false);
   };
 
+  // 今のままだと、primaryActionLoading中に閉じてしまい、ローディング中のフィードバックができない、、！
+  // けど、閉じないようにすると閉じる時にアニメーションがつかなくなる
+  // この記事も参考にすると解決策が出てくるかも: https://qiita.com/yun_bow/items/31aaad10d182f03c795b#modal
   const handlePrimaryActionClick = () => {
     onPrimaryAction?.();
     handleOpenChange(false);
@@ -123,11 +140,11 @@ function HalfModal({
   return (
     <Dialog.Root open={open || isClosing} onOpenChange={handleOpenChange}>
       <Dialog.Portal>
-          <AnimatePresence
-            onExitComplete={() => {
-              setIsClosing(false);
-            }}
-          >
+        <AnimatePresence
+          onExitComplete={() => {
+            setIsClosing(false);
+          }}
+        >
           {open ? (
             <>
               <Dialog.Overlay asChild>
@@ -142,8 +159,8 @@ function HalfModal({
               <Dialog.Content asChild>
                 <motion.div
                   className={contentClassName}
-                  initial={{ opacity: 0, y: 32 }}
-                  animate={{ opacity: 1, y: 0, transition: { duration: 0.32, ease: "easeOut" } }}
+                  initial={{ y: 32 }}
+                  animate={{ y: 0, transition: { duration: 0.32, ease: "easeOut" } }}
                   exit={{ opacity: 0, y: 32, transition: { duration: 0.24, ease: "easeIn" } }}
                 >
                   <div className={styles.header}>
@@ -177,6 +194,8 @@ function HalfModal({
                           fullWidth
                           onClick={handleSecondaryActionClick}
                           disabled={resolvedSecondaryDisabled}
+                          icon={secondaryActionIcon}
+                          iconPosition={secondaryActionIconPosition}
                         >
                           {secondaryActionLabel}
                         </Button>
@@ -188,7 +207,8 @@ function HalfModal({
                           size="sm"
                           onClick={handlePrimaryActionClick}
                           disabled={resolvedPrimaryDisabled}
-                          icon={primaryActionIcon}
+                          icon={resolvedPrimaryIcon}
+                          iconPosition={primaryActionIconPosition}
                           aria-busy={primaryActionLoading}
                         >
                           {primaryActionLabel}

@@ -63,9 +63,18 @@ function BeatingAccordion({ timeLabel, items }: BeatingAccordionProps) {
           <motion.div
             className={styles.accordionBody}
             initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.24, ease: "easeOut" }}
+            animate={{
+              height: "auto",
+              opacity: 1,
+              transitionDuration: "0.3",
+              transition: { ease: "easeIn" },
+            }}
+            exit={{
+              height: 0,
+              opacity: 0,
+              transitionDuration: "0.3",
+              transition: { ease: "easeOut" },
+            }}
           >
             <div className={styles.accordionBodyInner}>
               {items.map((beating) => (
