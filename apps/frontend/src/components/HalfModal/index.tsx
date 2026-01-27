@@ -159,70 +159,63 @@ function HalfModal({
               <Dialog.Content asChild>
                 <motion.div
                   className={contentClassName}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1, transition: { duration: 0.32, ease: "easeOut" } }}
-                  exit={{ opacity: 0, transition: { duration: 0.24, ease: "easeIn" } }}
+                  initial={{ y: 32 }}
+                  animate={{ y: 0, transition: { duration: 0.32, ease: "easeOut" } }}
+                  exit={{ opacity: 0, y: 32, transition: { duration: 0.24, ease: "easeIn" } }}
                 >
-                  <motion.div
-                    className={styles.contentInner}
-                    initial={{ y: 32, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1, transition: { duration: 0.32, ease: "easeOut" } }}
-                    exit={{ y: 32, opacity: 0, transition: { duration: 0.24, ease: "easeIn" } }}
-                  >
-                    <div className={styles.header}>
-                      <div className={styles.heading}>
-                        {headerIcon ?? null}
-                        <div className={styles.titleGroup}>
-                          <Dialog.Title className={styles.title}>{title}</Dialog.Title>
-                          {description ? (
-                            <Dialog.Description className={styles.description}>
-                              {description}
-                            </Dialog.Description>
-                          ) : null}
-                        </div>
+                  <div className={styles.header}>
+                    <div className={styles.heading}>
+                      {headerIcon ?? null}
+                      <div className={styles.titleGroup}>
+                        <Dialog.Title className={styles.title}>{title}</Dialog.Title>
+                        {description ? (
+                          <Dialog.Description className={styles.description}>
+                            {description}
+                          </Dialog.Description>
+                        ) : null}
                       </div>
-                      <Dialog.Close asChild>
-                        <button type="button" className={styles.closeButton} aria-label="閉じる">
-                          <X size={18} strokeWidth={2.5} />
-                        </button>
-                      </Dialog.Close>
                     </div>
+                    <Dialog.Close asChild>
+                      <button type="button" className={styles.closeButton} aria-label="閉じる">
+                        <X size={18} strokeWidth={2.5} />
+                      </button>
+                    </Dialog.Close>
+                  </div>
 
-                    <div className={styles.body}>{children}</div>
+                  <div className={styles.body}>{children}</div>
 
-                    {shouldShowFooter ? (
-                      <div className={styles.footer}>
-                        {secondaryActionLabel ? (
-                          <Button
-                            variant="outline"
-                            radius="pill"
-                            size="sm"
-                            fullWidth
-                            onClick={handleSecondaryActionClick}
-                            disabled={resolvedSecondaryDisabled}
-                            icon={secondaryActionIcon}
-                            iconPosition={secondaryActionIconPosition}
-                          >
-                            {secondaryActionLabel}
-                          </Button>
-                        ) : null}
-                        {primaryActionLabel ? (
-                          <Button
-                            radius="pill"
-                            fullWidth
-                            size="sm"
-                            onClick={handlePrimaryActionClick}
-                            disabled={resolvedPrimaryDisabled}
-                            icon={resolvedPrimaryIcon}
-                            iconPosition={primaryActionIconPosition}
-                            aria-busy={primaryActionLoading}
-                          >
-                            {primaryActionLabel}
-                          </Button>
-                        ) : null}
-                      </div>
-                    ) : null}
-                  </motion.div>
+                  {shouldShowFooter ? (
+                    <div className={styles.footer}>
+                      {secondaryActionLabel ? (
+                        <Button
+                          variant="outline"
+                          radius="pill"
+                          size="sm"
+                          fullWidth
+                          onClick={handleSecondaryActionClick}
+                          disabled={resolvedSecondaryDisabled}
+                          icon={secondaryActionIcon}
+                          iconPosition={secondaryActionIconPosition}
+                        >
+                          {secondaryActionLabel}
+                        </Button>
+                      ) : null}
+                      {primaryActionLabel ? (
+                        <Button
+                          radius="pill"
+                          fullWidth
+                          size="sm"
+                          onClick={handlePrimaryActionClick}
+                          disabled={resolvedPrimaryDisabled}
+                          icon={resolvedPrimaryIcon}
+                          iconPosition={primaryActionIconPosition}
+                          aria-busy={primaryActionLoading}
+                        >
+                          {primaryActionLabel}
+                        </Button>
+                      ) : null}
+                    </div>
+                  ) : null}
                 </motion.div>
               </Dialog.Content>
             </>
