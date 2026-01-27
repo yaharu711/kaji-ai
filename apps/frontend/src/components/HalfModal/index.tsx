@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { X } from "lucide-react";
 import * as Dialog from "@radix-ui/react-dialog";
 import { AnimatePresence, motion } from "framer-motion";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Button from "../Button";
 import LoaderCircle from "../LoaderCircle";
 import styles from "./HalfModal.module.css";
@@ -93,6 +93,14 @@ function HalfModal({
   radius = "xl",
   height = "md",
 }: HalfModalProps) {
+  const bodyLockRef = useRef<{
+    position: string;
+    top: string;
+    left: string;
+    right: string;
+    width: string;
+    scrollY: number;
+  } | null>(null);
   const contentClassName = [
     styles.content,
     styles.variantSoft,
@@ -136,6 +144,41 @@ function HalfModal({
     onSecondaryAction?.();
     handleOpenChange(false);
   };
+
+  useEffect(() => {
+    if (!open) return;
+
+    const { body, documentElement } = document;
+    const scrollY = window.scrollY;
+    bodyLockRef.current = {
+      position: body.style.position,
+      top: body.style.top,
+      left: body.style.left,
+      right: body.style.right,
+      width: body.style.width,
+      scrollY,
+    };
+
+    body.style.position = "fixed";
+    body.style.top = `-${String(scrollY)}px`;
+    body.style.left = "0";
+    body.style.right = "0";
+    body.style.width = "100%";
+    documentElement.style.scrollBehavior = "auto";
+
+    return () => {
+      const prev = bodyLockRef.current;
+      if (!prev) return;
+      body.style.position = prev.position;
+      body.style.top = prev.top;
+      body.style.left = prev.left;
+      body.style.right = prev.right;
+      body.style.width = prev.width;
+      window.scrollTo(0, prev.scrollY);
+      documentElement.style.scrollBehavior = "";
+      bodyLockRef.current = null;
+    };
+  }, [open]);
 
   return (
     <Dialog.Root open={open || isClosing} onOpenChange={handleOpenChange}>
