@@ -5,6 +5,7 @@ const SIZE_MAP = {
   sm: 12,
   md: 16,
   lg: 20,
+  xl: 40,
 } as const;
 
 const TONE_CLASS_MAP = {

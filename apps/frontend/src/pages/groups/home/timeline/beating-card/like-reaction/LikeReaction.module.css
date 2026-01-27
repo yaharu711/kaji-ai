@@ -46,11 +46,40 @@
   pointer-events: none;
 }
 
+.screenBurst {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+.screenCenter {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0;
+  height: 0;
+  transform: translate(-50%, -50%);
+}
+
+.screenHeart {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform: translate(-50%, -50%);
+  filter: drop-shadow(0 12px 24px rgba(236, 72, 153, 0.35));
+  z-index: 2;
+}
+
 .particle {
   position: absolute;
   left: 0;
   top: 0;
   transform: translate(-50%, -50%);
+}
+
+.screenParticle {
+  z-index: 1;
 }
 
 .particle :global(svg) {
