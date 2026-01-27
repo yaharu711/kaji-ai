@@ -113,19 +113,6 @@ function HalfModal({
     onOpenChange(nextOpen);
   };
 
-  // 今のままだと、primaryActionLoading中に閉じてしまい、ローディング中のフィードバックができない、、！
-  // けど、閉じないようにすると閉じる時にアニメーションがつかなくなる
-  // この記事も参考にすると解決策が出てくるかも: https://qiita.com/yun_bow/items/31aaad10d182f03c795b#modal
-  const handlePrimaryActionClick = () => {
-    onPrimaryAction?.();
-    handleOpenChange(false);
-  };
-
-  const handleSecondaryActionClick = () => {
-    onSecondaryAction?.();
-    handleOpenChange(false);
-  };
-
   return (
     <Drawer.Root open={open} onOpenChange={handleOpenChange}>
       <Drawer.Portal>
@@ -160,7 +147,7 @@ function HalfModal({
                   radius="pill"
                   size="sm"
                   fullWidth
-                  onClick={handleSecondaryActionClick}
+                  onClick={onSecondaryAction}
                   disabled={resolvedSecondaryDisabled}
                   icon={secondaryActionIcon}
                   iconPosition={secondaryActionIconPosition}
@@ -173,7 +160,7 @@ function HalfModal({
                   radius="pill"
                   fullWidth
                   size="sm"
-                  onClick={handlePrimaryActionClick}
+                  onClick={onPrimaryAction}
                   disabled={resolvedPrimaryDisabled}
                   icon={resolvedPrimaryIcon}
                   iconPosition={primaryActionIconPosition}
