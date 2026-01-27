@@ -99,8 +99,12 @@ function HalfModal({
     left: string;
     right: string;
     width: string;
+    bodyOverflow: string;
+    htmlOverflow: string;
+    htmlOverscrollBehavior: string;
     scrollY: number;
   } | null>(null);
+  const bodyRef = useRef<HTMLDivElement | null>(null);
   const contentClassName = [
     styles.content,
     styles.variantSoft,
@@ -156,6 +160,9 @@ function HalfModal({
       left: body.style.left,
       right: body.style.right,
       width: body.style.width,
+      bodyOverflow: body.style.overflow,
+      htmlOverflow: documentElement.style.overflow,
+      htmlOverscrollBehavior: documentElement.style.overscrollBehavior,
       scrollY,
     };
 
@@ -164,7 +171,20 @@ function HalfModal({
     body.style.left = "0";
     body.style.right = "0";
     body.style.width = "100%";
+    body.style.overflow = "hidden";
+    documentElement.style.overflow = "hidden";
+    documentElement.style.overscrollBehavior = "none";
     documentElement.style.scrollBehavior = "auto";
+
+    const handleTouchMove = (event: TouchEvent) => {
+      const target = event.target as Node | null;
+      if (target && bodyRef.current?.contains(target)) {
+        return;
+      }
+      event.preventDefault();
+    };
+
+    document.addEventListener("touchmove", handleTouchMove, { passive: false });
 
     return () => {
       const prev = bodyLockRef.current;
@@ -174,9 +194,13 @@ function HalfModal({
       body.style.left = prev.left;
       body.style.right = prev.right;
       body.style.width = prev.width;
+      body.style.overflow = prev.bodyOverflow;
+      documentElement.style.overflow = prev.htmlOverflow;
+      documentElement.style.overscrollBehavior = prev.htmlOverscrollBehavior;
       window.scrollTo(0, prev.scrollY);
       documentElement.style.scrollBehavior = "";
       bodyLockRef.current = null;
+      document.removeEventListener("touchmove", handleTouchMove);
     };
   }, [open]);
 
@@ -225,7 +249,9 @@ function HalfModal({
                     </Dialog.Close>
                   </div>
 
-                  <div className={styles.body}>{children}</div>
+                  <div ref={bodyRef} className={styles.body}>
+                    {children}
+                  </div>
 
                   {shouldShowFooter ? (
                     <div className={styles.footer}>
