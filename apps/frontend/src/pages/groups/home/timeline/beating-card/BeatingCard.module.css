@@ -49,28 +49,6 @@
   flex-wrap: wrap;
 }
 
-.reactionItem {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 12px;
-  border-radius: 999px;
-  background: var(--color-surface);
-  color: var(--color-text-muted);
-  box-shadow: 0 8px 18px rgba(148, 163, 184, 0.2);
-  font-size: 13px;
-}
-
-.reactionIcon {
-  display: grid;
-  place-items: center;
-  color: var(--color-accent);
-}
-
-.reactionCount {
-  font-weight: 600;
-  color: var(--color-text-strong);
-}
 
 .divider {
   width: 100%;

@@ -15,6 +15,7 @@ export type BeatingTimelineItemDto = {
   iconCode: string;
   thanksCount: number;
   likedByMe: boolean;
+  messagedByMe: boolean;
   messages: BeatingTimelineMessageDto[];
   userId: string;
   userName: string | null;

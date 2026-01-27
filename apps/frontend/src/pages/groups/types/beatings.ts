@@ -19,6 +19,7 @@ export interface BeatingLog {
   userImageUrl?: string | null;
   likeCount?: number;
   likedByMe?: boolean;
+  messagedByMe?: boolean;
   commentCount?: number;
   userRoleLabel?: string;
   messages?: readonly BeatingMessage[];

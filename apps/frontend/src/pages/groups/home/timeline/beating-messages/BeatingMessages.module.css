@@ -93,6 +93,7 @@
   font-size: 15px;
   font-weight: 600;
   color: var(--color-text-strong);
+  white-space: pre-wrap;
 }
 
 .gratitudeDescribe {
@@ -101,6 +102,7 @@
   border-left: 3px solid #f472b6;
   font-size: 14px;
   color: var(--color-text-muted);
+  white-space: pre-wrap;
 }
 
 @media (max-width: 540px) {

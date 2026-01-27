@@ -2,6 +2,7 @@ export * from "./getGroupsResponse";
 export * from "./createGroupResponse";
 export * from "./createChoreBeatingResponse";
 export * from "./createChoreBeatingLikeResponse";
+export * from "./createChoreBeatingMessageResponse";
 export * from "./getGroupBeatingsResponse";
 export * from "./getGroupChoresResponse";
 export * from "./getGroupUsersResponse";

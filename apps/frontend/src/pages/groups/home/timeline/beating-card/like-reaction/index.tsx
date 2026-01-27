@@ -13,13 +13,24 @@ interface LikeReactionProps {
 function LikeReaction({ likedByMe, likeCount, isLiking, onLike }: LikeReactionProps) {
   const [burstId, setBurstId] = useState(0);
   const [showHearts, setShowHearts] = useState(false);
+  const [burstMode, setBurstMode] = useState<"local" | "screen">("local");
 
-  const heartParticles = [
-    { x: -26, y: -34, delay: 0 },
-    { x: 0, y: -44, delay: 40 },
-    { x: 26, y: -34, delay: 80 },
-    { x: -34, y: 6, delay: 120 },
-    { x: 34, y: 6, delay: 160 },
+  const localHeartParticles = [
+    { x: -38, y: -52, delay: 0 },
+    { x: 0, y: -64, delay: 40 },
+    { x: 38, y: -52, delay: 80 },
+    { x: -52, y: 8, delay: 120 },
+    { x: 52, y: 8, delay: 160 },
+  ] as const;
+
+  const screenHeartParticles = [
+    { x: -108, y: -86, delay: 0 },
+    { x: 0, y: -128, delay: 40 },
+    { x: 108, y: -86, delay: 80 },
+    { x: -132, y: 10, delay: 120 },
+    { x: 132, y: 10, delay: 160 },
+    { x: -72, y: 108, delay: 200 },
+    { x: 72, y: 108, delay: 240 },
   ] as const;
 
   const triggerBurst = () => {
@@ -37,6 +48,7 @@ function LikeReaction({ likedByMe, likeCount, isLiking, onLike }: LikeReactionPr
         whileTap={{ scale: 0.8 }}
         onClick={() => {
           if (isLiking) return;
+          setBurstMode(likedByMe ? "screen" : "local");
           triggerBurst();
           if (!likedByMe) {
             onLike();
@@ -55,39 +67,80 @@ function LikeReaction({ likedByMe, likeCount, isLiking, onLike }: LikeReactionPr
       </motion.button>
       <AnimatePresence>
         {showHearts ? (
-          <span key={burstId} className={styles.burst} aria-hidden>
-            {heartParticles.map((particle, index) => (
-              <motion.span
-                key={index}
-                className={styles.particle}
-                initial={{ opacity: 1, scale: 0, x: 0, y: 0 }}
-                animate={{
-                  opacity: 0,
-                  scale: likedByMe ? 4.5 : 2.0,
-                  x: particle.x,
-                  y: particle.y,
-                }}
-                // 上記のanimateでopacityを0にしているが、
-                // exitがないと連打した時にアニメーションが途中で消えてしまうのでexitも定義
-                exit={{ opacity: 0 }}
-                // animateにもexitのアニメーションにも効く変化を定義
-                transition={{
-                  duration: 0.8,
-                  ease: "easeOut",
-                  delay: particle.delay / 1000,
-                }}
-                onAnimationComplete={
-                  index === heartParticles.length - 1
-                    ? () => {
-                        setShowHearts(false);
-                      }
-                    : undefined
-                }
-              >
-                <HeartIcon variant="solid" size="sm" />
-              </motion.span>
-            ))}
-          </span>
+          burstMode === "screen" ? (
+            <span key={burstId} className={styles.screenBurst} aria-hidden>
+              <span className={styles.screenCenter}>
+                <motion.span
+                  className={styles.screenHeart}
+                  initial={{ scale: 4, opacity: 0 }}
+                  animate={{ scale: [0.2, 9, 1.2], opacity: [0, 1, 0] }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.8, ease: "easeOut" }}
+                >
+                  <HeartIcon variant="solid" size="lg" />
+                </motion.span>
+                {screenHeartParticles.map((particle, index) => (
+                  <motion.span
+                    key={index}
+                    className={[styles.particle, styles.screenParticle].join(" ")}
+                    initial={{ opacity: 1, scale: 0, x: 0, y: 0 }}
+                    animate={{
+                      opacity: 0,
+                      scale: 3.0,
+                      x: particle.x,
+                      y: particle.y,
+                    }}
+                    exit={{ opacity: 0 }}
+                    transition={{
+                      duration: 0.8,
+                      ease: "easeOut",
+                      delay: particle.delay / 1000,
+                    }}
+                    onAnimationComplete={
+                      index === screenHeartParticles.length - 1
+                        ? () => {
+                            setShowHearts(false);
+                          }
+                        : undefined
+                    }
+                  >
+                    <HeartIcon variant="solid" size="sm" />
+                  </motion.span>
+                ))}
+              </span>
+            </span>
+          ) : (
+            <span key={burstId} className={styles.burst} aria-hidden>
+              {localHeartParticles.map((particle, index) => (
+                <motion.span
+                  key={index}
+                  className={styles.particle}
+                  initial={{ opacity: 1, scale: 0, x: 0, y: 0 }}
+                  animate={{
+                    opacity: 0,
+                    scale: 2.0,
+                    x: particle.x,
+                    y: particle.y,
+                  }}
+                  exit={{ opacity: 0 }}
+                  transition={{
+                    duration: 0.8,
+                    ease: "easeOut",
+                    delay: particle.delay / 1000,
+                  }}
+                  onAnimationComplete={
+                    index === localHeartParticles.length - 1
+                      ? () => {
+                          setShowHearts(false);
+                        }
+                      : undefined
+                  }
+                >
+                  <HeartIcon variant="solid" size="sm" />
+                </motion.span>
+              ))}
+            </span>
+          )
         ) : null}
       </AnimatePresence>
     </div>

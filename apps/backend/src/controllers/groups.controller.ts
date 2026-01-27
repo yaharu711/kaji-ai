@@ -118,6 +118,7 @@ export const getGroupBeatingsController = async (
         icon_code: item.iconCode,
         thanks_count: item.thanksCount,
         liked_by_me: item.likedByMe,
+        messaged_by_me: item.messagedByMe,
         messages: item.messages.map((message) => ({
           id: message.id,
           user_id: message.userId,
