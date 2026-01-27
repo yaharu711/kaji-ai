@@ -4,6 +4,8 @@ import type {
   CreateChoreBeatingRequest,
   CreateChoreBeatingResponse,
   CreateChoreBeatingLikeResponse,
+  CreateChoreBeatingMessageRequest,
+  CreateChoreBeatingMessageResponse,
   GetGroupChoresResponse,
   GetGroupBeatingsRequest,
   GetGroupBeatingsResponse,
@@ -175,6 +177,40 @@ export const createChoreBeatingLike = async ({
   }
 
   return response.json() as Promise<CreateChoreBeatingLikeResponse>;
+};
+
+export const createChoreBeatingMessage = async ({
+  groupId,
+  beatingId,
+  main_message,
+  description_message,
+}: CreateChoreBeatingMessageRequest & {
+  groupId: string;
+  beatingId: number;
+}): Promise<CreateChoreBeatingMessageResponse> => {
+  const res = await groupsApi[":groupId"].beatings[":beatingId"].messages.$post({
+    param: { groupId, beatingId: String(beatingId) },
+    json: {
+      main_message,
+      description_message,
+    },
+  });
+  const response = res as Response;
+
+  if (response.status === 422) {
+    const body = (await response.json()) as UnprocessableEntityResponse;
+    const message = body.errors
+      .map((error) => error.message)
+      .filter(Boolean)
+      .join(" / ");
+    throw new ApiError(422, message || "入力内容を確認してください");
+  }
+
+  if (!response.ok) {
+    throw new ApiError(response.status, "感謝メッセージの送信に失敗しました");
+  }
+
+  return response.json() as Promise<CreateChoreBeatingMessageResponse>;
 };
 
 export const createGroup = async ({ name }: CreateGroupRequest): Promise<CreateGroupResponse> => {

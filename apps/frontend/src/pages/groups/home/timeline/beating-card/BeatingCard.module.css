@@ -61,6 +61,22 @@
   font-size: 13px;
 }
 
+.reactionButton {
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.reactionButton:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 20px rgba(148, 163, 184, 0.25);
+}
+
+.reactionButton:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
 .reactionIcon {
   display: grid;
   place-items: center;

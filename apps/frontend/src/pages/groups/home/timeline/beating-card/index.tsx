@@ -1,10 +1,13 @@
 import { MessageSquareHeart } from "lucide-react";
+import { useState } from "react";
 import { getChoreIcon, type ChoreIconCode } from "../../../../../constants/chores";
 import UserProfileImg from "../../../../../components/UserProfileImg";
 import BeatingMessages from "../beating-messages";
 import type { BeatingMessage } from "../../../types/beatings";
 import LikeReaction from "./like-reaction";
 import { useCreateChoreBeatingLikeMutation } from "../../../hooks/useCreateChoreBeatingLikeMutation";
+import { useCreateChoreBeatingMessageMutation } from "../../../hooks/useCreateChoreBeatingMessageMutation";
+import GratitudeModal from "../../gratitude-modal";
 import styles from "./BeatingCard.module.css";
 
 interface BeatingCardProps {
@@ -37,6 +40,9 @@ function BeatingCard({
   messages = [],
 }: BeatingCardProps) {
   const { mutate: sendLike, isPending: isLiking } = useCreateChoreBeatingLikeMutation();
+  const { mutateAsync: sendMessage, isPending: isSendingMessage } =
+    useCreateChoreBeatingMessageMutation();
+  const [isGratitudeOpen, setIsGratitudeOpen] = useState(false);
 
   return (
     <article className={styles.card} aria-label={`${userName}が${choreName}を討伐`}>
@@ -55,14 +61,21 @@ function BeatingCard({
                 sendLike({ groupId, beatingId, date });
               }}
             />
-            <div className={styles.reactionItem} role="group" aria-label="メッセージ">
+            <button
+              type="button"
+              className={[styles.reactionItem, styles.reactionButton].join(" ")}
+              aria-label="メッセージを送る"
+              onClick={() => {
+                setIsGratitudeOpen(true);
+              }}
+            >
               <span className={styles.reactionIcon} aria-hidden>
                 <MessageSquareHeart size={20} />
               </span>
               {commentCount > 0 ? (
                 <span className={styles.reactionCount}>{commentCount}</span>
               ) : null}
-            </div>
+            </button>
           </div>
         </div>
       </div>
@@ -77,6 +90,23 @@ function BeatingCard({
           </div>
         </div>
       </div>
+      <GratitudeModal
+        open={isGratitudeOpen}
+        onOpenChange={setIsGratitudeOpen}
+        choreIconCode={choreIconCode}
+        choreName={choreName}
+        userName={userName}
+        isSubmitting={isSendingMessage}
+        onSubmit={async ({ mainMessage, descriptionMessage }) => {
+          await sendMessage({
+            groupId,
+            beatingId,
+            date,
+            mainMessage,
+            descriptionMessage,
+          });
+        }}
+      />
     </article>
   );
 }

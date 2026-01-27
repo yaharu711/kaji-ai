@@ -17,7 +17,7 @@ interface GratitudeModalProps {
   choreName: string;
   userName: string;
   isSubmitting?: boolean;
-  onSubmit: (payload: { messageId: string; note: string }) => Promise<void>;
+  onSubmit: (payload: { mainMessage: string; descriptionMessage: string }) => Promise<void>;
 }
 
 const NOTE_LIMIT: ChoreBeatingMessageLimits["description"] = 150;
@@ -29,6 +29,7 @@ const MESSAGE_OPTIONS: GratitudeMessageOption[] = [
   { id: "4", label: "これやってくれるのほんと助かる！" },
 ];
 const DEFAULT_MESSAGE_ID = MESSAGE_OPTIONS[0]?.id ?? null;
+const MESSAGE_LABEL_MAP = new Map(MESSAGE_OPTIONS.map((option) => [option.id, option.label]));
 
 function GratitudeModal({
   open,
@@ -59,8 +60,10 @@ function GratitudeModal({
 
   const handleSubmit = async () => {
     if (!selectedMessageId || isSubmitting) return;
+    const mainMessage = MESSAGE_LABEL_MAP.get(selectedMessageId);
+    if (!mainMessage) return;
     try {
-      await onSubmit({ messageId: selectedMessageId, note });
+      await onSubmit({ mainMessage, descriptionMessage: note });
       handleOpenChange(false);
     } catch {
       // エラーモーダル側で扱うため、ここでは閉じない
