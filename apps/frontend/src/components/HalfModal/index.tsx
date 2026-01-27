@@ -1,8 +1,6 @@
 import type { ReactNode } from "react";
 import { X } from "lucide-react";
-import * as Dialog from "@radix-ui/react-dialog";
-import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
+import { Drawer } from "vaul";
 import Button from "../Button";
 import LoaderCircle from "../LoaderCircle";
 import styles from "./HalfModal.module.css";
@@ -93,14 +91,6 @@ function HalfModal({
   radius = "xl",
   height = "md",
 }: HalfModalProps) {
-  const bodyLockRef = useRef<{
-    position: string;
-    top: string;
-    left: string;
-    right: string;
-    width: string;
-    scrollY: number;
-  } | null>(null);
   const contentClassName = [
     styles.content,
     styles.variantSoft,
@@ -118,154 +108,72 @@ function HalfModal({
   ) : (
     primaryActionIcon
   );
-  const [isClosing, setIsClosing] = useState(false);
 
-  // isClosingをtrueにすることで、すぐにアンマウントされないようにしている
-  // これは、アニメーションが終わった時点でisClosingをfalseにしてアンマウントするため
   const handleOpenChange = (nextOpen: boolean) => {
-    if (nextOpen) {
-      onOpenChange(true);
-      return;
-    }
-
-    setIsClosing(true);
-    onOpenChange(false);
+    onOpenChange(nextOpen);
   };
-
-  // 今のままだと、primaryActionLoading中に閉じてしまい、ローディング中のフィードバックができない、、！
-  // けど、閉じないようにすると閉じる時にアニメーションがつかなくなる
-  // この記事も参考にすると解決策が出てくるかも: https://qiita.com/yun_bow/items/31aaad10d182f03c795b#modal
-  const handlePrimaryActionClick = () => {
-    onPrimaryAction?.();
-    handleOpenChange(false);
-  };
-
-  const handleSecondaryActionClick = () => {
-    onSecondaryAction?.();
-    handleOpenChange(false);
-  };
-
-  useEffect(() => {
-    if (!open) return;
-
-    const { body, documentElement } = document;
-    const scrollY = window.scrollY;
-    bodyLockRef.current = {
-      position: body.style.position,
-      top: body.style.top,
-      left: body.style.left,
-      right: body.style.right,
-      width: body.style.width,
-      scrollY,
-    };
-
-    body.style.position = "fixed";
-    body.style.top = `-${String(scrollY)}px`;
-    body.style.left = "0";
-    body.style.right = "0";
-    body.style.width = "100%";
-    documentElement.style.scrollBehavior = "auto";
-
-    return () => {
-      const prev = bodyLockRef.current;
-      if (!prev) return;
-      body.style.position = prev.position;
-      body.style.top = prev.top;
-      body.style.left = prev.left;
-      body.style.right = prev.right;
-      body.style.width = prev.width;
-      window.scrollTo(0, prev.scrollY);
-      documentElement.style.scrollBehavior = "";
-      bodyLockRef.current = null;
-    };
-  }, [open]);
 
   return (
-    <Dialog.Root open={open || isClosing} onOpenChange={handleOpenChange}>
-      <Dialog.Portal>
-        <AnimatePresence
-          onExitComplete={() => {
-            setIsClosing(false);
-          }}
-        >
-          {open ? (
-            <>
-              <Dialog.Overlay asChild>
-                <motion.div
-                  className={styles.overlay}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.25, ease: "easeOut" }}
-                />
-              </Dialog.Overlay>
-              <Dialog.Content asChild>
-                <motion.div
-                  className={contentClassName}
-                  initial={{ y: 32 }}
-                  animate={{ y: 0, transition: { duration: 0.32, ease: "easeOut" } }}
-                  exit={{ opacity: 0, y: 32, transition: { duration: 0.24, ease: "easeIn" } }}
+    <Drawer.Root open={open} onOpenChange={handleOpenChange}>
+      <Drawer.Portal>
+        <Drawer.Overlay className={styles.overlay} />
+        <Drawer.Content className={contentClassName}>
+          <div className={styles.header}>
+            <div className={styles.heading}>
+              {headerIcon ?? null}
+              <div className={styles.titleGroup}>
+                <Drawer.Title className={styles.title}>{title}</Drawer.Title>
+                {description ? (
+                  <Drawer.Description className={styles.description}>
+                    {description}
+                  </Drawer.Description>
+                ) : null}
+              </div>
+            </div>
+            <Drawer.Close asChild>
+              <button type="button" className={styles.closeButton} aria-label="閉じる">
+                <X size={18} strokeWidth={2.5} />
+              </button>
+            </Drawer.Close>
+          </div>
+
+          <div className={styles.body}>{children}</div>
+
+          {shouldShowFooter ? (
+            <div className={styles.footer}>
+              {secondaryActionLabel ? (
+                <Button
+                  variant="outline"
+                  radius="pill"
+                  size="sm"
+                  fullWidth
+                  onClick={onSecondaryAction}
+                  disabled={resolvedSecondaryDisabled}
+                  icon={secondaryActionIcon}
+                  iconPosition={secondaryActionIconPosition}
                 >
-                  <div className={styles.header}>
-                    <div className={styles.heading}>
-                      {headerIcon ?? null}
-                      <div className={styles.titleGroup}>
-                        <Dialog.Title className={styles.title}>{title}</Dialog.Title>
-                        {description ? (
-                          <Dialog.Description className={styles.description}>
-                            {description}
-                          </Dialog.Description>
-                        ) : null}
-                      </div>
-                    </div>
-                    <Dialog.Close asChild>
-                      <button type="button" className={styles.closeButton} aria-label="閉じる">
-                        <X size={18} strokeWidth={2.5} />
-                      </button>
-                    </Dialog.Close>
-                  </div>
-
-                  <div className={styles.body}>{children}</div>
-
-                  {shouldShowFooter ? (
-                    <div className={styles.footer}>
-                      {secondaryActionLabel ? (
-                        <Button
-                          variant="outline"
-                          radius="pill"
-                          size="sm"
-                          fullWidth
-                          onClick={handleSecondaryActionClick}
-                          disabled={resolvedSecondaryDisabled}
-                          icon={secondaryActionIcon}
-                          iconPosition={secondaryActionIconPosition}
-                        >
-                          {secondaryActionLabel}
-                        </Button>
-                      ) : null}
-                      {primaryActionLabel ? (
-                        <Button
-                          radius="pill"
-                          fullWidth
-                          size="sm"
-                          onClick={handlePrimaryActionClick}
-                          disabled={resolvedPrimaryDisabled}
-                          icon={resolvedPrimaryIcon}
-                          iconPosition={primaryActionIconPosition}
-                          aria-busy={primaryActionLoading}
-                        >
-                          {primaryActionLabel}
-                        </Button>
-                      ) : null}
-                    </div>
-                  ) : null}
-                </motion.div>
-              </Dialog.Content>
-            </>
+                  {secondaryActionLabel}
+                </Button>
+              ) : null}
+              {primaryActionLabel ? (
+                <Button
+                  radius="pill"
+                  fullWidth
+                  size="sm"
+                  onClick={onPrimaryAction}
+                  disabled={resolvedPrimaryDisabled}
+                  icon={resolvedPrimaryIcon}
+                  iconPosition={primaryActionIconPosition}
+                  aria-busy={primaryActionLoading}
+                >
+                  {primaryActionLabel}
+                </Button>
+              ) : null}
+            </div>
           ) : null}
-        </AnimatePresence>
-      </Dialog.Portal>
-    </Dialog.Root>
+        </Drawer.Content>
+      </Drawer.Portal>
+    </Drawer.Root>
   );
 }
 
