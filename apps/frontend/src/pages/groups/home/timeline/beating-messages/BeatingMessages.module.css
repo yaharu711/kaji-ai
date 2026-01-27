@@ -46,6 +46,10 @@
   gap: 12px;
 }
 
+.gratitudeAccordionBody {
+  overflow: hidden;
+}
+
 .gratitudeItem {
   position: relative;
   display: flex;
