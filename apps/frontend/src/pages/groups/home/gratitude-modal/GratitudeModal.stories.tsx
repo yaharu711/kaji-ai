@@ -19,8 +19,40 @@ export const Default: Story = {
       /* noop */
     },
     userName: "佐藤 次郎",
-    choreName: "料理を討伐",
+    choreName: "料理",
     choreIconCode: "cooking",
+    onSubmit: async () => {
+      /* noop */
+    },
+  },
+};
+
+export const SelfComment: Story = {
+  args: {
+    open: true,
+    onOpenChange: () => {
+      /* noop */
+    },
+    userName: "佐藤 次郎",
+    choreName: "料理",
+    choreIconCode: "cooking",
+    isMyBeating: true,
+    onSubmit: async () => {
+      /* noop */
+    },
+  },
+};
+
+export const Submitting: Story = {
+  args: {
+    open: true,
+    onOpenChange: () => {
+      /* noop */
+    },
+    userName: "佐藤 次郎",
+    choreName: "料理",
+    choreIconCode: "cooking",
+    isSubmitting: true,
     onSubmit: async () => {
       /* noop */
     },

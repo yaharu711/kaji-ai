@@ -16,6 +16,7 @@ interface GratitudeModalProps {
   choreIconCode: ChoreIconCode;
   choreName: string;
   userName: string;
+  isMyBeating?: boolean;
   isSubmitting?: boolean;
   onSubmit: (payload: { mainMessage: string; descriptionMessage: string }) => Promise<void>;
 }
@@ -37,6 +38,7 @@ function GratitudeModal({
   choreIconCode,
   choreName,
   userName,
+  isMyBeating = false,
   isSubmitting = false,
   onSubmit,
 }: GratitudeModalProps) {
@@ -44,6 +46,7 @@ function GratitudeModal({
   const [note, setNote] = useState("");
   const textareaId = useId();
   const isOverNoteLimit = note.length > NOTE_LIMIT;
+  const isSelfComment = isMyBeating;
 
   const handleClose = () => {
     setSelectedMessageId(DEFAULT_MESSAGE_ID);
@@ -59,9 +62,11 @@ function GratitudeModal({
   };
 
   const handleSubmit = async () => {
-    if (!selectedMessageId || isSubmitting) return;
-    const mainMessage = MESSAGE_LABEL_MAP.get(selectedMessageId);
-    if (!mainMessage) return;
+    if (isSubmitting) return;
+    const mainMessage = isSelfComment
+      ? ""
+      : MESSAGE_LABEL_MAP.get(selectedMessageId ?? "") ?? "";
+    if (!isSelfComment && !mainMessage) return;
     try {
       await onSubmit({ mainMessage, descriptionMessage: note });
       handleOpenChange(false);
@@ -70,19 +75,20 @@ function GratitudeModal({
     }
   };
 
-  const isPrimaryDisabled = !selectedMessageId || isSubmitting || isOverNoteLimit;
+  const isPrimaryDisabled =
+    (isSelfComment ? false : !selectedMessageId) || isSubmitting || isOverNoteLimit;
 
   return (
     <HalfModal
       open={open}
       onOpenChange={handleOpenChange}
-      title="感謝を伝えよう！"
+      title={isSelfComment ? "討伐カードにコメントができます！" : "感謝を伝えよう！"}
       headerIcon={
         <span className={styles.headerIcon} aria-hidden>
           <Heart size={18} fill="currentColor" stroke="currentColor" />
         </span>
       }
-      primaryActionLabel="感謝を伝える"
+      primaryActionLabel={isSelfComment ? "コメントする" : "感謝を伝える"}
       secondaryActionLabel="キャンセル"
       primaryActionDisabled={isPrimaryDisabled}
       primaryActionLoading={isSubmitting}
@@ -99,7 +105,9 @@ function GratitudeModal({
       <div className={styles.container}>
         <section className={styles.section} aria-labelledby="gratitude-recipient">
           <div id="gratitude-recipient" className={styles.sectionHeading}>
-            <span className={styles.sectionLabel}>感謝を伝える相手</span>
+            <span className={styles.sectionLabel}>
+              {isSelfComment ? "コメントする討伐カード" : "感謝を伝える相手"}
+            </span>
           </div>
           <div className={styles.recipientCard}>
             <div className={styles.recipientIcon} aria-hidden>
@@ -115,36 +123,38 @@ function GratitudeModal({
           </div>
         </section>
 
-        <section className={styles.section} aria-labelledby="gratitude-message">
-          <div id="gratitude-message" className={styles.sectionHeading}>
-            <Sparkles size={16} className={styles.sectionIcon} aria-hidden />
-            <span className={styles.sectionTitle}>感謝のメッセージ</span>
-          </div>
-          <div className={styles.options} role="radiogroup" aria-label="感謝のメッセージ">
-            {MESSAGE_OPTIONS.map((option) => {
-              const isSelected = option.id === selectedMessageId;
-              return (
-                <button
-                  key={option.id}
-                  type="button"
-                  className={[styles.optionButton, isSelected ? styles.optionSelected : ""]
-                    .filter(Boolean)
-                    .join(" ")}
-                  role="radio"
-                  aria-checked={isSelected}
-                  onClick={() => {
-                    setSelectedMessageId(option.id);
-                  }}
-                >
-                  <span className={styles.optionIcon} aria-hidden>
-                    <Heart size={18} />
-                  </span>
-                  <span className={styles.optionText}>{option.label}</span>
-                </button>
-              );
-            })}
-          </div>
-        </section>
+        {isSelfComment ? null : (
+          <section className={styles.section} aria-labelledby="gratitude-message">
+            <div id="gratitude-message" className={styles.sectionHeading}>
+              <Sparkles size={16} className={styles.sectionIcon} aria-hidden />
+              <span className={styles.sectionTitle}>感謝のメッセージ</span>
+            </div>
+            <div className={styles.options} role="radiogroup" aria-label="感謝のメッセージ">
+              {MESSAGE_OPTIONS.map((option) => {
+                const isSelected = option.id === selectedMessageId;
+                return (
+                  <button
+                    key={option.id}
+                    type="button"
+                    className={[styles.optionButton, isSelected ? styles.optionSelected : ""]
+                      .filter(Boolean)
+                      .join(" ")}
+                    role="radio"
+                    aria-checked={isSelected}
+                    onClick={() => {
+                      setSelectedMessageId(option.id);
+                    }}
+                  >
+                    <span className={styles.optionIcon} aria-hidden>
+                      <Heart size={18} />
+                    </span>
+                    <span className={styles.optionText}>{option.label}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </section>
+        )}
 
         <section className={styles.section} aria-labelledby="gratitude-note">
           <label id="gratitude-note" className={styles.sectionHeading} htmlFor={textareaId}>
@@ -155,7 +165,11 @@ function GratitudeModal({
             className={[styles.textarea, isOverNoteLimit ? styles.textareaError : ""]
               .filter(Boolean)
               .join(" ")}
-            placeholder="自分の言葉でも感謝を伝えてみましょう！"
+            placeholder={
+              isSelfComment
+                ? "知って欲しいこと・褒めて欲しいことがあれば書いてみよう！"
+                : "自分の言葉でも感謝を伝えてみよう！"
+            }
             rows={4}
             value={note}
             aria-invalid={isOverNoteLimit}

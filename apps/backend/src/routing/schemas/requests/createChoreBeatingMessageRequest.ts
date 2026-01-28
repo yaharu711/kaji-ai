@@ -8,7 +8,7 @@ const MESSAGE_LIMITS = {
 export type ChoreBeatingMessageLimits = typeof MESSAGE_LIMITS;
 
 export const createChoreBeatingMessageRequestSchema = z.object({
-  main_message: z.string().min(1, "main_message は必須です").max(MESSAGE_LIMITS.main),
+  main_message: z.string().max(MESSAGE_LIMITS.main),
   description_message: z.string().max(MESSAGE_LIMITS.description).nullable().optional(),
 });
 

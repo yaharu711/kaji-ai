@@ -31,7 +31,7 @@ function BeatingMessageItem({ message }: BeatingMessageItemProps) {
         />
         <p className={styles.gratitudeName}>{message.userName}</p>
       </div>
-      <p className={styles.gratitudeMain}>{message.mainMessage}</p>
+      {message.isMyBeating ? null : <p className={styles.gratitudeMain}>{message.mainMessage}</p>}
       {message.describeMessage ? (
         <p className={styles.gratitudeDescribe}>{message.describeMessage}</p>
       ) : null}

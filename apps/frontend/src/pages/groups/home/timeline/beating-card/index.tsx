@@ -23,6 +23,7 @@ interface BeatingCardProps {
   messagedByMe?: boolean;
   commentCount?: number;
   userRoleLabel?: string;
+  isMyBeating?: boolean;
   messages?: readonly BeatingMessage[];
 }
 
@@ -39,6 +40,7 @@ function BeatingCard({
   messagedByMe = false,
   commentCount = 0,
   userRoleLabel = "討伐者",
+  isMyBeating = false,
   messages = [],
 }: BeatingCardProps) {
   const { mutate: sendLike, isPending: isLiking } = useCreateChoreBeatingLikeMutation();
@@ -90,6 +92,7 @@ function BeatingCard({
         choreIconCode={choreIconCode}
         choreName={choreName}
         userName={userName}
+        isMyBeating={isMyBeating}
         isSubmitting={isSendingMessage}
         onSubmit={async ({ mainMessage, descriptionMessage }) => {
           await sendMessage({

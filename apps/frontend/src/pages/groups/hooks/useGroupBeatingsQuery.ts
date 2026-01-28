@@ -16,16 +16,19 @@ const mapBeatingGroups = (
   timeline: GetGroupBeatingsResponse,
   groupId: string,
   date: string,
+  currentUserId?: string,
 ): BeatingGroup[] => {
   return timeline.map((group) => ({
     timeLabel: group.hour,
     items: group.items.map((item) => {
+      const isMyBeating = currentUserId ? item.user_id === currentUserId : false;
       const messages = item.messages.map((message) => ({
         id: String(message.id),
         userName: formatUserName(message.user_name),
         userImageUrl: message.img_url,
         mainMessage: message.main_message,
         describeMessage: message.description_message ?? undefined,
+        isMyBeating: message.user_id === item.user_id,
       }));
       return {
         id: String(item.beating_id),
@@ -40,20 +43,21 @@ const mapBeatingGroups = (
         likedByMe: item.liked_by_me,
         messagedByMe: item.messaged_by_me,
         commentCount: messages.length,
+        isMyBeating,
         messages,
       };
     }),
   }));
 };
 
-export const useGroupBeatingsQuery = (groupId?: string, date?: string) => {
+export const useGroupBeatingsQuery = (groupId?: string, date?: string, currentUserId?: string) => {
   const resolvedGroupId = groupId ?? "";
   const resolvedDate = date ?? getJstDateString(nowJst());
 
   return useQuery({
     queryKey: GROUP_BEATINGS_QUERY_KEY(resolvedGroupId, resolvedDate),
     queryFn: () => fetchGroupBeatings({ groupId: resolvedGroupId, date: resolvedDate }),
-    select: (timeline) => mapBeatingGroups(timeline, resolvedGroupId, resolvedDate),
+    select: (timeline) => mapBeatingGroups(timeline, resolvedGroupId, resolvedDate, currentUserId),
     enabled: Boolean(groupId),
   });
 };

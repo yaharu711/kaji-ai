@@ -6,6 +6,7 @@ export interface BeatingMessage {
   userImageUrl?: string | null;
   mainMessage: string;
   describeMessage?: string;
+  isMyBeating?: boolean;
 }
 
 export interface BeatingLog {
@@ -22,6 +23,7 @@ export interface BeatingLog {
   messagedByMe?: boolean;
   commentCount?: number;
   userRoleLabel?: string;
+  isMyBeating?: boolean;
   messages?: readonly BeatingMessage[];
 }
 
