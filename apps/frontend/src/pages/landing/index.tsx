@@ -10,6 +10,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 
+import { Badge } from "../../components";
 import styles from "./landing.module.css";
 
 const concepts: { icon: LucideIcon; title: string; description: string }[] = [
@@ -182,13 +183,16 @@ function LandingPage() {
               {features.map((feature, index) => {
                 const Icon = feature.icon;
                 const isReversed = index % 2 === 1;
+                const tagVariant = feature.tag === "Coming Soon" ? "neutral" : "accent";
                 return (
                   <div
                     key={feature.title}
                     className={`${styles.featureRow} ${isReversed ? styles.featureRowReverse : ""}`}
                   >
                     <div className={styles.featureContent}>
-                      <div className={styles.featureTag}>{feature.tag}</div>
+                      <Badge size="sm" radius="pill" variant={tagVariant}>
+                        {feature.tag}
+                      </Badge>
                       <h3 className={styles.featureTitle}>{feature.title}</h3>
                       <p className={styles.featureDescription}>{feature.description}</p>
                     </div>

@@ -63,9 +63,7 @@ function GratitudeModal({
 
   const handleSubmit = async () => {
     if (isSubmitting) return;
-    const mainMessage = isSelfComment
-      ? ""
-      : MESSAGE_LABEL_MAP.get(selectedMessageId ?? "") ?? "";
+    const mainMessage = isSelfComment ? "" : (MESSAGE_LABEL_MAP.get(selectedMessageId ?? "") ?? "");
     if (!isSelfComment && !mainMessage) return;
     try {
       await onSubmit({ mainMessage, descriptionMessage: note });
@@ -76,7 +74,9 @@ function GratitudeModal({
   };
 
   const isPrimaryDisabled =
-    (isSelfComment ? false : !selectedMessageId) || isSubmitting || isOverNoteLimit;
+    (isSelfComment ? note.trim().length === 0 : !selectedMessageId) ||
+    isSubmitting ||
+    isOverNoteLimit;
 
   return (
     <HalfModal
