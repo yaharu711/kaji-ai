@@ -76,7 +76,7 @@ function GratitudeModal({
     <HalfModal
       open={open}
       onOpenChange={handleOpenChange}
-      title="感謝を伝える"
+      title="感謝を伝えよう！"
       headerIcon={
         <span className={styles.headerIcon} aria-hidden>
           <Heart size={18} fill="currentColor" stroke="currentColor" />
@@ -118,7 +118,7 @@ function GratitudeModal({
         <section className={styles.section} aria-labelledby="gratitude-message">
           <div id="gratitude-message" className={styles.sectionHeading}>
             <Sparkles size={16} className={styles.sectionIcon} aria-hidden />
-            <span className={styles.sectionTitle}>感謝のメッセージを選ぶ</span>
+            <span className={styles.sectionTitle}>感謝のメッセージ</span>
           </div>
           <div className={styles.options} role="radiogroup" aria-label="感謝のメッセージ">
             {MESSAGE_OPTIONS.map((option) => {
