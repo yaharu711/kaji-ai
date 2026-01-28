@@ -77,7 +77,7 @@ const screenshots = [
     title: "感謝を伝える",
     description: "テンプレートで簡単に感謝を伝えられる",
     imageUrl:
-      "https://kaji-ai.s3.ap-northeast-1.amazonaws.com/%E6%84%9F%E8%AC%9D%E3%83%A1%E3%83%83%E3%82%BB%E3%83%BC%E3%82%B8webp",
+      "https://kaji-ai.s3.ap-northeast-1.amazonaws.com/%E6%84%9F%E8%AC%9D%E3%83%A1%E3%83%83%E3%82%BB%E3%83%BC%E3%82%B8.webp",
   },
 ];
 

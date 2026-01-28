@@ -25,7 +25,6 @@ function LoginPage() {
   // ここでfallbackを/loginにしているのは、まだuserIdが取れていないため。
   // userIdが取れたらfallbackPathのように/users/{userId}にリダイレクトをfallbackにしている
   const callbackUrl = new URL(resolvedRedirect || "/login", origin).toString();
-  console.log({ callbackUrl });
 
   const isAuthChecking = status === "loading";
   const isLoading = useMemo(() => isAuthChecking || isSigningIn, [isAuthChecking, isSigningIn]);

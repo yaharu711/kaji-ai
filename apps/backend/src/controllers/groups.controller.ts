@@ -133,7 +133,6 @@ export const getGroupBeatingsController = async (
       })),
     })),
   );
-  console.log(response);
 
   return c.json(response, 200);
 };
