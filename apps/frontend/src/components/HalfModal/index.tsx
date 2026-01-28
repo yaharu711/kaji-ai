@@ -117,7 +117,7 @@ function HalfModal({
   // スマホユーザーでも入力欄があっても挙動が安定している
   // おまけに、スクロールでモーダルを閉じることができる
   return (
-    <Drawer.Root open={open} onOpenChange={handleOpenChange}>
+    <Drawer.Root open={open} onOpenChange={handleOpenChange} repositionInputs={false}>
       <Drawer.Portal>
         <Drawer.Overlay className={styles.overlay} />
         <Drawer.Content className={contentClassName}>
