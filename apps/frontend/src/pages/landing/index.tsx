@@ -130,7 +130,7 @@ function LandingPage() {
                 <div className={styles.heroCard}>
                   <img
                     className={styles.heroImage}
-                    src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=700&h=900&fit=crop"
+                    src="https://kaji-ai.s3.ap-northeast-1.amazonaws.com/%E3%83%92%E3%83%BC%E3%83%AD%E3%83%BC%E7%94%BB%E5%83%8F.webp"
                     alt="カジアイアプリのイメージ"
                     loading="lazy"
                     decoding="async"
