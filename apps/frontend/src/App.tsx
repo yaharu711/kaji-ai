@@ -1,6 +1,7 @@
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import LoginPage from "./pages/login";
+import LandingPage from "./pages/landing";
 import UserPage from "./pages/users";
 import GroupLayout from "./pages/groups/GroupLayout";
 import GroupHomePage from "./pages/groups/home";
@@ -14,7 +15,7 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Navigate to="/login" replace />} />
+        <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route element={<ProtectedLayout />}>
           <Route path="/users/:userId" element={<UserPage />} />
