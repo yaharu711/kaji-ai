@@ -16,13 +16,12 @@ const concepts: { icon: LucideIcon; title: string; description: string }[] = [
   {
     icon: Heart,
     title: "感謝の可視化",
-    description: "誰が、いつ、どの家事をやったのかを可視化。感謝の気持ちを伝えやすくします。",
+    description: "誰が、いつ、どの家事をやったのかを見える化。感謝の気持ちを伝えやすくします。",
   },
   {
     icon: Users,
     title: "みんなで協力",
-    description:
-      "数値化せず、実際に家事を討伐した人もそれに感謝した人も見える化。みんなで家事に取り組めます。",
+    description: "家事を討伐した人もそれに感謝した人を見える化。みんなで家事に取り組めます。",
   },
   {
     icon: Sparkles,
@@ -83,7 +82,11 @@ function LandingPage() {
         <div className={styles.headerInner}>
           <div className={styles.brand}>
             <div className={styles.brandIcon}>
-              <Heart className={styles.brandIconSvg} />
+              <img
+                src="https://kaji-ai.s3.ap-northeast-1.amazonaws.com/favicon.svg"
+                alt="アプリのアイコン"
+                className={styles.brandIconImage}
+              />
             </div>
             <span className={styles.brandText}>カジアイ</span>
           </div>
@@ -108,15 +111,12 @@ function LandingPage() {
                   <span className={styles.gradientText}>感謝を伝え合おう</span>
                 </h1>
                 <p className={styles.heroDescription}>
-                  カジアイは、グループでみんなで家事を討伐し、感謝を伝え合い、協力して家事を楽しくこなしていくためのアプリです。
+                  カジアイは、グループみんなで家事を討伐し、感謝を伝え合い、協力して家事を楽しくこなしていくためのアプリです。
                 </p>
                 <div className={styles.heroActions}>
                   <Link className={styles.primaryButton} to="/login">
-                    無料で始める
+                    家事を討伐する
                   </Link>
-                  <a className={styles.secondaryButton} href="#features">
-                    詳しく見る
-                  </a>
                 </div>
               </div>
               <div className={styles.heroVisual}>
@@ -142,9 +142,9 @@ function LandingPage() {
                 <span className={styles.gradientText}>カジアイのコンセプト</span>
               </h2>
               <p className={styles.sectionLead}>
-                誰か一人が家事をするかもしれない、けど感謝することは必ずできるはず。
+                いつの間にか家事をやることが当たり前になり、感謝がなくなっていませんか？
                 <br />
-                だからこそ、協力と感謝が生まれる仕組みを作りました。
+                カジアイは、協力と感謝を促すことで、家事を楽しくすることを目指しています。
               </p>
             </div>
             <div className={styles.conceptGrid}>
@@ -235,10 +235,10 @@ function LandingPage() {
               <div className={styles.ctaContent}>
                 <h2 className={styles.ctaTitle}>さあ、家事を討伐しよう！</h2>
                 <p className={styles.ctaDescription}>
-                  今すぐカジアイを始めて、家事をもっと楽しく、感謝を伝え合える毎日を。
+                  カジアイを始めて、家事をもっと楽しく、感謝を伝え合える毎日を。
                 </p>
                 <Link className={styles.ctaButton} to="/login">
-                  無料で始める
+                  アプリを始める
                   <ArrowRight className={styles.ctaButtonIcon} />
                 </Link>
               </div>
@@ -250,12 +250,6 @@ function LandingPage() {
       <footer className={styles.footer}>
         <div className={styles.container}>
           <div className={styles.footerContent}>
-            <div className={styles.brandCompact}>
-              <div className={styles.brandIconSmall}>
-                <Heart className={styles.brandIconSvg} />
-              </div>
-              <span className={styles.brandTextSmall}>カジアイ</span>
-            </div>
             <p className={styles.footerLead}>協力と感謝が生まれる家事管理アプリ</p>
             <p className={styles.footerCopy}>© 2026 カジアイ. All rights reserved.</p>
           </div>

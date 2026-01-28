@@ -17,6 +17,7 @@
 
 .headerInner {
   max-width: 1100px;
+  height: 84px;
   margin: 0 auto;
   padding: 16px 24px;
   display: flex;
@@ -42,20 +43,14 @@
 }
 
 .brandIcon {
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
 }
 
-.brandIconSmall {
-  width: 32px;
-  height: 32px;
-}
-
-.brandIconSvg {
-  width: 20px;
-  height: 20px;
-  color: #fff;
-  fill: #fff;
+.brandIconImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .brandText {
@@ -84,7 +79,9 @@
   font-weight: 600;
   background: linear-gradient(90deg, var(--color-primary-from), var(--color-primary-to));
   box-shadow: var(--shadow-primary);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .headerCta:hover {
@@ -93,7 +90,7 @@
 }
 
 .main {
-  padding-top: 88px;
+  padding-top: 24px;
 }
 
 .container {
@@ -177,7 +174,10 @@
   border-radius: 999px;
   padding: 14px 28px;
   font-weight: 600;
-  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease,
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease,
     color 0.2s ease;
   display: inline-flex;
   align-items: center;
@@ -507,8 +507,16 @@
 
 @media (max-width: 600px) {
   .headerInner {
-    flex-direction: column;
-    align-items: flex-start;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+    gap: 12px;
+    padding: 12px 16px;
+  }
+
+  .brandText {
+    font-size: 18px;
   }
 
   .heroActions {
@@ -520,5 +528,11 @@
   .secondaryButton,
   .ctaButton {
     width: 100%;
+  }
+
+  .headerCta {
+    padding: 8px 16px;
+    font-size: 13px;
+    white-space: nowrap;
   }
 }
