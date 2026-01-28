@@ -1,34 +1,41 @@
 import { googleSignIn } from "./lib/googleSignIn";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useSession } from "@hono/auth-js/react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 import LoginView from "./components/login-view";
 
 // TODO: ここのテストはどうするか要検討
 function LoginPage() {
-  const navigate = useNavigate();
   const location = useLocation();
   const [isSigningIn, setIsSigningIn] = useState(false);
   const { data: session, status } = useSession();
   const userId = (session?.user as { id?: string } | undefined)?.id;
-  const from = (location.state as { from?: Location } | null)?.from;
+  const redirectPath = new URLSearchParams(location.search).get("redirect") ?? "";
+  const origin = window.location.origin;
+  const resolvedRedirect = (() => {
+    if (!redirectPath || redirectPath === "/" || redirectPath === "/login") {
+      return "";
+    }
+    const resolvedUrl = new URL(redirectPath, origin);
+    if (resolvedUrl.origin !== origin) {
+      return "";
+    }
+    return resolvedUrl.pathname + resolvedUrl.search + resolvedUrl.hash;
+  })();
+  // ここでfallbackを/loginにしているのは、まだuserIdが取れていないため。
+  // userIdが取れたらfallbackPathのように/users/{userId}にリダイレクトをfallbackにしている
+  const callbackUrl = new URL(resolvedRedirect || "/login", origin).toString();
+  console.log({ callbackUrl });
 
   const isAuthChecking = status === "loading";
-  const isRedirecting = status === "authenticated" && Boolean(userId);
-  const isLoading = useMemo(
-    () => isAuthChecking || isRedirecting || isSigningIn,
-    [isAuthChecking, isRedirecting, isSigningIn],
-  );
+  const isLoading = useMemo(() => isAuthChecking || isSigningIn, [isAuthChecking, isSigningIn]);
   const isBusy = status === "loading" || status === "authenticated" || isSigningIn;
 
-  useEffect(() => {
-    if (status === "authenticated" && userId) {
-      // ログイン済みなら元の遷移先、なければユーザー詳細へリダイレクト
-      const fallbackPath = `/users/${userId}`;
-      const targetPath = from?.pathname ?? fallbackPath;
-      void navigate(targetPath, { replace: true });
-    }
-  }, [status, userId, from?.pathname, navigate]);
+  if (status === "authenticated" && userId) {
+    const fallbackPath = `/users/${userId}`;
+    const targetPath = resolvedRedirect || fallbackPath;
+    return <Navigate to={targetPath} replace />;
+  }
 
   if (isLoading) {
     return (
@@ -37,7 +44,7 @@ function LoginPage() {
         isBusy
         onGoogleLogin={() => {
           setIsSigningIn(true);
-          void googleSignIn().catch((error: unknown) => {
+          void googleSignIn(callbackUrl).catch((error: unknown) => {
             console.error(error);
             setIsSigningIn(false);
           });
@@ -53,7 +60,7 @@ function LoginPage() {
       onGoogleLogin={() => {
         if (isSigningIn) return;
         setIsSigningIn(true);
-        void googleSignIn().catch((error: unknown) => {
+        void googleSignIn(callbackUrl).catch((error: unknown) => {
           console.error(error);
           setIsSigningIn(false);
         });
