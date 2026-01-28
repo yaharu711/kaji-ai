@@ -1,5 +1,5 @@
 import { Users, type LucideIcon } from "lucide-react";
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import type { AppSessionUser } from "@kaiji-ai/backend/contracts";
 import Popover from "../Popover";
 import UserPopoverContent, { type GroupMember } from "./UserPopoverContent";
@@ -30,7 +30,7 @@ function Header({ navItems, groupName, currentUser, members }: HeaderProps) {
   return (
     <header className={styles.header}>
       <div className={styles.topRow}>
-        <div className={styles.brand}>
+        <Link className={styles.brand} to="/" aria-label="トップページへ戻る">
           <span className={styles.iconWrap}>
             <img
               src="https://kaji-ai.s3.ap-northeast-1.amazonaws.com/favicon.svg"
@@ -40,7 +40,7 @@ function Header({ navItems, groupName, currentUser, members }: HeaderProps) {
           <div className={styles.brandText}>
             <span className={styles.appName}>カジアイ</span>
           </div>
-        </div>
+        </Link>
         <Popover
           trigger={
             <button

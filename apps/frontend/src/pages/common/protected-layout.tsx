@@ -12,7 +12,12 @@ function ProtectedLayout() {
   const sessionResult = useSession({
     required: true,
     onUnauthenticated: () => {
-      void navigate("/login", { replace: true, state: { from: location } });
+      const fromPath = `${location.pathname}${location.search}${location.hash}`;
+      const redirectParam = encodeURIComponent(fromPath);
+      void navigate(`/login?redirect=${redirectParam}`, {
+        replace: true,
+        state: { from: location, fromPath },
+      });
     },
   });
 
