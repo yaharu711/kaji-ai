@@ -55,7 +55,7 @@ const features: {
     icon: BarChart3,
     title: "AIからの一週間の討伐状況レポート機能",
     description:
-      "AIがあなたのグループの一週間の家事討伐状況を分析してレポートを作成。より良い家事分担のヒントが得られます。",
+      "AIがあなたのグループの一週間の家事討伐や感謝の状況を分析してレポートを作成。みんなでより協力と感謝が生まれるようなレポートにする予定です！",
     tag: "Coming Soon",
   },
 ];
@@ -68,16 +68,16 @@ const screenshots = [
       "https://kaji-ai.s3.ap-northeast-1.amazonaws.com/%E8%A8%8E%E4%BC%90%E3%82%BF%E3%82%A4%E3%83%A0%E3%83%A9%E3%82%A4%E3%83%B3.webp",
   },
   {
+    title: "家事討伐",
+    description: "討伐した家事を記録できる",
+    imageUrl:
+      "https://kaji-ai.s3.ap-northeast-1.amazonaws.com/%E5%AE%B6%E4%BA%8B%E8%A8%8E%E4%BC%90.webp",
+  },
+  {
     title: "感謝を伝える",
     description: "テンプレートで簡単に感謝を伝えられる",
     imageUrl:
-      "https://kaji-ai.s3.ap-northeast-1.amazonaws.com/%E6%84%9F%E8%AC%9D%E3%83%A1%E3%83%83%E3%82%BB%E3%83%BC%E3%82%B7%E3%82%99.webp",
-  },
-  {
-    title: "グループ管理",
-    description: "家族やルームメイトとグループを作成",
-    imageUrl:
-      "https://kaji-ai.s3.ap-northeast-1.amazonaws.com/%E3%82%AF%E3%82%99%E3%83%AB%E3%83%BC%E3%83%95%E3%82%9A%E3%83%9B%E3%83%BC%E3%83%A0.webp",
+      "https://kaji-ai.s3.ap-northeast-1.amazonaws.com/%E6%84%9F%E8%AC%9D%E3%83%A1%E3%83%83%E3%82%BB%E3%83%BC%E3%82%B8webp",
   },
 ];
 
