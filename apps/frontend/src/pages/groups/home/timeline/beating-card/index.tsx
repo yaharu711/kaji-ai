@@ -9,6 +9,7 @@ import { useCreateChoreBeatingLikeMutation } from "../../../hooks/useCreateChore
 import { useCreateChoreBeatingMessageMutation } from "../../../hooks/useCreateChoreBeatingMessageMutation";
 import GratitudeModal from "../../gratitude-modal";
 import styles from "./BeatingCard.module.css";
+import { Badge } from "../../../../../components";
 
 interface BeatingCardProps {
   groupId: string;
@@ -39,7 +40,6 @@ function BeatingCard({
   likedByMe = false,
   messagedByMe = false,
   commentCount = 0,
-  userRoleLabel = "討伐者",
   isMyBeating = false,
   messages = [],
 }: BeatingCardProps) {
@@ -81,8 +81,10 @@ function BeatingCard({
         <div className={styles.user}>
           <UserProfileImg name={userName} imageUrl={userImageUrl} size="md" tone="purple" />
           <div className={styles.userText}>
+            <Badge size="sm" radius="pill" variant="accent">
+              討伐者
+            </Badge>
             <p className={styles.userName}>{userName}</p>
-            <p className={styles.userRole}>{userRoleLabel}</p>
           </div>
         </div>
       </div>

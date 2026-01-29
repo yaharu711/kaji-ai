@@ -26,8 +26,8 @@
 }
 
 .variantAccent {
-  color: var(--color-accent-strong);
-  background: color-mix(in srgb, var(--color-accent) 18%, var(--color-surface));
+  color: #b21c5a;
+  background: color-mix(in srgb, var(--color-accent) 14%, var(--color-surface));
 }
 
 .variantNeutral {
