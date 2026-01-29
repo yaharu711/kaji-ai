@@ -24,7 +24,7 @@ describe("GratitudeModal", () => {
   it("isSelfComment=true の時は専用UIが表示され、感謝メッセージは表示されない", () => {
     renderModal({ isMyBeating: true });
 
-    expect(screen.getByText("討伐カードにコメントができます！")).toBeInTheDocument();
+    expect(screen.getByText("討伐カードにコメントできます！")).toBeInTheDocument();
     expect(screen.getByText("コメントする討伐カード")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "コメントする" })).toBeInTheDocument();
     expect(screen.queryByText("感謝のメッセージ")).not.toBeInTheDocument();
