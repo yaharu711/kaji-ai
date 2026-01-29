@@ -39,21 +39,27 @@ describe("GratitudeModal", () => {
     expect(screen.getByText("感謝のメッセージ")).toBeInTheDocument();
   });
 
-  it("isSelfComment=true の時は primaryButton が非活性、false の時は活性", () => {
+  it("isSelfComment=true の時は primaryButton が非活性", () => {
     renderModal({ isMyBeating: true });
     expect(screen.getByRole("button", { name: "コメントする" })).toBeDisabled();
+  });
 
+  it("isSelfComment=false の時は primaryButton が活性", () => {
     renderModal({ isMyBeating: false });
     expect(screen.getByRole("button", { name: "感謝を伝える" })).toBeEnabled();
   });
 
-  it("NOTE_LIMIT 超過時は isSelfComment に関係なく primaryButton が非活性", async () => {
+  it("NOTE_LIMIT 超過時は isSelfCommentがfalseの時 primaryButton が非活性", async () => {
     const overLimitText = "a".repeat(151);
     const user = userEvent.setup();
 
     renderModal({ isMyBeating: false });
     await user.type(screen.getByRole("textbox"), overLimitText);
     expect(screen.getByRole("button", { name: "感謝を伝える" })).toBeDisabled();
+  });
+  it("NOTE_LIMIT 超過時は isSelfCommentがtrueの時 primaryButton が非活性", async () => {
+    const overLimitText = "a".repeat(151);
+    const user = userEvent.setup();
 
     renderModal({ isMyBeating: true });
     await user.type(screen.getByRole("textbox"), overLimitText);
