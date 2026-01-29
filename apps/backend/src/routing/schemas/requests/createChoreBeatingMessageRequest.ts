@@ -7,10 +7,22 @@ const MESSAGE_LIMITS = {
 
 export type ChoreBeatingMessageLimits = typeof MESSAGE_LIMITS;
 
-export const createChoreBeatingMessageRequestSchema = z.object({
-  main_message: z.string().min(1, "main_message は必須です").max(MESSAGE_LIMITS.main),
-  description_message: z.string().max(MESSAGE_LIMITS.description).nullable().optional(),
-});
+export const createChoreBeatingMessageRequestSchema = z
+  .object({
+    main_message: z.string().max(MESSAGE_LIMITS.main),
+    description_message: z.string().max(MESSAGE_LIMITS.description).nullable().optional(),
+  })
+  .refine(
+    (value) => {
+      const mainMessage = value.main_message.trim();
+      const descriptionMessage = value.description_message?.trim() ?? "";
+      return mainMessage.length > 0 || descriptionMessage.length > 0;
+    },
+    {
+      message: "main_message または description_message のいずれかは必須です",
+      path: ["main_message"],
+    },
+  );
 
 export type CreateChoreBeatingMessageRequest = z.infer<
   typeof createChoreBeatingMessageRequestSchema

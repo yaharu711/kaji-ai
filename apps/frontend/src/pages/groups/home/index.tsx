@@ -26,7 +26,7 @@ const formatJstDateLabel = (dateString: string) => {
 };
 
 function GroupHomePage() {
-  const { groupId } = useGroupLayout();
+  const { groupId, currentUser } = useGroupLayout();
   const today = useMemo(() => getJstDateString(nowJst()), []);
   const [selectedDate, setSelectedDate] = useState(() => today);
   const [isBattleOpen, setIsBattleOpen] = useState(false);
@@ -35,6 +35,7 @@ function GroupHomePage() {
   const { data: beatingGroups, isLoading: beatingLoading } = useGroupBeatingsQuery(
     groupId,
     selectedDate,
+    currentUser.id,
   );
   const { mutateAsync: createBeating, isPending: isCreatingBeating } =
     useCreateChoreBeatingMutation();

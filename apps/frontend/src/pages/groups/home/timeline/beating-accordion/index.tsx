@@ -92,6 +92,7 @@ function BeatingAccordion({ timeLabel, items }: BeatingAccordionProps) {
                   messagedByMe={beating.messagedByMe}
                   commentCount={beating.commentCount}
                   userRoleLabel={beating.userRoleLabel}
+                  isMyBeating={beating.isMyBeating}
                   messages={beating.messages}
                 />
               ))}

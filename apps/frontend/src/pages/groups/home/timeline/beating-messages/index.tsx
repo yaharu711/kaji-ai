@@ -1,6 +1,7 @@
 import { ChevronDown } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
+import { Badge } from "../../../../../components";
 import HeartIcon from "../../../../../components/HeartIcon";
 import UserProfileImg from "../../../../../components/UserProfileImg";
 import type { BeatingMessage } from "../../../types/beatings";
@@ -21,17 +22,24 @@ function BeatingMessageItem({ message }: BeatingMessageItemProps) {
         <UserProfileImg
           name={message.userName}
           imageUrl={message.userImageUrl}
-          size="sm"
+          size="md"
           tone="orange"
           badge={
             <span className={styles.gratitudeBadge} aria-hidden>
-              <HeartIcon size="sm" />
+              <HeartIcon size="md" />
             </span>
           }
         />
-        <p className={styles.gratitudeName}>{message.userName}</p>
+        <div className={styles.gratitudeHeaderText}>
+          {message.isMyBeating ? (
+            <Badge size="sm" radius="pill" variant="accent">
+              討伐者
+            </Badge>
+          ) : null}
+          <p className={styles.gratitudeName}>{message.userName}</p>
+        </div>
       </div>
-      <p className={styles.gratitudeMain}>{message.mainMessage}</p>
+      {message.isMyBeating ? null : <p className={styles.gratitudeMain}>{message.mainMessage}</p>}
       {message.describeMessage ? (
         <p className={styles.gratitudeDescribe}>{message.describeMessage}</p>
       ) : null}

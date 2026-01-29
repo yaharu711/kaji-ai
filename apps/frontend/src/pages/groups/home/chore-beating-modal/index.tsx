@@ -95,7 +95,7 @@ function ChoreBeatingModal({
     <HalfModal
       open={open}
       onOpenChange={handleOpenChange}
-      title="家事を討伐する"
+      title="家事の討伐を記録！"
       headerIcon={<SwordsHeaderIcon size="sm" aria-hidden />}
       primaryActionLabel="討伐完了"
       secondaryActionLabel="キャンセル"
@@ -117,7 +117,7 @@ function ChoreBeatingModal({
             <span>討伐する家事を選択</span>
           </div>
           <DropdownSelect
-            placeholder="家事を選択しよう！"
+            placeholder="家事を選択"
             emptyMessage={
               choresLoading ? (
                 <LoaderCircle size="md" ariaLabel="家事を読み込み中" />
