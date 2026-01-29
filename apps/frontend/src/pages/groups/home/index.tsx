@@ -25,9 +25,13 @@ const formatJstDateLabel = (dateString: string) => {
   return `${year}年${String(Number(month))}月${String(Number(day))}日 (${weekday})`;
 };
 
-function GroupHomePage() {
+interface GroupHomePageProps {
+  todayOverride?: string;
+}
+
+function GroupHomePage({ todayOverride }: GroupHomePageProps) {
   const { groupId, currentUser } = useGroupLayout();
-  const today = useMemo(() => getJstDateString(nowJst()), []);
+  const today = useMemo(() => todayOverride ?? getJstDateString(nowJst()), [todayOverride]);
   const [selectedDate, setSelectedDate] = useState(() => today);
   const [isBattleOpen, setIsBattleOpen] = useState(false);
   const [isAddToHomeOpen, setIsAddToHomeOpen] = useState(false);

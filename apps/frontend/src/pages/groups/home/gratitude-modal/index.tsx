@@ -82,7 +82,7 @@ function GratitudeModal({
     <HalfModal
       open={open}
       onOpenChange={handleOpenChange}
-      title={isSelfComment ? "討伐カードにコメントができます！" : "感謝を伝えよう！"}
+      title={isSelfComment ? "討伐カードにコメントできます！" : "感謝を伝えよう！"}
       headerIcon={
         <span className={styles.headerIcon} aria-hidden>
           <Heart size={18} fill="currentColor" stroke="currentColor" />
