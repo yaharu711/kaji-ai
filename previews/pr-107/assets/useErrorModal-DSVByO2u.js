@@ -1,0 +1,1 @@
+import{r as o}from"./iframe-D8ZnBZMp.js";import{a as t}from"./index-BiOiprgk.js";const a=()=>{const r=o.useContext(t);if(!r)throw new Error("useErrorModal must be used within ErrorModalProvider");return r};export{a as u};
