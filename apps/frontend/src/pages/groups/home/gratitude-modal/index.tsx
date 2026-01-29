@@ -94,7 +94,7 @@ function GratitudeModal({
       primaryActionLoading={isSubmitting}
       secondaryActionDisabled={isSubmitting}
       primaryActionIcon={<Heart size={16} fill="currentColor" stroke="currentColor" />}
-      height="lg"
+      height={isSelfComment ? "md" : "lg"}
       onPrimaryAction={() => {
         void handleSubmit();
       }}
