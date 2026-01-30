@@ -40,10 +40,3 @@
   color: var(--color-text-muted);
   font-size: 13px;
 }
-
-.userName {
-  margin: 0;
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--color-text-strong);
-}

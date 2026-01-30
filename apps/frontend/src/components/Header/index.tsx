@@ -1,3 +1,4 @@
+import { type ReactNode } from "react";
 import { Users, type LucideIcon } from "lucide-react";
 import { Link, NavLink } from "react-router-dom";
 import type { AppSessionUser } from "@kaiji-ai/backend/contracts";
@@ -18,14 +19,39 @@ interface HeaderProps {
   groupName?: string;
   currentUser?: AppSessionUser;
   members?: GroupMember[];
+  userAction?: ReactNode;
 }
 
-function Header({ navItems, groupName, currentUser, members }: HeaderProps) {
+function Header({ navItems, groupName, currentUser, members, userAction }: HeaderProps) {
   const popoverContent =
     groupName && currentUser && members && members.length > 0 ? (
       <UserPopoverContent groupName={groupName} currentUser={currentUser} members={members} />
     ) : null;
   const shouldShowUserPopover = Boolean(popoverContent);
+  const actionNode = userAction ? (
+    <div className={styles.userAction}>{userAction}</div>
+  ) : (
+    <Popover
+      trigger={
+        <button
+          type="button"
+          className={styles.userTrigger}
+          aria-label="ユーザー情報を開く"
+          disabled={!shouldShowUserPopover}
+        >
+          <Users size={18} />
+          <span>メンバー</span>
+        </button>
+      }
+      ariaLabel="ユーザー情報"
+      content={popoverContent}
+      size="md"
+      radius="xl"
+      variant="soft"
+      side="bottom"
+      align="end"
+    />
+  );
 
   return (
     <header className={styles.header}>
@@ -41,26 +67,7 @@ function Header({ navItems, groupName, currentUser, members }: HeaderProps) {
             <span className={styles.appName}>カジアイ</span>
           </div>
         </Link>
-        <Popover
-          trigger={
-            <button
-              type="button"
-              className={styles.userTrigger}
-              aria-label="ユーザー情報を開く"
-              disabled={!shouldShowUserPopover}
-            >
-              <Users size={18} />
-              <span>メンバー</span>
-            </button>
-          }
-          ariaLabel="ユーザー情報"
-          content={popoverContent}
-          size="md"
-          radius="xl"
-          variant="soft"
-          side="bottom"
-          align="end"
-        />
+        {actionNode}
       </div>
       <div className={styles.bottomRow}>
         <nav className={styles.nav} aria-label="ページナビゲーション">
