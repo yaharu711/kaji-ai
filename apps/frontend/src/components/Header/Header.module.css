@@ -94,6 +94,35 @@
   box-shadow: var(--shadow-input-focus);
 }
 
+.userAction {
+  display: inline-flex;
+  align-items: center;
+}
+
+.userAction > a,
+.userAction > button {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  text-decoration: none;
+  box-shadow: var(--shadow-primary);
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.userAction > a:hover,
+.userAction > button:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-primary-hover);
+}
+
+.userAction > a:focus-visible,
+.userAction > button:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-input-focus);
+}
+
 .bottomRow {
   display: flex;
   align-items: center;

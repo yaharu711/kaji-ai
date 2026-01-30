@@ -36,11 +36,12 @@ function GroupHomePage({ todayOverride }: GroupHomePageProps) {
   const [isBattleOpen, setIsBattleOpen] = useState(false);
   const [isAddToHomeOpen, setIsAddToHomeOpen] = useState(false);
   const { data: chores, isLoading: choresLoading } = useGroupChoresQuery(groupId);
-  const { data: beatingGroups, isLoading: beatingLoading } = useGroupBeatingsQuery(
-    groupId,
-    selectedDate,
-    currentUser.id,
-  );
+  const {
+    data: beatingGroups,
+    isLoading: beatingLoading,
+    isFetching: beatingFetching,
+    refetch: refetchBeatings,
+  } = useGroupBeatingsQuery(groupId, selectedDate, currentUser.id);
   const { mutateAsync: createBeating, isPending: isCreatingBeating } =
     useCreateChoreBeatingMutation();
   const isToday = selectedDate === today;
@@ -103,6 +104,10 @@ function GroupHomePage({ todayOverride }: GroupHomePageProps) {
         beatingGroups={beatingGroups ?? []}
         isLoading={beatingLoading}
         isToday={isToday}
+        isRefreshing={beatingFetching}
+        onRefresh={() => {
+          void refetchBeatings();
+        }}
       />
       {isToday ? (
         <button

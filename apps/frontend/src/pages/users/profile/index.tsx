@@ -1,13 +1,9 @@
 import { CircleUser } from "lucide-react";
 import PageCard from "../../../components/PageCard";
+import { useSessionUser } from "../../../contexts/SessionUserContext";
 import styles from "./profile.module.css";
-import type { AppSessionUser } from "@kaiji-ai/backend/contracts";
 
-interface Props {
-  user: AppSessionUser;
-}
-
-function ProfileSection({ user }: Props) {
+function ProfileSection({ user }: { user: { name?: string | null; image?: string | null } }) {
   const displayName = user.name ?? "ユーザー";
 
   return (
@@ -34,4 +30,9 @@ function ProfileSection({ user }: Props) {
   );
 }
 
-export default ProfileSection;
+function UserProfilePage() {
+  const user = useSessionUser();
+  return <ProfileSection user={user} />;
+}
+
+export default UserProfilePage;

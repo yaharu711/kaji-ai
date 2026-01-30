@@ -3,6 +3,8 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import LoginPage from "./pages/login";
 import LandingPage from "./pages/landing";
 import UserPage from "./pages/users";
+import UserProfilePage from "./pages/users/profile";
+import UserLayout from "./pages/users/UserLayout";
 import GroupLayout from "./pages/groups/GroupLayout";
 import GroupHomePage from "./pages/groups/home";
 import GroupReportsPage from "./pages/groups/reports";
@@ -18,7 +20,10 @@ function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route element={<ProtectedLayout />}>
-          <Route path="/users/:userId" element={<UserPage />} />
+          <Route path="/users/:userId" element={<UserLayout />}>
+            <Route index element={<UserPage />} />
+            <Route path="profile" element={<UserProfilePage />} />
+          </Route>
           <Route path="/groups/:groupId" element={<GroupLayout />}>
             <Route index element={<GroupHomePage />} />
             <Route path="reports" element={<GroupReportsPage />} />
