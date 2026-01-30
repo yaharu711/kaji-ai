@@ -1,9 +1,6 @@
 import { type ReactNode } from "react";
-import { Users, type LucideIcon } from "lucide-react";
+import { type LucideIcon } from "lucide-react";
 import { Link, NavLink } from "react-router-dom";
-import type { AppSessionUser } from "@kaiji-ai/backend/contracts";
-import Popover from "../Popover";
-import UserPopoverContent, { type GroupMember } from "./UserPopoverContent";
 import styles from "./Header.module.css";
 
 export interface HeaderNavItem {
@@ -16,42 +13,11 @@ export interface HeaderNavItem {
 
 interface HeaderProps {
   navItems: HeaderNavItem[];
-  groupName?: string;
-  currentUser?: AppSessionUser;
-  members?: GroupMember[];
   userAction?: ReactNode;
 }
 
-function Header({ navItems, groupName, currentUser, members, userAction }: HeaderProps) {
-  const popoverContent =
-    groupName && currentUser && members && members.length > 0 ? (
-      <UserPopoverContent groupName={groupName} currentUser={currentUser} members={members} />
-    ) : null;
-  const shouldShowUserPopover = Boolean(popoverContent);
-  const actionNode = userAction ? (
-    <div className={styles.userAction}>{userAction}</div>
-  ) : (
-    <Popover
-      trigger={
-        <button
-          type="button"
-          className={styles.userTrigger}
-          aria-label="ユーザー情報を開く"
-          disabled={!shouldShowUserPopover}
-        >
-          <Users size={18} />
-          <span>メンバー</span>
-        </button>
-      }
-      ariaLabel="ユーザー情報"
-      content={popoverContent}
-      size="md"
-      radius="xl"
-      variant="soft"
-      side="bottom"
-      align="end"
-    />
-  );
+function Header({ navItems, userAction }: HeaderProps) {
+  const actionNode = userAction ? <div className={styles.userAction}>{userAction}</div> : null;
 
   return (
     <header className={styles.header}>

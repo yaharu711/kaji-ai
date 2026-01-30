@@ -6,8 +6,31 @@
 
 .header {
   display: flex;
+  flex-direction: column;
   align-items: flex-start;
   gap: 12px;
+}
+
+.headerMain {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  width: 100%;
+}
+
+.headerText {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  flex: 1;
+}
+
+.titleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
 }
 
 .title {
@@ -16,10 +39,50 @@
   color: var(--color-text-strong);
 }
 
-.subtitle {
-  margin: 6px 0 0;
-  color: var(--color-text-muted);
-  font-size: 14px;
+.refreshButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--color-nav-active-ring);
+  background: linear-gradient(135deg, #fdf2ff, #f5e9ff);
+  color: var(--color-text-accent);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    opacity 0.15s ease;
+  box-shadow: 0 6px 14px rgba(168, 85, 247, 0.18);
+}
+
+.refreshButton:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 16px rgba(168, 85, 247, 0.22);
+}
+
+.refreshButton:disabled {
+  cursor: default;
+  opacity: 0.6;
+  transform: none;
+  box-shadow: none;
+}
+
+.refreshIcon {
+  display: inline-block;
+}
+
+.refreshIconSpinning {
+  display: inline-block;
+  animation: refresh-spin 0.9s linear infinite;
+}
+
+@keyframes refresh-spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .list {
@@ -137,5 +200,10 @@
 
   .title {
     font-size: 18px;
+  }
+
+  .refreshButton {
+    padding: 10px 15px;
+    font-size: 13px;
   }
 }

@@ -2,7 +2,7 @@ import { createContext, useContext } from "react";
 import type { AppSessionUser } from "@kaiji-ai/backend/contracts";
 
 import type { HeaderNavItem } from "../../components/Header";
-import type { GroupMember } from "../../components/Header/UserPopoverContent";
+import type { GroupMember } from "./UserPopoverContent";
 
 interface GroupLayoutValue {
   groupId: string;
