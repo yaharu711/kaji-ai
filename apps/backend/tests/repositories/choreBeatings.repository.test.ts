@@ -12,7 +12,6 @@ import {
   createGroupChore,
   createUser,
 } from "../helpers/db";
-import { Auth } from "@auth/core";
 import { AUTH_USER } from "../helpers/mockAuth";
 
 type Database = NeonHttpDatabase<typeof schema>;
@@ -136,7 +135,7 @@ describe("findTimelineByGroupIdAndUtcRange", () => {
       beatingId: beating1Id,
       mainMessage: "ありがとう",
       descriptionMessage: "助かりました",
-      createdAt: new Date("2025-01-10T02:00:00Z"),
+      createdAt: new Date("2025-01-10T02:01:00Z"),
     });
     await createChoreBeatingThankMessage({
       groupId: "group-1",
@@ -144,7 +143,7 @@ describe("findTimelineByGroupIdAndUtcRange", () => {
       beatingId: beating1Id,
       mainMessage: "おつかれ！",
       descriptionMessage: null,
-      createdAt: new Date("2025-01-10T02:01:00Z"),
+      createdAt: new Date("2025-01-10T02:00:00Z"),
     });
     await createChoreBeatingThankMessage({
       groupId: "group-1",
@@ -194,6 +193,11 @@ describe("findTimelineByGroupIdAndUtcRange", () => {
         }),
       ]),
     );
+    // メッセージは作成日の昇順になっていることを確認
+    expect(itemWithMessages.messages.map((message) => message.mainMessage)).toEqual([
+      "おつかれ！",
+      "ありがとう",
+    ]);
 
     const itemWithoutMessages = tenItems.find((item) => item.beatingId === beating2Id);
     if (!itemWithoutMessages) throw new Error("Missing beating2");

@@ -51,6 +51,7 @@ export class ChoreBeatingsRepository {
               'mainMessage', chore_beating_thank_messages.main_message,
               'descriptionMessage', chore_beating_thank_messages.description_message
             )
+            ORDER BY chore_beating_thank_messages.created_at ASC, chore_beating_thank_messages.id
           ) FILTER (WHERE chore_beating_thank_messages.id IS NOT NULL) AS messages
         FROM chore_beatings
         INNER JOIN group_chores ON chore_beatings.chore_id = group_chores.id
