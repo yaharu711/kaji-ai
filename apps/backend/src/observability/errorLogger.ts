@@ -9,7 +9,7 @@ type ErrorLogMeta = {
 };
 
 export type ErrorLogger = {
-  error: (c: Context, err: unknown, meta?: ErrorLogMeta) => void;
+  error: (c: Context, err: unknown, meta?: Omit<ErrorLogMeta, "level">) => void;
   warn: (c: Context, err: unknown, meta?: Omit<ErrorLogMeta, "level">) => void;
   info: (c: Context, message: string, meta?: Omit<ErrorLogMeta, "level">) => void;
 };
@@ -57,8 +57,7 @@ export function createLogger(params: {
   };
 
   return {
-    error: (c, err, meta) =>
-      send(c, { level: "error", err, meta: { ...meta, level: meta?.level ?? "error" } }),
+    error: (c, err, meta) => send(c, { level: "error", err, meta: { ...meta, level: "error" } }),
     warn: (c, err, meta) => send(c, { level: "warning", err, meta: { ...meta, level: "warning" } }),
     info: (c, message, meta) =>
       send(c, { level: "info", message, meta: { ...meta, level: "info" } }),

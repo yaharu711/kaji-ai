@@ -9,7 +9,7 @@ export function initSentry() {
 
   Sentry.init({
     dsn,
-    environment: process.env.APP_ENV ?? process.env.VERCEL_ENV ?? "production",
+    environment: process.env.APP_ENV ?? process.env.VERCEL_ENV ?? "unknown",
     enabled: true,
     tracesSampleRate: 0.1,
   });
