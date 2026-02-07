@@ -4,7 +4,7 @@ import { createLogger } from "./errorLogger";
 
 export function initSentry() {
   const dsn = process.env.SENTRY_DSN;
-  console.log("Sentry DSN:", dsn ? "configured" : "not configured");
+  console.log("[sentry] init", { enabled: Boolean(dsn) });
   if (!dsn) return;
 
   Sentry.init({
@@ -40,7 +40,9 @@ export const createSentryLogger = (feature?: string) =>
           scope.setTag(key, value);
         }
         for (const [key, value] of Object.entries(contexts)) {
-          scope.setContext(key, value as Record<string, unknown>);
+          if (value === null || typeof value === "object") {
+            scope.setContext(key, value as Record<string, unknown> | null);
+          }
         }
 
         if (err) {

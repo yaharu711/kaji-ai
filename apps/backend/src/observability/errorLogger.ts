@@ -9,7 +9,7 @@ type ErrorLogMeta = {
 };
 
 export type ErrorLogger = {
-  error: (c: Context, err: unknown, meta?: Omit<ErrorLogMeta, "level">) => void;
+  error: (c: Context, err: unknown, message: string, meta?: Omit<ErrorLogMeta, "level">) => void;
   warn: (c: Context, err: unknown, meta?: Omit<ErrorLogMeta, "level">) => void;
   info: (c: Context, message: string, meta?: Omit<ErrorLogMeta, "level">) => void;
 };
@@ -34,6 +34,24 @@ export function createLogger(params: {
     const url = new URL(c.req.url);
     const level = input.meta?.level ?? input.level;
 
+    if (input.err) {
+      if (level === "error") {
+        console.error("[log]", input.message ?? "error", input.err);
+      } else if (level === "warning") {
+        console.warn("[log]", input.message ?? "warning", input.err);
+      } else {
+        console.info("[log]", input.message ?? "info", input.err);
+      }
+    } else if (input.message) {
+      if (level === "error") {
+        console.error("[log]", input.message);
+      } else if (level === "warning") {
+        console.warn("[log]", input.message);
+      } else {
+        console.info("[log]", input.message);
+      }
+    }
+
     const tags: Record<string, string> = {};
     if (input.meta?.feature) tags.feature = input.meta.feature;
 
@@ -57,7 +75,8 @@ export function createLogger(params: {
   };
 
   return {
-    error: (c, err, meta) => send(c, { level: "error", err, meta: { ...meta, level: "error" } }),
+    error: (c, err, message, meta) =>
+      send(c, { level: "error", err, message, meta: { ...meta, level: "error" } }),
     warn: (c, err, meta) => send(c, { level: "warning", err, meta: { ...meta, level: "warning" } }),
     info: (c, message, meta) =>
       send(c, { level: "info", message, meta: { ...meta, level: "info" } }),

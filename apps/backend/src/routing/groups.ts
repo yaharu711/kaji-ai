@@ -38,7 +38,7 @@ const sentryTest = (c: Context) => {
     throw err;
   }
   if (mode === "error") {
-    log.error(c, null, {
+    log.error(c, null, "エラーがSentryに通知されるかのテストです！", {
       feature: "sentry-test",
       context: {
         test_mode: "exception",
