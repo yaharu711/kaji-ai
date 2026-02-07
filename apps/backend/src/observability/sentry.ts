@@ -31,6 +31,7 @@ export const createSentryLogger = (feature?: string) =>
   createLogger({
     capture: ({ level, err, message, tags, contexts }) => {
       if (level === "info") return;
+      console.log("[sentry] capturing before withScope", { level, message, tags, contexts });
 
       sentryCapture.withScope((scope) => {
         scope.setLevel(level);
@@ -47,7 +48,9 @@ export const createSentryLogger = (feature?: string) =>
         }
 
         if (err) {
+          console.log("[sentry] capturing start exception", { level, message, tags, contexts });
           sentryCapture.captureException(err);
+          console.log("[sentry] captured exception");
         } else if (message) {
           sentryCapture.captureMessage(message, level);
         }
