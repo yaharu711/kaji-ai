@@ -47,7 +47,9 @@ export const createSentryLogger = (feature?: string) =>
         }
 
         if (err) {
+          console.log("[sentry] capturing start exception", { level, message, tags, contexts });
           sentryCapture.captureException(err);
+          console.log("[sentry] captured exception");
         } else if (message) {
           sentryCapture.captureMessage(message, level);
         }
