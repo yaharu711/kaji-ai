@@ -33,6 +33,7 @@ export const createSentryLogger = (feature?: string) =>
       if (level === "info") return;
       console.log("[sentry] capturing before withScope", { level, message, tags, contexts });
 
+      console.log("[sentry] capturing before start withScope");
       sentryCapture.withScope((scope) => {
         // withScope()の中にそもそも処理が入っていることを確認するためのログ
         console.log("[sentry] capturing in withScope", { level, message, tags, contexts });
