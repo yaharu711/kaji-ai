@@ -1,6 +1,6 @@
 import * as Sentry from "@sentry/vercel-edge";
 
-import { createLogger } from "./errorLogger";
+import { createLogger } from "./logger";
 
 export function initSentry() {
   const dsn = process.env.SENTRY_DSN;

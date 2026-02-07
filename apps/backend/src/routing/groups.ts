@@ -52,10 +52,15 @@ const sentryTest = (c: Context) => {
     value.toString(); // This will cause a TypeError
   }
   if (mode === "warning") {
-    log.warn(c, new Error("Sentry test warning"), {
-      feature: "sentry-test",
-      context: { test_mode: "warning", group_id: c.req.param("groupId") ?? null },
-    });
+    log.warn(
+      c,
+      new Error("Sentry test warning"),
+      "ワーニングがSentryに通知されるかのテストです！",
+      {
+        feature: "sentry-test",
+        context: { test_mode: "warning", group_id: c.req.param("groupId") ?? null },
+      },
+    );
     return c.json({ status: "ok", sentry_test: "warning" });
   }
 
