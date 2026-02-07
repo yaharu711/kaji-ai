@@ -34,6 +34,8 @@ export const createSentryLogger = (feature?: string) =>
       console.log("[sentry] capturing before withScope", { level, message, tags, contexts });
 
       sentryCapture.withScope((scope) => {
+        // withScope()の中にそもそも処理が入っていることを確認するためのログ
+        console.log("[sentry] capturing in withScope", { level, message, tags, contexts });
         scope.setLevel(level);
         if (feature && !tags.feature) {
           scope.setTag("feature", feature);
@@ -52,7 +54,9 @@ export const createSentryLogger = (feature?: string) =>
           sentryCapture.captureException(err);
           console.log("[sentry] captured exception");
         } else if (message) {
+          console.log("[sentry] capturing start message!!", { level, message, tags, contexts });
           sentryCapture.captureMessage(message, level);
+          console.log("[sentry] captured start message!!", { level, message, tags, contexts });
         }
       });
     },
