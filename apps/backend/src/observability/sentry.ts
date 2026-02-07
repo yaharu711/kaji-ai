@@ -6,6 +6,7 @@ export function initSentry() {
   const dsn = process.env.SENTRY_DSN;
   console.log("[sentry] init", { enabled: Boolean(dsn) });
   if (!dsn) return;
+  console.log("[sentry] initializing Sentry SDK", process.env.APP_ENV);
 
   Sentry.init({
     dsn,
