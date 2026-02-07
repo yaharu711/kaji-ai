@@ -3,20 +3,19 @@ import type { Context } from "hono";
 type ErrorLevel = "error" | "warning" | "info";
 
 type ErrorLogMeta = {
-  feature?: string; // Example: "group-invite"
-  context?: Record<string, unknown>; // Extra info for investigation (avoid PII)
-  level?: ErrorLevel; // Default is "error"
+  feature?: string; // 例: "group-invite"
+  context?: Record<string, unknown>; // 調査に必要な追加情報
 };
 
 export type ErrorLogger = {
-  error: (c: Context, err: unknown, meta?: Omit<ErrorLogMeta, "level">) => void;
-  warn: (c: Context, err: unknown, meta?: Omit<ErrorLogMeta, "level">) => void;
+  error: (c: Context, err: unknown, message?: string, meta?: Omit<ErrorLogMeta, "level">) => void;
+  warn: (c: Context, err: unknown, message?: string, meta?: Omit<ErrorLogMeta, "level">) => void;
   info: (c: Context, message: string, meta?: Omit<ErrorLogMeta, "level">) => void;
 };
 
 /**
- * capture is an injected Sentry (or future logger) hook.
- * When we add pino later, we can extend this in one place.
+ * capture は「Sentryや監視ツールに送る実装」を注入する。
+ * 後から pino を入れたいなら、この中に pino 出力を足すだけでOK。
  */
 export function createLogger(params: {
   capture: (payload: {
@@ -32,7 +31,15 @@ export function createLogger(params: {
     input: { level: ErrorLevel; err?: unknown; message?: string; meta?: ErrorLogMeta },
   ) => {
     const url = new URL(c.req.url);
-    const level = input.meta?.level ?? input.level;
+    const level = input.level;
+
+    const logMethod =
+      level === "error" ? console.error : level === "warning" ? console.warn : console.info;
+    if (input.err) {
+      logMethod("[log]", input.message ?? "メッセージはありません。", input.err);
+    } else if (input.message) {
+      logMethod("[log]", input.message);
+    }
 
     const tags: Record<string, string> = {};
     if (input.meta?.feature) tags.feature = input.meta.feature;
@@ -57,9 +64,10 @@ export function createLogger(params: {
   };
 
   return {
-    error: (c, err, meta) => send(c, { level: "error", err, meta: { ...meta, level: "error" } }),
-    warn: (c, err, meta) => send(c, { level: "warning", err, meta: { ...meta, level: "warning" } }),
-    info: (c, message, meta) =>
-      send(c, { level: "info", message, meta: { ...meta, level: "info" } }),
+    error: (c, err, message, meta) =>
+      send(c, { level: "error", err, message, meta: { ...(meta ?? {}) } }),
+    warn: (c, err, message, meta) =>
+      send(c, { level: "warning", err, message, meta: { ...(meta ?? {}) } }),
+    info: (c, message, meta) => send(c, { level: "info", message, meta: { ...(meta ?? {}) } }),
   };
 }
