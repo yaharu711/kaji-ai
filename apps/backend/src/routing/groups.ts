@@ -1,4 +1,5 @@
 import { Hono } from "hono";
+import type { Context } from "hono";
 
 import {
   acceptGroupInvitationController,
@@ -24,9 +25,47 @@ import {
 } from "./schemas/requests";
 import { validateJson, validateQuery } from "./middlewares/validator";
 import { unprocessableEntitySchema } from "./schemas/responses/common";
+import { createSentryLogger } from "../observability/sentry";
+
+const log = createSentryLogger("groups");
+
+const sentryTest = (c: Context) => {
+  const mode = c.req.query("sentry_test");
+  if (!mode) return null;
+
+  if (mode === "exception") {
+    const err = new Error("Sentry test exception");
+    throw err;
+  }
+  if (mode === "error") {
+    log.error(c, null, {
+      feature: "sentry-test",
+      context: {
+        test_mode: "exception",
+        group_id: c.req.param("groupId") ?? null,
+      },
+    });
+    return c.json({ status: "500", sentry_test: "warning" }, 500);
+  }
+  if (mode === "typeerror") {
+    const value = null as unknown as { toString: () => string };
+    value.toString(); // This will cause a TypeError
+  }
+  if (mode === "warning") {
+    log.warn(c, new Error("Sentry test warning"), {
+      feature: "sentry-test",
+      context: { test_mode: "warning", group_id: c.req.param("groupId") ?? null },
+    });
+    return c.json({ status: "ok", sentry_test: "warning" });
+  }
+
+  return c.json({ status: "skipped", sentry_test: mode });
+};
 
 const app = new Hono()
   .get("/", async (c) => {
+    const testResponse = sentryTest(c);
+    if (testResponse) return testResponse;
     const requesterId = c.var.requesterId;
     return getGroupsController(c, requesterId);
   })
@@ -46,6 +85,8 @@ const app = new Hono()
     return getGroupBeatingsController(c, requesterId, groupId, date);
   })
   .post("/:groupId/beatings", validateJson(createChoreBeatingRequestSchema), async (c) => {
+    const testResponse = sentryTest(c);
+    if (testResponse) return testResponse;
     const requesterId = c.var.requesterId;
     const { groupId } = c.req.param();
     const { chore_id, beated_at } = c.req.valid("json");
