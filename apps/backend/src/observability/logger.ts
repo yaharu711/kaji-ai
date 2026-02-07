@@ -33,22 +33,12 @@ export function createLogger(params: {
     const url = new URL(c.req.url);
     const level = input.level;
 
+    const logMethod =
+      level === "error" ? console.error : level === "warning" ? console.warn : console.info;
     if (input.err) {
-      if (level === "error") {
-        console.error("[log]", input.message ?? "error", input.err);
-      } else if (level === "warning") {
-        console.warn("[log]", input.message ?? "warning", input.err);
-      } else {
-        console.info("[log]", input.message ?? "info", input.err);
-      }
+      logMethod("[log]", input.message ?? "メッセージはありません。", input.err);
     } else if (input.message) {
-      if (level === "error") {
-        console.error("[log]", input.message);
-      } else if (level === "warning") {
-        console.warn("[log]", input.message);
-      } else {
-        console.info("[log]", input.message);
-      }
+      logMethod("[log]", input.message);
     }
 
     const tags: Record<string, string> = {};
