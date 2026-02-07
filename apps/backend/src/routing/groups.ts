@@ -1,4 +1,5 @@
 import { Hono } from "hono";
+import type { Context } from "hono";
 
 import {
   acceptGroupInvitationController,
@@ -24,9 +25,33 @@ import {
 } from "./schemas/requests";
 import { validateJson, validateQuery } from "./middlewares/validator";
 import { unprocessableEntitySchema } from "./schemas/responses/common";
+import { createSentryLogger } from "../observability/sentry";
+
+const log = createSentryLogger("groups");
+
+const sentryTest = (c: Context) => {
+  const mode = c.req.query("sentry_test");
+  if (!mode) return null;
+
+  if (mode === "exception") {
+    throw new Error("Sentry test exception");
+  }
+  if (mode === "typeerror") {
+    const value = null as unknown as { toString: () => string };
+    value.toString(); // This will cause a TypeError
+  }
+  if (mode === "warning") {
+    log.warn(c, new Error("Sentry test warning"), { feature: "sentry-test" });
+    return c.json({ status: "ok", sentry_test: "warning" });
+  }
+
+  return c.json({ status: "skipped", sentry_test: mode });
+};
 
 const app = new Hono()
   .get("/", async (c) => {
+    const testResponse = sentryTest(c);
+    if (testResponse) return testResponse;
     const requesterId = c.var.requesterId;
     return getGroupsController(c, requesterId);
   })

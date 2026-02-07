@@ -3,14 +3,18 @@ import { Hono } from "hono";
 import { cors } from "hono/cors";
 
 import authConfig from "../auth.config";
+import { createSentryLogger } from "../observability/sentry";
 import env from "../util/env";
 import groups from "./groups";
 import { requireRequester } from "./middlewares/requester";
+import { sentryScopeMiddleware } from "./middlewares/sentryScope";
+
+const log = createSentryLogger("routing");
 
 const frontendOrigin = env("FRONTEND_ORIGIN");
 const app = new Hono()
   .onError((err, c) => {
-    console.error(err);
+    log.error(c, err);
     return c.json({ status: 500, message: "Internal Server Error" }, 500);
   })
   .use(
@@ -30,6 +34,7 @@ const app = new Hono()
   .use("/api/auth/*", authHandler())
   .use("/api/*", verifyAuth())
   .use("/api/*", requireRequester())
+  .use("/api/*", sentryScopeMiddleware())
   .route("/api/groups", groups)
   .get("/api/me", (c) => {
     const auth = c.get("authUser");
