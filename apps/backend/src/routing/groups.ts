@@ -80,6 +80,8 @@ const app = new Hono()
     return getGroupsController(c, requesterId);
   })
   .get("/:groupId/chores", async (c) => {
+    const testResponse = await sentryTest(c);
+    if (testResponse) return testResponse;
     const { groupId } = c.req.param();
     return getGroupChoresController(c, groupId);
   })
