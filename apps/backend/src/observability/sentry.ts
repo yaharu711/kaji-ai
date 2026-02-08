@@ -20,10 +20,15 @@ export { Sentry };
 
 export const sentryCapture = {
   // 自動でstack traceとかつく、エラーを送るときに使う
-  captureException: (err: unknown) => Sentry.captureException(err),
+  captureException: (err: unknown) => {
+    const result = Sentry.captureException(err);
+    console.log("[sentry] captured exception and completed captureException", { result });
+  },
   // 自動でstack traceとかつかない、メッセージを送るだけで使う
-  captureMessage: (message: string, level?: Sentry.SeverityLevel) =>
-    Sentry.captureMessage(message, level),
+  captureMessage: (message: string, level?: Sentry.SeverityLevel) => {
+    const result = Sentry.captureMessage(message, level);
+    console.log("[sentry] captured message and completed captureMessage", { result });
+  },
   withScope: Sentry.withScope,
 };
 
