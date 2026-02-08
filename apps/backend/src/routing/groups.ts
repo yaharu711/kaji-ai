@@ -29,7 +29,7 @@ import { createSentryLogger } from "../observability/sentry";
 
 const log = createSentryLogger("groups");
 
-const sentryTest = (c: Context) => {
+const sentryTest = async (c: Context) => {
   const mode = c.req.query("sentry_test");
   if (!mode) return null;
 
@@ -38,13 +38,18 @@ const sentryTest = (c: Context) => {
     throw err;
   }
   if (mode === "error") {
-    log.error(c, null, "エラーがSentryに通知されるかのテストです！", {
-      feature: "sentry-test",
-      context: {
-        test_mode: "exception",
-        group_id: c.req.param("groupId") ?? null,
+    await log.error(
+      c,
+      new Error("Sentry test error"),
+      "エラーがSentryに通知されるかのテストです！",
+      {
+        feature: "sentry-test",
+        context: {
+          test_mode: "exception",
+          group_id: c.req.param("groupId") ?? null,
+        },
       },
-    });
+    );
     return c.json({ status: "500", sentry_test: "warning" }, 500);
   }
   if (mode === "typeerror") {
@@ -52,7 +57,7 @@ const sentryTest = (c: Context) => {
     value.toString(); // This will cause a TypeError
   }
   if (mode === "warning") {
-    log.warn(
+    await log.warn(
       c,
       new Error("Sentry test warning"),
       "ワーニングがSentryに通知されるかのテストです！",
@@ -69,7 +74,7 @@ const sentryTest = (c: Context) => {
 
 const app = new Hono()
   .get("/", async (c) => {
-    const testResponse = sentryTest(c);
+    const testResponse = await sentryTest(c);
     if (testResponse) return testResponse;
     const requesterId = c.var.requesterId;
     return getGroupsController(c, requesterId);
@@ -90,7 +95,7 @@ const app = new Hono()
     return getGroupBeatingsController(c, requesterId, groupId, date);
   })
   .post("/:groupId/beatings", validateJson(createChoreBeatingRequestSchema), async (c) => {
-    const testResponse = sentryTest(c);
+    const testResponse = await sentryTest(c);
     if (testResponse) return testResponse;
     const requesterId = c.var.requesterId;
     const { groupId } = c.req.param();

@@ -13,8 +13,8 @@ const log = createSentryLogger("routing");
 
 const frontendOrigin = env("FRONTEND_ORIGIN");
 const app = new Hono()
-  .onError((err, c) => {
-    log.error(c, err, "予期していない(キャッチされていない)エラーが発生しました。");
+  .onError(async (err, c) => {
+    await log.error(c, err, "予期していない(キャッチされていない)エラーが発生しました。");
     return c.json({ status: 500, message: "Internal Server Error" }, 500);
   })
   .use(

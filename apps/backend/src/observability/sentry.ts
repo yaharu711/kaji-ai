@@ -34,7 +34,7 @@ export const sentryCapture = {
 
 export const createSentryLogger = (feature?: string) =>
   createLogger({
-    capture: ({ level, err, message, tags, contexts }) => {
+    capture: async ({ level, err, message, tags, contexts }) => {
       if (level === "info") return;
       console.log("[sentry] capturing before withScope", { level, message, tags, contexts });
 
@@ -65,5 +65,7 @@ export const createSentryLogger = (feature?: string) =>
           console.log("[sentry] captured start message!!", { level, message, tags, contexts });
         }
       });
+
+      await Sentry.flush(2000);
     },
   });

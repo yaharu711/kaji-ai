@@ -7,10 +7,21 @@ type ErrorLogMeta = {
   context?: Record<string, unknown>; // 調査に必要な追加情報
 };
 
+// Edge環境のため、処理が終わったらすぐプロセス終了されて、非同期の処理がまたれないため、明示的にcapture処理でpromiseする必要がある
 export type ErrorLogger = {
-  error: (c: Context, err: unknown, message?: string, meta?: Omit<ErrorLogMeta, "level">) => void;
-  warn: (c: Context, err: unknown, message?: string, meta?: Omit<ErrorLogMeta, "level">) => void;
-  info: (c: Context, message: string, meta?: Omit<ErrorLogMeta, "level">) => void;
+  error: (
+    c: Context,
+    err: unknown,
+    message?: string,
+    meta?: Omit<ErrorLogMeta, "level">,
+  ) => Promise<void>;
+  warn: (
+    c: Context,
+    err: unknown,
+    message?: string,
+    meta?: Omit<ErrorLogMeta, "level">,
+  ) => Promise<void>;
+  info: (c: Context, message: string, meta?: Omit<ErrorLogMeta, "level">) => Promise<void>;
 };
 
 /**
@@ -24,9 +35,9 @@ export function createLogger(params: {
     message?: string;
     tags: Record<string, string>;
     contexts: Record<string, unknown>;
-  }) => void;
+  }) => void | Promise<void>;
 }): ErrorLogger {
-  const send = (
+  const send = async (
     c: Context,
     input: { level: ErrorLevel; err?: unknown; message?: string; meta?: ErrorLogMeta },
   ) => {
@@ -54,7 +65,7 @@ export function createLogger(params: {
     };
     if (input.meta?.context) contexts.app = input.meta.context;
 
-    params.capture({
+    await params.capture({
       level,
       err: input.err,
       message: input.message,
