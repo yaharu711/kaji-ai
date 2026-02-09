@@ -47,10 +47,6 @@ export const createSentryLogger = (feature?: string) =>
             scope.setContext(key, value as Record<string, unknown> | null);
           }
         }
-        // Sentryで表示されるメッセージを指定している
-        if (message) {
-          scope.setExtra("log_message", message);
-        }
 
         if (err) {
           sentryCapture.captureException(err);
