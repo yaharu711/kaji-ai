@@ -74,53 +74,77 @@ const sentryTest = async (c: Context) => {
 
 const app = new Hono()
   .get("/", async (c) => {
-    const testResponse = await sentryTest(c);
-    if (testResponse) return testResponse;
-    const requesterId = c.var.requesterId;
-    return getGroupsController(c, requesterId);
+    try {
+      const testResponse = await sentryTest(c);
+      if (testResponse) return testResponse;
+      const requesterId = c.var.requesterId;
+      return await getGroupsController(c, requesterId);
+    } catch (err) {
+      await log.error(c, err, "groups一覧の取得に失敗しました。");
+      return c.json({ status: 500, message: "Internal Server Error" }, 500);
+    }
   })
   .get("/:groupId/chores", async (c) => {
-    const testResponse = await sentryTest(c);
-    if (testResponse) return testResponse;
-    const { groupId } = c.req.param();
-    return getGroupChoresController(c, groupId);
+    try {
+      const testResponse = await sentryTest(c);
+      if (testResponse) return testResponse;
+      const { groupId } = c.req.param();
+      return await getGroupChoresController(c, groupId);
+    } catch (err) {
+      await log.error(c, err, "グループの家事一覧取得に失敗しました。", {
+        context: { group_id: c.req.param("groupId") ?? null },
+      });
+      return c.json({ status: 500, message: "Internal Server Error" }, 500);
+    }
   })
   .get("/:groupId/users", async (c) => {
-    const requesterId = c.var.requesterId;
-    const { groupId } = c.req.param();
-    return getGroupUsersController(c, requesterId, groupId);
+    try {
+      const requesterId = c.var.requesterId;
+      const { groupId } = c.req.param();
+      return await getGroupUsersController(c, requesterId, groupId);
+    } catch (err) {
+      await log.error(c, err, "グループのユーザー一覧取得に失敗しました。", {
+        context: { group_id: c.req.param("groupId") ?? null },
+      });
+      return c.json({ status: 500, message: "Internal Server Error" }, 500);
+    }
   })
   .get("/:groupId/beatings", validateQuery(getGroupBeatingsRequestSchema), async (c) => {
-    const requesterId = c.var.requesterId;
-    const { groupId } = c.req.param();
-    const { date } = c.req.valid("query");
-    return getGroupBeatingsController(c, requesterId, groupId, date);
+    try {
+      const requesterId = c.var.requesterId;
+      const { groupId } = c.req.param();
+      const { date } = c.req.valid("query");
+      return await getGroupBeatingsController(c, requesterId, groupId, date);
+    } catch (err) {
+      await log.error(c, err, "家事実行の取得に失敗しました。", {
+        context: { group_id: c.req.param("groupId") ?? null, query: c.req.valid("query") },
+      });
+      return c.json({ status: 500, message: "Internal Server Error" }, 500);
+    }
   })
   .post("/:groupId/beatings", validateJson(createChoreBeatingRequestSchema), async (c) => {
-    const testResponse = await sentryTest(c);
-    if (testResponse) return testResponse;
-    const requesterId = c.var.requesterId;
-    const { groupId } = c.req.param();
-    const { chore_id, beated_at } = c.req.valid("json");
-    return createChoreBeatingController(c, requesterId, groupId, chore_id, new Date(beated_at));
+    try {
+      const testResponse = await sentryTest(c);
+      if (testResponse) return testResponse;
+      const requesterId = c.var.requesterId;
+      const { groupId } = c.req.param();
+      const { chore_id, beated_at } = c.req.valid("json");
+      return await createChoreBeatingController(
+        c,
+        requesterId,
+        groupId,
+        chore_id,
+        new Date(beated_at),
+      );
+    } catch (err) {
+      await log.error(c, err, "家事実行の作成に失敗しました。", {
+        context: { group_id: c.req.param("groupId") ?? null, body: c.req.valid("json") },
+      });
+      return c.json({ status: 500, message: "Internal Server Error" }, 500);
+    }
   })
   .post("/:groupId/beatings/:beatingId/likes", async (c) => {
-    const requesterId = c.var.requesterId;
-    const { groupId, beatingId } = c.req.param();
-    const parsedBeatingId = Number(beatingId);
-    if (Number.isNaN(parsedBeatingId)) {
-      const body = unprocessableEntitySchema.parse({
-        status: 422,
-        errors: [{ field: "beating_id", message: "beating_id は数値で指定してください" }],
-      });
-      return c.json(body, 422);
-    }
-    return createChoreBeatingLikeController(c, requesterId, groupId, parsedBeatingId);
-  })
-  .post(
-    "/:groupId/beatings/:beatingId/messages",
-    validateJson(createChoreBeatingMessageRequestSchema),
-    async (c) => {
+    try {
       const requesterId = c.var.requesterId;
       const { groupId, beatingId } = c.req.param();
       const parsedBeatingId = Number(beatingId);
@@ -131,42 +155,113 @@ const app = new Hono()
         });
         return c.json(body, 422);
       }
-      const { main_message, description_message } = c.req.valid("json");
-      return createChoreBeatingMessageController(
-        c,
-        requesterId,
-        groupId,
-        parsedBeatingId,
-        main_message,
-        description_message ?? null,
-      );
+      return await createChoreBeatingLikeController(c, requesterId, groupId, parsedBeatingId);
+    } catch (err) {
+      await log.error(c, err, "家事実行へのいいねに失敗しました。", {
+        context: {
+          group_id: c.req.param("groupId") ?? null,
+          beating_id: c.req.param("beatingId") ?? null,
+        },
+      });
+      return c.json({ status: 500, message: "Internal Server Error" }, 500);
+    }
+  })
+  .post(
+    "/:groupId/beatings/:beatingId/messages",
+    validateJson(createChoreBeatingMessageRequestSchema),
+    async (c) => {
+      try {
+        const requesterId = c.var.requesterId;
+        const { groupId, beatingId } = c.req.param();
+        const parsedBeatingId = Number(beatingId);
+        if (Number.isNaN(parsedBeatingId)) {
+          const body = unprocessableEntitySchema.parse({
+            status: 422,
+            errors: [{ field: "beating_id", message: "beating_id は数値で指定してください" }],
+          });
+          return c.json(body, 422);
+        }
+        const { main_message, description_message } = c.req.valid("json");
+        return await createChoreBeatingMessageController(
+          c,
+          requesterId,
+          groupId,
+          parsedBeatingId,
+          main_message,
+          description_message ?? null,
+        );
+      } catch (err) {
+        await log.error(c, err, "家事実行メッセージの作成に失敗しました。", {
+          context: {
+            group_id: c.req.param("groupId") ?? null,
+            beating_id: c.req.param("beatingId") ?? null,
+            body: c.req.valid("json"),
+          },
+        });
+        return c.json({ status: 500, message: "Internal Server Error" }, 500);
+      }
     },
   )
   .get("/:groupId/search/users", validateQuery(searchUsersRequestSchema), async (c) => {
-    const { email } = c.req.valid("query");
-    const { groupId } = c.req.param();
-    return searchUsersController(c, groupId, email);
+    try {
+      const { email } = c.req.valid("query");
+      const { groupId } = c.req.param();
+      return await searchUsersController(c, groupId, email);
+    } catch (err) {
+      await log.error(c, err, "ユーザー検索に失敗しました。", {
+        context: { group_id: c.req.param("groupId") ?? null, query: c.req.valid("query") },
+      });
+      return c.json({ status: 500, message: "Internal Server Error" }, 500);
+    }
   })
   .post("/:groupId/invitations", validateJson(inviteGroupRequestSchema), async (c) => {
-    const requesterId = c.var.requesterId;
-    const { groupId } = c.req.param();
-    const { user_id } = c.req.valid("json");
-    return inviteGroupController(c, requesterId, groupId, user_id);
+    try {
+      const requesterId = c.var.requesterId;
+      const { groupId } = c.req.param();
+      const { user_id } = c.req.valid("json");
+      return await inviteGroupController(c, requesterId, groupId, user_id);
+    } catch (err) {
+      await log.error(c, err, "グループ招待の作成に失敗しました。", {
+        context: { group_id: c.req.param("groupId") ?? null, body: c.req.valid("json") },
+      });
+      return c.json({ status: 500, message: "Internal Server Error" }, 500);
+    }
   })
   .post("/:groupId/invitations/accept", async (c) => {
-    const userId = c.var.requesterId;
-    const { groupId } = c.req.param();
-    return acceptGroupInvitationController(c, userId, groupId);
+    try {
+      const userId = c.var.requesterId;
+      const { groupId } = c.req.param();
+      return await acceptGroupInvitationController(c, userId, groupId);
+    } catch (err) {
+      await log.error(c, err, "グループ招待の承認に失敗しました。", {
+        context: { group_id: c.req.param("groupId") ?? null },
+      });
+      return c.json({ status: 500, message: "Internal Server Error" }, 500);
+    }
   })
   .post("/:groupId/invitations/deny", async (c) => {
-    const userId = c.var.requesterId;
-    const { groupId } = c.req.param();
-    return denyGroupInvitationController(c, userId, groupId);
+    try {
+      const userId = c.var.requesterId;
+      const { groupId } = c.req.param();
+      return await denyGroupInvitationController(c, userId, groupId);
+    } catch (err) {
+      await log.error(c, err, "グループ招待の拒否に失敗しました。", {
+        context: { group_id: c.req.param("groupId") ?? null },
+      });
+      return c.json({ status: 500, message: "Internal Server Error" }, 500);
+    }
   })
   .post("/", validateJson(createGroupRequestSchema), async (c) => {
-    const { name } = c.req.valid("json");
-    const requesterId = c.var.requesterId;
-    return createGroupController(c, requesterId, name);
+    try {
+      const { name } = c.req.valid("json");
+      const requesterId = c.var.requesterId;
+      return await createGroupController(c, requesterId, name);
+    } catch (err) {
+      await log.error(c, err, "グループ作成に失敗しました。", {
+        context: { body: c.req.valid("json") },
+      });
+      return c.json({ status: 500, message: "Internal Server Error" }, 500);
+    }
   });
 
 export default app;
