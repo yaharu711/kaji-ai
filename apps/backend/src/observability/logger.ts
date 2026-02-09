@@ -43,11 +43,18 @@ export function createLogger(params: {
   ) => {
     const url = new URL(c.req.url);
     const level = input.level;
+    let errToCapture = input.err;
+    if (input.err instanceof Error && input.message) {
+      const wrapped = new Error(input.message, { cause: input.err });
+      wrapped.name = input.err.name;
+      wrapped.stack = input.err.stack;
+      errToCapture = wrapped;
+    }
 
     const logMethod =
       level === "error" ? console.error : level === "warning" ? console.warn : console.info;
-    if (input.err) {
-      logMethod("[log]", input.message ?? "メッセージはありません。", input.err);
+    if (errToCapture) {
+      logMethod("[log]", input.message ?? "メッセージはありません。", errToCapture);
     } else if (input.message) {
       logMethod("[log]", input.message);
     }
@@ -59,7 +66,6 @@ export function createLogger(params: {
       request: {
         method: c.req.method,
         path: url.pathname,
-        // Query can contain PII. Whitelist if you need it.
         query: Object.fromEntries(url.searchParams),
       },
     };
@@ -67,7 +73,7 @@ export function createLogger(params: {
 
     await params.capture({
       level,
-      err: input.err,
+      err: errToCapture,
       message: input.message,
       tags,
       contexts,
