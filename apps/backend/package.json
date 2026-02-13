@@ -14,7 +14,7 @@
     "migrate": "drizzle-kit migrate --config ./drizzle.config.ts",
     "migrate:test": "NODE_ENV=test drizzle-kit migrate --config ./drizzle.config.ts",
     "build:vercel": "tsc -p tsconfig.json",
-    "sentry:upload": "node ./sentry-upload-sourcemaps.js",
+    "sentry:upload": "node ./sentrySourcemapUpload.js",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "test": "vitest run",
     "test:watch": "vitest",
