@@ -25,9 +25,9 @@ for (const key of ["SENTRY_AUTH_TOKEN", "SENTRY_ORG", "SENTRY_PROJECT"]) {
 }
 
 // 2) sentry-cli の存在/バージョン確認（ここでエラー内容が出る）
-run("npx sentry-cli --version");
+run("sentry-cli --version");
 
 // 3) Debug IDs 注入 → アップロード → map削除（公開防止）
-run(`npx sentry-cli sourcemaps inject ${distDir}`);
-run(`npx sentry-cli sourcemaps upload ${distDir}`);
+run(`sentry-cli sourcemaps inject ${distDir}`);
+run(`sentry-cli sourcemaps upload ${distDir}`);
 run(`find ${distDir} -name "*.map" -type f -delete`);
