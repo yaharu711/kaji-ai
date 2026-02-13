@@ -4,11 +4,13 @@ import { fileURLToPath } from "node:url";
 import globals from "globals";
 
 import { sharedConfig } from "../../eslint.config.js";
+import { globalIgnores } from "eslint/config";
 
 const dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default [
   ...sharedConfig,
+  globalIgnores(["sentrySourcemapUpload.js"]),
   {
     files: ["src/**/*.{ts,tsx}", "api/**/*.ts", "tests/**/*.ts"],
     languageOptions: {
